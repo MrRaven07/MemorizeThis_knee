@@ -1,0 +1,254 @@
+/* Core Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Base Canvas */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f3f4f6;
+    color: #1f2937;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Start Screen Container */
+.start-container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Typography Settings */
+.main-title {
+    font-size: 5rem;
+    font-weight: 800;
+    margin-bottom: 2.5rem;
+    letter-spacing: -0.05em;
+    background: linear-gradient(90deg, #2563eb, #4f46e5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Primary Button Styling */
+.btn-primary {
+    padding: 1.25rem 3rem;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #2563eb;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: translateY(-4px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Settings Container Card */
+.settings-container {
+    background-color: #ffffff;
+    padding: 3rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    max-width: 450px; 
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Settings Typography */
+.settings-title {
+    font-size: 2rem;
+    font-weight: 800;
+    text-align: center;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+/* Form Layout */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+.form-group input {
+    padding: 0.75rem 1rem;
+    font-size: 1.125rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.75rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: #2563eb;
+}
+
+/* Success Button Styling */
+.btn-success {
+    margin-top: 1rem;
+    padding: 1rem 2rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #10b981;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-success:hover {
+    background-color: #059669;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-success:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* View Control Utility - CRITICAL FOR NAVIGATION */
+.hidden {
+    display: none !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+ * Standardized Game Container
+ * Ensures all game phases maintain consistent spacing and alignment.
+ */
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    padding: 3rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    gap: 2rem;
+    text-align: center;
+}
+
+/* Timer Display Typography */
+.timer-display {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ef4444; /* Alert Red */
+    font-variant-numeric: tabular-nums; /* Keeps timer width stable */
+}
+
+/* Target Sequence Display */
+.number-display {
+    font-size: 4rem;
+    font-weight: 800;
+    letter-spacing: 0.25rem;
+    color: #1f2937;
+    word-break: break-all; /* Ensures long sequences wrap cleanly */
+}
+
+/* Secondary Action Button (Used for Skipping) */
+.btn-secondary {
+    padding: 1rem 2rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #4b5563;
+    background-color: #e5e7eb;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #d1d5db;
+}
+
+/* Large Input Field for Recall Phase */
+.large-input {
+    width: 100%;
+    padding: 1.5rem;
+    font-size: 2.5rem;
+    text-align: center;
+    border: 3px solid #e5e7eb;
+    border-radius: 1rem;
+    outline: none;
+    letter-spacing: 0.25rem;
+    transition: border-color 0.2s ease;
+}
+
+.large-input:focus {
+    border-color: #2563eb;
+}
+
+/* Results Typography */
+.status-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #1f2937;
+}
+
+.results-display {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: 0.25rem;
+    word-break: break-all;
+}
+
+.score-display {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+/* Visual Feedback Colors */
+.text-correct {
+    color: #10b981; /* Success Green */
+}
+
+.text-incorrect {
+    color: #ef4444; /* Failure Red */
+}

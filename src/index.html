@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memorize This!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Start Page View -->
+    <div id="start-screen" class="start-container">
+        <h1 class="main-title">Memorize This!</h1>
+        <button id="start-btn" class="btn-primary">Start</button>
+    </div>
+
+    <!-- Settings Page View (Initially Hidden) -->
+    <div id="settings-screen" class="settings-container hidden">
+        <h2 class="settings-title">Game Configuration</h2>
+        
+        <div class="form-group">
+            <label for="setting-count">Numbers to Memorize</label>
+            <input type="number" id="setting-count" value="10" min="1">
+        </div>
+        
+        <div class="form-group">
+            <label for="setting-mem-time">Time to Memorize (Seconds)</label>
+            <input type="number" id="setting-mem-time" value="15" min="1">
+        </div>
+        
+        <div class="form-group">
+            <label for="setting-wait-time">Time to Recall Delay (Seconds)</label>
+            <input type="number" id="setting-wait-time" value="5" min="0">
+        </div>
+        
+        <div class="form-group">
+            <label for="setting-type-time">Time to Input (Seconds)</label>
+            <input type="number" id="setting-type-time" value="20" min="1">
+        </div>
+
+        <button id="begin-btn" class="btn-success">Begin Game</button>
+    </div>
+
+
+
+    
+
+    <!-- Phase 3: Memorization Screen -->
+    <div id="memorize-screen" class="game-container hidden">
+        <div id="mem-timer" class="timer-display">00:00</div>
+        <div id="number-display" class="number-display"></div>
+        <button id="skip-mem-btn" class="btn-secondary">Skip Timer</button>
+    </div>
+
+    <!-- Phase 4: Delay Screen -->
+    <div id="delay-screen" class="game-container hidden">
+        <h2 class="status-title">Get Ready...</h2>
+        <div id="delay-timer" class="timer-display">00:00</div>
+    </div>
+
+    <!-- Phase 5: Input Screen -->
+    <div id="input-screen" class="game-container hidden">
+        <div id="input-timer" class="timer-display">00:00</div>
+        <input type="text" id="user-input" class="large-input" placeholder="Type the numbers..." autocomplete="off">
+        <button id="finish-btn" class="btn-success">Finish & Score</button>
+    </div>
+
+    <!-- Phase 6: Results Screen -->
+    <div id="results-screen" class="game-container hidden">
+        <h2 class="status-title">Results</h2>
+        <div id="results-display" class="results-display"></div>
+        <p id="score-text" class="score-display"></p>
+        <button id="restart-btn" class="btn-primary">Play Again</button>
+    </div>
+
+
+
+    
+
+
+
+    <script src="script.js"></script>
+</body>
+</html>
