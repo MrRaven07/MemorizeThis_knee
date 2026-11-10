@@ -158,4 +158,23 @@ describe('CardMatchGame', () => {
     document.body.dispatchEvent(esc2)
     expect(esc2.defaultPrevented).toBe(false)
   })
+
+  it('keyboard focus lands on the cards when play starts', async () => {
+    const { w } = setup({ previewSecondsPerPair: 0 })
+    await w.find('button.start').trigger('click')
+    await flushPromises()
+    expect(document.activeElement).toBe(w.findAll('button.card')[0]!.element)
+  })
+
+  it('a stale flip-back timer does not hide the third card', async () => {
+    const { w, pairs } = setup({ previewSecondsPerPair: 0 })
+    await w.find('button.start').trigger('click')
+    const [p0, p1, p2] = pairs as [[number, number], [number, number], [number, number]]
+    await click(w, p0[0])
+    await click(w, p1[0])
+    await click(w, p2[0])
+    vi.advanceTimersByTime(750)
+    await flushPromises()
+    expect(w.findAll('button.card')[p2[0]]!.classes()).toContain('up')
+  })
 })
