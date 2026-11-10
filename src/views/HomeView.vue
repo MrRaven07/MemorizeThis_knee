@@ -2,9 +2,19 @@
 import { RouterLink } from 'vue-router'
 import SessionClock from '@/components/SessionClock.vue'
 import { games } from '@/games/registry'
+import { computed } from 'vue'
+import { useDecksStore } from '@/stores/decks'
 import { useStatsStore } from '@/stores/stats'
 
 const stats = useStatsStore()
+const decks = useDecksStore()
+
+const majorHeadline = computed(() => {
+  const n = decks.decks.length
+  if (n === 0) return 'no decks yet'
+  const cards = decks.decks.reduce((a, d) => a + d.cards.length, 0)
+  return `${n} ${n === 1 ? 'deck' : 'decks'} · ${cards} ${cards === 1 ? 'card' : 'cards'}`
+})
 </script>
 
 <template>
@@ -25,6 +35,14 @@ const stats = useStatsStore()
         <span class="name">{{ game.name }}</span>
         <span class="tagline muted">{{ game.tagline }}</span>
         <span class="headline mono">{{ game.summarize(stats.roundsFor(game.id)).headline }}</span>
+      </RouterLink>
+    </nav>
+
+    <nav class="grid" aria-label="Flashcards">
+      <RouterLink class="tile major-tile" :to="{ name: 'major' }">
+        <span class="name">Major System</span>
+        <span class="tagline muted">Your own number → word flashcards.</span>
+        <span class="headline mono">{{ majorHeadline }}</span>
       </RouterLink>
     </nav>
 
