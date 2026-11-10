@@ -18,7 +18,21 @@ describe('parseSelection', () => {
   })
 
   it('different-length ends match numerically at any length', () => {
-    expect(inputs(parseSelection('5-12', cards).ids)).toEqual(['5', '6', '7', '8', '9', '05', '06', '07', '08', '09', '10', '11', '12'])
+    expect(inputs(parseSelection('5-12', cards).ids)).toEqual([
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      '05',
+      '06',
+      '07',
+      '08',
+      '09',
+      '10',
+      '11',
+      '12',
+    ])
   })
 
   it('single items match exactly; duplicates removed; deck order kept', () => {

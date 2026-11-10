@@ -92,6 +92,6 @@ describe('import planning', () => {
   it('refuses a plan with errors', () => {
     const plan = planImport(deck, parsePaste('00 - a\nbad line'))
     expect(plan.errors).toHaveLength(1)
-    expect(() => applyImport(deck, plan, 'replace')).toThrow()
+    expect(() => applyImport(deck, plan, 'replace')).toThrow('errors')
   })
 })
