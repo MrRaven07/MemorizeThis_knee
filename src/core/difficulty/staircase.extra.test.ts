@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { clampStaircase, type StaircaseConfig, type StaircaseState } from './staircase'
 
-const cfg: StaircaseConfig = { start: 4, min: 3, max: 30, upAfter: 3, upStep: 1, downAfter: 1, downStep: 1 }
+const cfg: StaircaseConfig = {
+  start: 4,
+  min: 3,
+  max: 30,
+  upAfter: 3,
+  upStep: 1,
+  downAfter: 1,
+  downStep: 1,
+}
 
 describe('clampStaircase with corrupted saved data', () => {
   it.each([
