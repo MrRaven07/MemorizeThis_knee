@@ -31,7 +31,14 @@ export const LONG_NUMBER_FIELDS: SettingField[] = [
   { key: 'groups', label: 'Numbers to join', type: 'number', min: 1, max: 20 },
   { key: 'digitsPerGroup', label: 'Digits per number', type: 'number', min: 1, max: 40 },
   { key: 'separateGroups', label: 'Show a gap between numbers', type: 'boolean' },
-  { key: 'memorizeSeconds', label: 'Time to memorize', type: 'number', min: 1, max: 600, unit: 's' },
+  {
+    key: 'memorizeSeconds',
+    label: 'Time to memorize',
+    type: 'number',
+    min: 1,
+    max: 600,
+    unit: 's',
+  },
   { key: 'delaySeconds', label: 'Wait before recall', type: 'number', min: 0, max: 600, unit: 's' },
   {
     key: 'recallSeconds',

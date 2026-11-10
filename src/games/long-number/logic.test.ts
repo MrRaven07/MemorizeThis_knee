@@ -14,9 +14,9 @@ import {
 
 describe('long number logic', () => {
   it('defaults are valid against their own fields', () => {
-    expect(sanitizeSettings(LONG_NUMBER_DEFAULTS, LONG_NUMBER_DEFAULTS, LONG_NUMBER_FIELDS)).toEqual(
-      LONG_NUMBER_DEFAULTS,
-    )
+    expect(
+      sanitizeSettings(LONG_NUMBER_DEFAULTS, LONG_NUMBER_DEFAULTS, LONG_NUMBER_FIELDS),
+    ).toEqual(LONG_NUMBER_DEFAULTS)
     expect(LONG_NUMBER_DEFAULTS).toEqual({
       groups: 1,
       digitsPerGroup: 10,
@@ -28,7 +28,11 @@ describe('long number logic', () => {
   })
 
   it('generates the configured shape', () => {
-    const g = generateGroups(createRng(5), { ...LONG_NUMBER_DEFAULTS, groups: 3, digitsPerGroup: 4 })
+    const g = generateGroups(createRng(5), {
+      ...LONG_NUMBER_DEFAULTS,
+      groups: 3,
+      digitsPerGroup: 4,
+    })
     expect(g).toHaveLength(3)
     g.forEach((x) => expect(x).toMatch(/^\d{4}$/))
   })

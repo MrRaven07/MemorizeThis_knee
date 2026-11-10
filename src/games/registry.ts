@@ -1,3 +1,4 @@
+import { longNumber } from './long-number'
 import type { GameModule } from './types'
 
 /**
@@ -5,7 +6,7 @@ import type { GameModule } from './types'
  * (see .claude/skills/add-minigame).
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- each module has its own settings type
-export const games: GameModule<any>[] = []
+export const games: GameModule<any>[] = [longNumber]
 
 export function getGame(id: string): GameModule | undefined {
   return games.find((g) => g.id === id)
