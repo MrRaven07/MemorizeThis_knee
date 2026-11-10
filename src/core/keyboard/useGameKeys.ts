@@ -16,11 +16,20 @@ function isEditable(target: EventTarget | null): boolean {
  *   the bubble phase — so a game that calls `e.preventDefault()` on Esc stops
  *   the shell from quitting (docs/agents/questions/001).
  * - Ignores keys typed into inputs/selects (the settings drawer, RecallInput —
- *   which handles its own Enter) and events already handled.
+ *   which handles its own Enter), Enter/Space on a focused button or link
+ *   (the button handles it), and events already handled.
  */
+/** A focused button/link owns Enter and Space (keyboard users activate it). */
+function ownsActivationKey(e: KeyboardEvent): boolean {
+  return (
+    (e.key === 'Enter' || e.key === ' ') &&
+    (e.target instanceof HTMLButtonElement || e.target instanceof HTMLAnchorElement)
+  )
+}
+
 export function useGameKeys(handler: (e: KeyboardEvent) => void): void {
   function onKeydown(e: KeyboardEvent) {
-    if (e.defaultPrevented || isEditable(e.target)) return
+    if (e.defaultPrevented || isEditable(e.target) || ownsActivationKey(e)) return
     handler(e)
   }
   onMounted(() => document.addEventListener('keydown', onKeydown))
