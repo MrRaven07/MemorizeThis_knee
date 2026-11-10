@@ -27,7 +27,7 @@ npm run lint       # lint and auto-fix
 - [x] Skeleton (vibe-coded mockup, 01/10/2026)
 - [x] Rewrite: Vue 3 + TypeScript foundation (shared timer, scoring, difficulty, storage, sessions)
 - [x] **Long Number** — memorize one long number, then type it back
-- [ ] **Number Flash** — a short number flashes, gets longer as you improve
+- [x] **Number Flash** — a short number flashes, gets longer as you improve
 - [ ] **License Plates** — memorize realistic plates (Romania first)
 - [ ] **Maze** — memorize a maze with spikes, then type the route (WASD / 1234)
 - [ ] **Card Match** — find the pairs in the fewest moves
