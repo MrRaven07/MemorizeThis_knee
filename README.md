@@ -31,10 +31,41 @@ npm run lint       # lint and auto-fix
 - [x] **License Plates** — memorize realistic plates (Romania first)
 - [x] **Maze** — memorize a maze with spikes, then type the route (WASD / 1234)
 - [x] **Card Match** — find the pairs in the fewest moves
-- [ ] **Major System Flashcards** — your own number→word decks (CSV/JSON import)
+- [x] **Major System Flashcards** — your own number→word decks (CSV/JSON import)
 - [ ] Stats page and session summary
 - [ ] Android app (Capacitor)
 - [ ] Logo and visual polish
+
+## Flashcard file format
+
+Decks can be imported (and exported) as CSV, JSON or pasted text, in any language (UTF-8).
+
+**Paste**: one pair per line, separated by ` - `, a tab, `;` or `,` (the first one found):
+
+```
+00 - sos
+01 - sat
+02 - sanie
+```
+
+**CSV**: two columns, an optional `input,output` header, `,` or `;` as separator, quotes for values with commas:
+
+```csv
+input,output
+00,sos
+01,"sat, mare"
+```
+
+**JSON**: a list of objects; both values must be text (in quotes, so `00` stays `00`):
+
+```json
+[
+  { "input": "00", "output": "sos" },
+  { "input": "01", "output": "sat" }
+]
+```
+
+Every import shows a preview first; any error (with its line number) blocks the import, so nothing half-imported is ever saved. Study in either direction (number → word or word → number).
 
 ### Logs
 

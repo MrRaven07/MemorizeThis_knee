@@ -25,7 +25,7 @@ A task is done only when `npx vitest run && npm run type-check && npm run lint &
 
 ```
 src/
-  core/        pure TS, no Vue (except core/timing/useCountdown.ts)
+  core/        pure TS, no Vue (except composables: timing/useCountdown, timing/useActiveTime, keyboard/useGameKeys)
     random/      createRng(seed?) — ALL randomness goes through it
     scoring/     alignStrings(expected, actual) — fair per-character diff
     difficulty/  staircase: initStaircase / stepStaircase / clampStaircase
@@ -38,7 +38,9 @@ src/
     registry.ts  the list of games (the only place a game is registered)
     settings.ts  sanitizeSettings
     <id>/        one folder per game: logic.ts (+ logic.test.ts), <Name>Game.vue, index.ts
-  stores/      Pinia: session, settings, stats
+  features/
+    major/     Major System flashcards (not a GameModule): parse, export, deck ops, selection, scheduler, stats, panels
+  stores/      Pinia: session, settings, stats, decks
   components/  GameShell, TimerBar, RecallInput, ResultDiff, SettingsForm, SessionClock
   views/       HomeView, GameView (hosts any game), SettingsView
   styles/      tokens.css (design tokens), base.css

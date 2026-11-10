@@ -64,11 +64,16 @@ flowchart TD
 | `mt:progress` | `stores/stats.ts` | `{ [gameId]: StaircaseState }` |
 | `mt:session-current` | `stores/session.ts` | the open `SessionRecord` (saved continuously) |
 | `mt:sessions` | `stores/session.ts` | finished `SessionRecord[]` |
+| `mt:decks` | `stores/decks.ts` | flashcard `Deck[]` (cards + per-direction progress keyed by card id) |
 | `<key>.corrupt` | `loadJson` | raw text of a value that failed to parse (kept, never deleted) |
 
 **Migration rule:** to change a shape, add `migrations[n]` in `core/storage/persist.ts` and bump `SCHEMA_VERSION`. Transform user data and never delete it. `main.ts` runs migrations before any store loads. If the saved version is newer than the app, the app shows a notice and touches nothing.
 
 **Backup/restore** (`core/storage/backup.ts`): export is a JSON envelope `{ app, exportedAt, version, data }`. Restore is validated first, needs an in-page confirmation, then replaces all `mt:` keys and reloads.
+
+## Major System flashcards
+
+Not a GameModule (no timed rounds). Routes `/major` → `/major/:deckId` → `/major/:deckId/study?mode=smart|shuffle&dir=forward|reverse`. Pure logic in `src/features/major/` (parsers with line-numbered errors, import planning, range selection, overdue-score scheduler, stats); the `decks` store persists every change. `StudyView` counts session time under the id `major`; answers do not count as rounds (`decks.answeredThisSession`).
 
 ## Android later
 
