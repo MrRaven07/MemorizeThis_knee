@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, useTemplateRef } from 'vue'
 import TimerBar from '@/components/TimerBar.vue'
 import { stepStaircase } from '@/core/difficulty/staircase'
 import { useGameKeys } from '@/core/keyboard/useGameKeys'
@@ -49,6 +49,7 @@ const level = ref(stats.getStaircase(CARD_MATCH_ID, CARD_STAIRCASE).level)
 const board = ref<Board | null>(null)
 const playedLevel = ref(1)
 const change = ref<{ from: number; to: number; streak: number } | null>(null)
+const grid = useTemplateRef<{ focus(): void }>('grid')
 let resultShownAt = 0
 
 const info = computed(() =>
@@ -79,6 +80,9 @@ async function start() {
   }
   phase.value = 'play'
   playTime.start()
+  // Keyboard players land on the cards instead of losing focus to <body>.
+  await nextTick()
+  grid.value?.focus()
 }
 
 function onFlip(i: number) {
@@ -161,6 +165,7 @@ useGameKeys((e) => {
       <TimerBar v-if="phase === 'preview'" :progress="countdown.progress.value" />
       <p v-else class="counter mono muted">Moves {{ board.moves }} · minimum {{ pairs }}</p>
       <CardGrid
+        ref="grid"
         :cards="board.cards"
         :face-up="faceUpList"
         :matched="board.matched"

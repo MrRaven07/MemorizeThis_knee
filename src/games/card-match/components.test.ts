@@ -78,4 +78,35 @@ describe('CardGrid', () => {
     expect(buttons[1]!.attributes('aria-label')).toBe('Card 2, hidden')
     expect(buttons[0]!.classes()).toContain('up')
   })
+
+  it('on narrow screens a wide grid swaps, and arrows use the rendered columns', async () => {
+    const original = globalThis.matchMedia
+    globalThis.matchMedia = ((q: string) => ({
+      matches: true,
+      media: q,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    })) as unknown as typeof matchMedia
+    try {
+      const w = mount(CardGrid, {
+        props: {
+          cards: [0, 1, 2, 3, 0, 1, 2, 3],
+          faceUp: Array(8).fill(false),
+          matched: Array(8).fill(false),
+          rows: 2,
+          cols: 4,
+        },
+        attachTo: document.body,
+      })
+      mounted.push(w)
+      await w.vm.$nextTick()
+      expect(w.find('.grid').attributes('style')).toContain('repeat(2, 1fr)')
+      const buttons = w.findAll('button.card')
+      ;(buttons[0]!.element as HTMLButtonElement).focus()
+      await buttons[0]!.trigger('keydown', { key: 'ArrowDown' })
+      expect(document.activeElement).toBe(buttons[2]!.element)
+    } finally {
+      globalThis.matchMedia = original
+    }
+  })
 })

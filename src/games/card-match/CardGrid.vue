@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import CardSymbol from './CardSymbol.vue'
 import { SYMBOL_NAMES } from './symbols'
 
@@ -18,17 +18,18 @@ const props = defineProps<{
 
 const emit = defineEmits<{ flip: [index: number] }>()
 
+/** Focus the current card (the roving tab stop). */
+function focus() {
+  buttons.value[active.value]?.focus()
+}
+
 // On narrow screens a wide grid is shown tall instead (rows and cols swap).
+// Decided once per grid: re-flowing mid-round would move every card, which
+// ruins a spatial-memory round (e.g. when a phone is rotated).
 const narrow = ref(false)
-let mq: MediaQueryList | null = null
-const onMq = () => (narrow.value = mq?.matches ?? false)
 onMounted(() => {
-  if (typeof matchMedia !== 'function') return
-  mq = matchMedia('(max-width: 30rem)')
-  onMq()
-  mq.addEventListener('change', onMq)
+  if (typeof matchMedia === 'function') narrow.value = matchMedia('(max-width: 30rem)').matches
 })
-onUnmounted(() => mq?.removeEventListener('change', onMq))
 
 const columns = computed(() => (narrow.value && props.cols > props.rows ? props.rows : props.cols))
 
@@ -43,6 +44,7 @@ function label(i: number): string {
 }
 
 function onKeydown(e: KeyboardEvent, i: number) {
+  if (e.altKey || e.ctrlKey || e.metaKey) return // leave browser shortcuts alone
   const n = props.cards.length
   const c = columns.value
   const moves: Record<string, number> = {
@@ -57,6 +59,7 @@ function onKeydown(e: KeyboardEvent, i: number) {
   active.value = target
   buttons.value[target]?.focus()
 }
+defineExpose({ focus })
 </script>
 
 <template>
