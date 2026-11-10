@@ -22,6 +22,18 @@ export const routes: RouteRecordRaw[] = [
     beforeEnter: (to) =>
       useDecksStore().getDeck(String(to.params.deckId)) ? true : { name: 'major' },
   },
+  {
+    path: '/major/:deckId/study',
+    name: 'study',
+    component: () => import('@/views/StudyView.vue'),
+    props: (route) => ({
+      deckId: String(route.params.deckId),
+      mode: route.query.mode === 'shuffle' ? 'shuffle' : 'smart',
+      dir: route.query.dir === 'reverse' ? 'reverse' : 'forward',
+    }),
+    beforeEnter: (to) =>
+      useDecksStore().getDeck(String(to.params.deckId)) ? true : { name: 'major' },
+  },
   { path: '/:pathMatch(.*)*', redirect: '/' },
 ]
 
