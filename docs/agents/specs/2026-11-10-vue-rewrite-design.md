@@ -1,7 +1,7 @@
 # MemorizeThis — Vue rewrite design
 
 Date: 2026-11-10
-Status: draft, waiting for the owner's approval
+Status: approved by the owner on 2026-11-10
 
 Notes in this document marked **(builder's call)** are decisions made by the designer (Claude), not by the owner. Everything else was decided by the owner during brainstorming.
 

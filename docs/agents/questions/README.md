@@ -36,3 +36,7 @@ What changes in the build depending on the answer.
 
 | # | Topic | Status |
 |---|-------|--------|
+| 001 | Esc means both skip and quit | answered |
+| 002 | Sessions never ended explicitly | answered |
+| 003 | Restore overwriting newer data | answered |
+| 004 | Settings changed mid-round | answered |
