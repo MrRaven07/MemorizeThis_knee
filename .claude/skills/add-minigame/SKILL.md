@@ -43,7 +43,7 @@ Contract (`src/games/types.ts`):
 - Styling: scoped CSS using only `src/styles/tokens.css` variables. Mobile-first, and check it at 400 px.
 - **Never touch storage.** No `localStorage`, no `appStorage`.
 
-Component test (`<Name>Game.test.ts`): dispatch keys on `document.body` with `bubbles: true`; fake timers with `toFake: ['setTimeout','clearTimeout','requestAnimationFrame','cancelAnimationFrame','performance','Date']`, a seeded `rng`, a full round, skip/Esc precedence, and settings changed mid-round.
+Component test (`<Name>Game.test.ts`): dispatch keys on `document.body` with `bubbles: true`; **unmount every mounted wrapper in `afterEach`** (otherwise earlier games' key listeners react in later tests); fake timers with `toFake: ['setTimeout','clearTimeout','requestAnimationFrame','cancelAnimationFrame','performance','Date']`, a seeded `rng`, a full round, skip/Esc precedence, and settings changed mid-round.
 
 ## 4. Register it
 

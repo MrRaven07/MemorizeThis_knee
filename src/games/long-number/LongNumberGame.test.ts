@@ -12,6 +12,8 @@ const settings: LongNumberSettings = {
   delaySeconds: 0,
 }
 
+const mounted: { unmount(): void }[] = []
+
 describe('LongNumberGame', () => {
   beforeEach(() => {
     vi.useFakeTimers({
@@ -26,6 +28,7 @@ describe('LongNumberGame', () => {
     })
   })
   afterEach(() => {
+    for (const w of mounted.splice(0)) w.unmount()
     vi.useRealTimers()
     document.body.replaceChildren()
   })
@@ -36,6 +39,7 @@ describe('LongNumberGame', () => {
       props: { settings: s, rng: createRng(1) },
       attachTo: document.body,
     })
+    mounted.push(w)
     return { w, expected }
   }
 

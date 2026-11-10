@@ -70,7 +70,15 @@ export const NUMBER_FLASH_FIELDS: SettingField[] = [
 ]
 
 export function numberFlashStaircase(s: NumberFlashSettings): StaircaseConfig {
-  return { start: 4, min: 3, max: 30, upAfter: s.upAfter, upStep: s.upStep, downAfter: 1, downStep: 1 }
+  return {
+    start: 4,
+    min: 3,
+    max: 30,
+    upAfter: s.upAfter,
+    upStep: s.upStep,
+    downAfter: 1,
+    downStep: 1,
+  }
 }
 
 export interface RevealSchedule {
@@ -85,7 +93,8 @@ export function revealSchedule(length: number, s: NumberFlashSettings): RevealSc
     s.revealMode === 'gradual' ? i * s.revealMsPerDigit : 0,
   )
   const lastDigitAt = digitAtMs.at(-1) ?? 0
-  const display = s.baseDisplaySeconds * 1000 + s.extraSecondsPerDigit * 1000 * Math.max(0, length - 4)
+  const display =
+    s.baseDisplaySeconds * 1000 + s.extraSecondsPerDigit * 1000 * Math.max(0, length - 4)
   // The complete number is always visible for at least 1 s (question 005).
   return { digitAtMs, hideAtMs: Math.max(display, lastDigitAt + 1000) }
 }
