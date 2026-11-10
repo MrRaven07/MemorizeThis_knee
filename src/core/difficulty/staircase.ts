@@ -52,6 +52,14 @@ export function stepStaircase(
   return { level: state.level, streakRight: 0, streakWrong }
 }
 
+const finiteOr = (v: unknown, fallback: number) =>
+  typeof v === 'number' && Number.isFinite(v) ? v : fallback
+
+/** For saved states: pulls the level into [min, max]; repairs corrupted values. */
 export function clampStaircase(state: StaircaseState, cfg: StaircaseConfig): StaircaseState {
-  return { ...state, level: clamp(state.level, cfg.min, cfg.max) }
+  return {
+    level: clamp(Math.round(finiteOr(state?.level, cfg.start)), cfg.min, cfg.max),
+    streakRight: Math.max(0, finiteOr(state?.streakRight, 0)),
+    streakWrong: Math.max(0, finiteOr(state?.streakWrong, 0)),
+  }
 }
