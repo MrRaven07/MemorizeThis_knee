@@ -30,7 +30,7 @@ npm run lint       # lint and auto-fix
 - [x] **Number Flash** — a short number flashes, gets longer as you improve
 - [x] **License Plates** — memorize realistic plates (Romania first)
 - [x] **Maze** — memorize a maze with spikes, then type the route (WASD / 1234)
-- [ ] **Card Match** — find the pairs in the fewest moves
+- [x] **Card Match** — find the pairs in the fewest moves
 - [ ] **Major System Flashcards** — your own number→word decks (CSV/JSON import)
 - [ ] Stats page and session summary
 - [ ] Android app (Capacitor)
