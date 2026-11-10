@@ -40,3 +40,5 @@ What changes in the build depending on the answer.
 | 002 | Sessions never ended explicitly | answered |
 | 003 | Restore overwriting newer data | answered |
 | 004 | Settings changed mid-round | answered |
+| 005 | Number Flash reveal vs display time | answered |
+| 006 | Number Flash flow between rounds | answered |
