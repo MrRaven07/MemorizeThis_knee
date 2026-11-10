@@ -4,6 +4,8 @@ A **memory gym**: minigames that train memory palace / art of memory techniques 
 
 - Approved design: `docs/agents/specs/2026-11-10-vue-rewrite-design.md`
 - Plans: `docs/agents/plans/`. Questions and answers: `docs/agents/questions/`.
+- Context: `docs/agents/context/architecture.md` (how pieces connect, saved data keys), `docs/agents/context/memory-theory.md` (the theory each game trains). Decisions: `docs/agents/decisions/log.md`.
+- Adding a game: follow the `add-minigame` skill (`.claude/skills/add-minigame/SKILL.md`); worked example `src/games/long-number/`.
 
 ## Commands
 
