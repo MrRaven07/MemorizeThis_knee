@@ -3,7 +3,7 @@ import { games, getGame } from './registry'
 
 describe('registry', () => {
   it('lists the games in menu order', () => {
-    expect(games.map((g) => g.id)).toEqual(['long-number', 'number-flash', 'plates'])
+    expect(games.map((g) => g.id)).toEqual(['long-number', 'number-flash', 'plates', 'maze'])
   })
 
   it('ids are unique and resolvable', () => {
