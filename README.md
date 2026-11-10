@@ -1,7 +1,26 @@
 # MemorizeThis_knee
-A quick made memorising game of numbers using pure HTML/CSS/JS.
+A memory gym: minigames to train memory palace / art of memory techniques. Built with Vue 3 + TypeScript.
 
 
+
+## Run it
+
+You need [Node.js](https://nodejs.org/) 22.18+ or 24.12+.
+
+```bash
+git clone https://github.com/MrRaven07/MemorizeThis_knee.git
+cd MemorizeThis_knee
+npm install
+npm run dev        # open the printed URL in your browser
+```
+
+Other commands:
+
+```bash
+npm run test:unit  # run the tests (watch mode; add -- --run for a single run)
+npm run build      # production build into dist/
+npm run lint       # lint and auto-fix
+```
 
 ## Roadmap
 
