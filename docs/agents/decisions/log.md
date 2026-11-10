@@ -18,3 +18,4 @@ Short, dated entries: what was decided, and why. Add newest at the bottom.
 - **Dark-only "Dark focus" theme via CSS tokens.** The owner picked it from mockups. A visual polish pass comes later.
 - **GPL-3.0** license.
 - **Builder questions go to a manager agent and are logged in `docs/agents/questions/`.** The owner's request.
+- **Game keyboard handling: `useGameKeys` on `document`** (2026-11-10, after the final review). Fixes Esc quitting mid-round and Enter in the settings drawer starting a round.

@@ -8,6 +8,7 @@ import { routes } from '@/router'
 import { useCountdown } from '@/core/timing/useCountdown'
 import { appStorage } from '@/core/storage/persist'
 import type { GameModule } from '@/games/types'
+import { longNumber } from '@/games/long-number'
 import { useSessionStore } from '@/stores/session'
 import { useStatsStore } from '@/stores/stats'
 
@@ -85,6 +86,8 @@ async function mountAt(path: string): Promise<{ router: Router; w: ReturnType<ty
   await router.isReady()
   const w = mount(App, { global: { plugins: [router] }, attachTo: document.body })
   await flushPromises()
+  await vi.dynamicImportSettled() // let lazily-loaded game components finish loading
+  await flushPromises()
   return { router, w }
 }
 
@@ -152,5 +155,32 @@ describe('views', () => {
     await input.trigger('change')
     const { useSettingsStore } = await import('@/stores/settings')
     expect(useSettingsStore().gameSettings(mockGames[0]!)).toEqual({ n: 9 })
+  })
+
+  it("Esc during a real game's memorize phase skips instead of quitting", async () => {
+    mockGames.push(longNumber)
+    const { router, w } = await mountAt('/play/long-number')
+    await w.find('button.start').trigger('click')
+    expect(w.find('.number').exists()).toBe(true)
+    document.body.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    )
+    await flushPromises()
+    expect(router.currentRoute.value.path).toBe('/play/long-number')
+    expect(w.find('.number').exists()).toBe(false)
+    expect(w.text()).toContain('Get ready') // default settings have a 5 s wait before recall
+  })
+
+  it('Enter inside the settings drawer does not start a round', async () => {
+    mockGames.push(longNumber)
+    const { w } = await mountAt('/play/long-number')
+    await w.find('button[aria-label="Game settings"]').trigger('click')
+    const input = w.find('input[name="digitsPerGroup"]')
+    ;(input.element as HTMLInputElement).focus()
+    input.element.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }),
+    )
+    await flushPromises()
+    expect(w.find('.number').exists()).toBe(false)
   })
 })

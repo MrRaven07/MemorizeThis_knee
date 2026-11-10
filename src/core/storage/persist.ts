@@ -32,16 +32,40 @@ export function runMigrations(
   return 'ok'
 }
 
-export function loadJson<T>(a: StorageAdapter, key: string, fallback: T): T {
+/**
+ * Reads a JSON value. If it can't be parsed — or `isValid` rejects its shape —
+ * the raw text is kept under `<key>.corrupt` and `fallback` is returned.
+ */
+export function loadJson<T>(
+  a: StorageAdapter,
+  key: string,
+  fallback: T,
+  isValid?: (value: unknown) => boolean,
+): T {
   const raw = a.get(key)
   if (raw === null) return fallback
+  let value: unknown
   try {
-    return JSON.parse(raw) as T
+    value = JSON.parse(raw)
   } catch {
-    const corruptKey = `${key}.corrupt`
-    if (a.get(corruptKey) === null) a.set(corruptKey, raw)
+    keepCorrupt(a, key, raw)
     return fallback
   }
+  if (isValid && !isValid(value)) {
+    keepCorrupt(a, key, raw)
+    return fallback
+  }
+  return value as T
+}
+
+function keepCorrupt(a: StorageAdapter, key: string, raw: string) {
+  const corruptKey = `${key}.corrupt`
+  if (a.get(corruptKey) === null) a.set(corruptKey, raw)
+}
+
+/** Shape guard: a plain object (not null, not an array). */
+export function isPlainObject(v: unknown): v is Record<string, unknown> {
+  return typeof v === 'object' && v !== null && !Array.isArray(v)
 }
 
 export function saveJson(a: StorageAdapter, key: string, value: unknown): void {

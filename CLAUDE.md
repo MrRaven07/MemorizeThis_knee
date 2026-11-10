@@ -51,7 +51,7 @@ src/
 - **Timing:** use `useCountdown`, never `setInterval`/`setTimeout`, for game phases. It pauses while the tab is hidden and cancels on unmount.
 - **Game logic is pure and tested first** (TDD: write the test, watch it fail, then implement).
 - **Settings:** games copy `settings` when a round starts, and changes apply from the next round. Every setting is described by a `SettingField`, and values are always passed through `sanitizeSettings` (never NaN).
-- **Esc:** a game that uses Esc in a phase calls `event.preventDefault()` in its own window keydown handler. `GameShell` quits only on an Esc nobody handled.
+- **Keyboard:** games handle keys with `useGameKeys(handler)` (`src/core/keyboard/useGameKeys.ts`). It listens on `document`, so it runs before `GameShell`'s `window` listener, and it ignores keys typed in inputs and selects (the settings drawer, `RecallInput`). A game that uses **Esc** in a phase calls `e.preventDefault()`, and the shell then doesn't quit. Never add raw `window` keydown listeners in games.
 - **Saved data:** keys start with `mt:`. To change a saved shape, add a migration in `core/storage/persist.ts` and bump `SCHEMA_VERSION`. Never delete user data.
 - **Theme:** dark only, "Dark focus". Use the CSS variables from `styles/tokens.css` and never hard-coded colors. Mobile-first: check layouts at 400 px width. Everything is playable by keyboard and by touch.
 - Vite `base: './'` and hash routing keep the build portable (Capacitor later).

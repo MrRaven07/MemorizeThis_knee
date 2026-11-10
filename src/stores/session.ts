@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { createTracker, isExpired, type SessionRecord, type Tracker } from '@/core/session/tracker'
-import { appStorage, loadJson, saveJson } from '@/core/storage/persist'
+import { appStorage, isPlainObject, loadJson, saveJson } from '@/core/storage/persist'
 
 export const SESSION_CURRENT_KEY = 'mt:session-current'
 export const SESSIONS_KEY = 'mt:sessions'
@@ -9,13 +9,28 @@ export const SESSIONS_KEY = 'mt:sessions'
 /** Session time uses wall-clock ms so it survives reloads (docs/agents/questions/002). */
 const clock = () => Date.now()
 
+function isSessionRecord(v: unknown): v is SessionRecord {
+  if (!isPlainObject(v)) return false
+  const num = (k: string) => typeof v[k] === 'number' && Number.isFinite(v[k])
+  return (
+    typeof v.id === 'string' &&
+    num('startedAt') &&
+    num('activeMs') &&
+    num('rounds') &&
+    num('lastActivityAt') &&
+    isPlainObject(v.perGameMs)
+  )
+}
+
 /**
  * Tracks play time. A session counts UP with no limit; only time on a game
  * screen with the tab visible counts. The open session is saved continuously,
  * so closing the tab loses nothing.
  */
 export const useSessionStore = defineStore('session', () => {
-  const sessions = ref<SessionRecord[]>(loadJson<SessionRecord[]>(appStorage, SESSIONS_KEY, []))
+  const sessions = ref<SessionRecord[]>(
+    loadJson<SessionRecord[]>(appStorage, SESSIONS_KEY, [], Array.isArray),
+  )
   const current = ref<SessionRecord | null>(null)
   const active = ref(false)
   const tick = ref(0)
@@ -124,7 +139,12 @@ export const useSessionStore = defineStore('session', () => {
   const isActive = computed(() => active.value)
 
   // Restore the open session saved before a reload.
-  const saved = loadJson<SessionRecord | null>(appStorage, SESSION_CURRENT_KEY, null)
+  const saved = loadJson<SessionRecord | null>(
+    appStorage,
+    SESSION_CURRENT_KEY,
+    null,
+    isSessionRecord,
+  )
   if (saved) {
     if (isExpired(saved.lastActivityAt, Date.now())) {
       finalize(saved, saved.lastActivityAt)

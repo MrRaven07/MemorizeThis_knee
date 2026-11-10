@@ -6,7 +6,7 @@ import {
   type StaircaseConfig,
   type StaircaseState,
 } from '@/core/difficulty/staircase'
-import { appStorage, loadJson, saveJson } from '@/core/storage/persist'
+import { appStorage, isPlainObject, loadJson, saveJson } from '@/core/storage/persist'
 import type { RoundRecord, RoundResult } from '@/games/types'
 import { useSessionStore } from './session'
 
@@ -15,9 +15,11 @@ export const PROGRESS_KEY = 'mt:progress'
 
 /** Round history and per-game difficulty progress. */
 export const useStatsStore = defineStore('stats', () => {
-  const rounds = ref<RoundRecord[]>(loadJson<RoundRecord[]>(appStorage, ROUNDS_KEY, []))
+  const rounds = ref<RoundRecord[]>(
+    loadJson<RoundRecord[]>(appStorage, ROUNDS_KEY, [], Array.isArray),
+  )
   const staircases = ref<Record<string, StaircaseState>>(
-    loadJson<Record<string, StaircaseState>>(appStorage, PROGRESS_KEY, {}),
+    loadJson<Record<string, StaircaseState>>(appStorage, PROGRESS_KEY, {}, isPlainObject),
   )
 
   function recordRound(gameId: string, r: RoundResult): RoundRecord {
