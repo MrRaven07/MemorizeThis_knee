@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { createMemoryAdapter } from './adapter'
-import { exportAll, importAll } from './backup'
+import { exportAll, importAll, validateBackup } from './backup'
 
 describe('backup', () => {
   it('round-trips UTF-8 data and only mt: keys', () => {
@@ -23,7 +23,12 @@ describe('backup', () => {
 
   it('restore replaces existing mt: keys', () => {
     const b = createMemoryAdapter({ 'mt:version': '1', 'mt:old': '1', keep: 'x' })
-    const file = JSON.stringify({ app: 'memorize-this', exportedAt: 0, version: 1, data: { 'mt:version': '1', 'mt:new': '2' } })
+    const file = JSON.stringify({
+      app: 'memorize-this',
+      exportedAt: 0,
+      version: 1,
+      data: { 'mt:version': '1', 'mt:new': '2' },
+    })
     expect(importAll(b, file)).toEqual({ ok: true })
     expect(b.get('mt:old')).toBeNull()
     expect(b.get('mt:new')).toBe('2')
@@ -42,5 +47,12 @@ describe('backup', () => {
     const r = importAll(b, json)
     expect(r.ok).toBe(false)
     expect(b.keys()).toEqual(['mt:keep'])
+  })
+
+  it('validateBackup checks without writing and reports the export date', () => {
+    const json = exportAll(createMemoryAdapter({ 'mt:version': '1' }))
+    const r = validateBackup(json)
+    expect(r).toEqual({ ok: true, exportedAt: expect.any(Number) })
+    expect(validateBackup('nope').ok).toBe(false)
   })
 })

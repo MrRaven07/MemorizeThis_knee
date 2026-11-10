@@ -50,7 +50,11 @@ function update(key: string, raw: unknown, el?: HTMLInputElement | HTMLSelectEle
           :step="field.step ?? 1"
           :value="modelValue[field.key]"
           @change="
-            update(field.key, ($event.target as HTMLInputElement).value, $event.target as HTMLInputElement)
+            update(
+              field.key,
+              ($event.target as HTMLInputElement).value,
+              $event.target as HTMLInputElement,
+            )
           "
         />
         <select
@@ -59,7 +63,11 @@ function update(key: string, raw: unknown, el?: HTMLInputElement | HTMLSelectEle
           :name="field.key"
           :value="modelValue[field.key]"
           @change="
-            update(field.key, ($event.target as HTMLSelectElement).value, $event.target as HTMLSelectElement)
+            update(
+              field.key,
+              ($event.target as HTMLSelectElement).value,
+              $event.target as HTMLSelectElement,
+            )
           "
         >
           <option v-for="o in field.options" :key="o.value" :value="o.value">{{ o.label }}</option>

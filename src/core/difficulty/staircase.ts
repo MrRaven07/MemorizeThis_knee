@@ -33,13 +33,21 @@ export function stepStaircase(
   if (correct) {
     const streakRight = state.streakRight + 1
     if (streakRight >= cfg.upAfter) {
-      return { level: clamp(state.level + cfg.upStep, cfg.min, cfg.max), streakRight: 0, streakWrong: 0 }
+      return {
+        level: clamp(state.level + cfg.upStep, cfg.min, cfg.max),
+        streakRight: 0,
+        streakWrong: 0,
+      }
     }
     return { level: state.level, streakRight, streakWrong: 0 }
   }
   const streakWrong = state.streakWrong + 1
   if (streakWrong >= cfg.downAfter) {
-    return { level: clamp(state.level - cfg.downStep, cfg.min, cfg.max), streakRight: 0, streakWrong: 0 }
+    return {
+      level: clamp(state.level - cfg.downStep, cfg.min, cfg.max),
+      streakRight: 0,
+      streakWrong: 0,
+    }
   }
   return { level: state.level, streakRight: 0, streakWrong }
 }

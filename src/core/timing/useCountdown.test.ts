@@ -12,7 +12,13 @@ function setVisibility(v: DocumentVisibilityState) {
 describe('useCountdown', () => {
   beforeEach(() => {
     vi.useFakeTimers({
-      toFake: ['setTimeout', 'clearTimeout', 'requestAnimationFrame', 'cancelAnimationFrame', 'Date'],
+      toFake: [
+        'setTimeout',
+        'clearTimeout',
+        'requestAnimationFrame',
+        'cancelAnimationFrame',
+        'Date',
+      ],
     })
     visibility = 'visible'
     Object.defineProperty(document, 'visibilityState', {

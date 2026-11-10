@@ -54,7 +54,14 @@ export interface GameModule<S extends GameSettings = GameSettings> {
   summarize(rounds: RoundRecord[]): GameSummary
 }
 
-/** Props every game component receives. */
+/**
+ * Props every game component receives. Games must copy `settings` when a round
+ * starts (changes apply from the next round).
+ *
+ * Events a game component emits:
+ *   - 'round-complete' (result: RoundResult) — required, once per finished round
+ *   - 'level' (level: number | null)        — optional, shown in the GameShell header
+ */
 export interface GameComponentProps<S extends GameSettings = GameSettings> {
   settings: S
 }

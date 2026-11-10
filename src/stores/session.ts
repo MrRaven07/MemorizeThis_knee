@@ -1,11 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import {
-  createTracker,
-  isExpired,
-  type SessionRecord,
-  type Tracker,
-} from '@/core/session/tracker'
+import { createTracker, isExpired, type SessionRecord, type Tracker } from '@/core/session/tracker'
 import { appStorage, loadJson, saveJson } from '@/core/storage/persist'
 
 export const SESSION_CURRENT_KEY = 'mt:session-current'

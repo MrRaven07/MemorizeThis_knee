@@ -101,7 +101,11 @@ export function useCountdown(
         running.value = true
         remainingMs.value = current.remaining()
         progress.value = current.progress()
-        if (pauseWhenHidden && typeof document !== 'undefined' && document.visibilityState === 'hidden') {
+        if (
+          pauseWhenHidden &&
+          typeof document !== 'undefined' &&
+          document.visibilityState === 'hidden'
+        ) {
           current.pause()
         }
         tick()

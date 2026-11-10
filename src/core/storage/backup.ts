@@ -34,7 +34,10 @@ function validate(json: string): { ok: true; file: BackupFile } | { ok: false; e
   const f = parsed as Partial<BackupFile>
   if (f.app !== APP_ID) return { ok: false, error: 'This file is not a MemorizeThis backup.' }
   if (typeof f.version !== 'number' || f.version > SCHEMA_VERSION) {
-    return { ok: false, error: 'This backup comes from a newer version of MemorizeThis. Update the app first.' }
+    return {
+      ok: false,
+      error: 'This backup comes from a newer version of MemorizeThis. Update the app first.',
+    }
   }
   if (typeof f.data !== 'object' || f.data === null) {
     return { ok: false, error: 'This backup has no data.' }
@@ -45,6 +48,15 @@ function validate(json: string): { ok: true; file: BackupFile } | { ok: false; e
     }
   }
   return { ok: true, file: f as BackupFile }
+}
+
+/** Checks a backup file without writing anything (for the confirmation step). */
+export function validateBackup(
+  json: string,
+): { ok: true; exportedAt: number | null } | { ok: false; error: string } {
+  const r = validate(json)
+  if (!r.ok) return r
+  return { ok: true, exportedAt: typeof r.file.exportedAt === 'number' ? r.file.exportedAt : null }
 }
 
 /**

@@ -13,8 +13,22 @@ vi.mock('@/core/storage/persist', async (importOriginal) => {
   return { ...orig, appStorage: createMemoryAdapter() }
 })
 
-const result = { success: true, level: null, accuracy: 1, durationMs: 1200, metrics: { length: 10 } }
-const cfg: StaircaseConfig = { start: 4, min: 3, max: 30, upAfter: 3, upStep: 1, downAfter: 1, downStep: 1 }
+const result = {
+  success: true,
+  level: null,
+  accuracy: 1,
+  durationMs: 1200,
+  metrics: { length: 10 },
+}
+const cfg: StaircaseConfig = {
+  start: 4,
+  min: 3,
+  max: 30,
+  upAfter: 3,
+  upStep: 1,
+  downAfter: 1,
+  downStep: 1,
+}
 
 describe('stats store', () => {
   beforeEach(() => {

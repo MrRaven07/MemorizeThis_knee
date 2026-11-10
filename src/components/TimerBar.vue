@@ -4,7 +4,9 @@ import { computed } from 'vue'
 /** A bar that shrinks as time runs out. `progress` is 0..1 elapsed (from useCountdown). */
 const props = defineProps<{ progress: number }>()
 
-const remainingPct = computed(() => Math.round((1 - Math.min(1, Math.max(0, props.progress))) * 100))
+const remainingPct = computed(() =>
+  Math.round((1 - Math.min(1, Math.max(0, props.progress))) * 100),
+)
 </script>
 
 <template>

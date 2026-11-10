@@ -20,10 +20,15 @@ const MIN = 60_000
 describe('session store', () => {
   beforeEach(() => {
     for (const k of appStorage.keys()) appStorage.remove(k)
-    vi.useFakeTimers({ toFake: ['Date', 'setInterval', 'clearInterval', 'setTimeout', 'clearTimeout'] })
+    vi.useFakeTimers({
+      toFake: ['Date', 'setInterval', 'clearInterval', 'setTimeout', 'clearTimeout'],
+    })
     vi.setSystemTime(new Date('2026-11-10T10:00:00Z'))
     visibility = 'visible'
-    Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => visibility })
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      get: () => visibility,
+    })
     setActivePinia(createPinia())
   })
 

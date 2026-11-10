@@ -24,7 +24,11 @@ const session = useSessionStore()
 function onKeydown(e: KeyboardEvent) {
   if (e.key !== 'Escape' || e.defaultPrevented) return
   const el = document.activeElement
-  if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement) {
+  if (
+    el instanceof HTMLInputElement ||
+    el instanceof HTMLTextAreaElement ||
+    el instanceof HTMLSelectElement
+  ) {
     return
   }
   emit('quit')
@@ -48,7 +52,12 @@ onUnmounted(() => {
       <h1 class="title">{{ title }}</h1>
       <span v-if="level !== undefined && level !== null" class="level mono">lvl {{ level }}</span>
       <SessionClock />
-      <button type="button" class="settings" aria-label="Game settings" @click="emit('open-settings')">
+      <button
+        type="button"
+        class="settings"
+        aria-label="Game settings"
+        @click="emit('open-settings')"
+      >
         ⚙
       </button>
     </header>
