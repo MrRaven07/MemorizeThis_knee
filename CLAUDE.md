@@ -6,6 +6,7 @@ A **memory gym**: minigames that train memory palace / art of memory techniques 
 - Plans: `docs/agents/plans/`. Questions and answers: `docs/agents/questions/`.
 - Context: `docs/agents/context/architecture.md` (how pieces connect, saved data keys), `docs/agents/context/memory-theory.md` (the theory each game trains). Decisions: `docs/agents/decisions/log.md`.
 - Adding a game: follow the `add-minigame` skill (`.claude/skills/add-minigame/SKILL.md`); worked example `src/games/long-number/`.
+- Adding a license plate country: follow the `add-plate-country` skill (`.claude/skills/add-plate-country/SKILL.md`); worked example `src/games/plates/formats/ro.ts`.
 
 ## Commands
 
