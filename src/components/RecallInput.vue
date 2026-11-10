@@ -2,14 +2,16 @@
 import { onMounted, useTemplateRef } from 'vue'
 
 /** Big monospace answer field. Enter submits. Opens the number keyboard on phones by default. */
-withDefaults(
+const props = withDefaults(
   defineProps<{
     modelValue: string
     label: string
     inputmode?: 'numeric' | 'text'
     placeholder?: string
+    /** focus on mount (turn off for all but the first of several inputs) */
+    autofocus?: boolean
   }>(),
-  { inputmode: 'numeric', placeholder: '' },
+  { inputmode: 'numeric', placeholder: '', autofocus: true },
 )
 
 const emit = defineEmits<{
@@ -18,7 +20,11 @@ const emit = defineEmits<{
 }>()
 
 const input = useTemplateRef<HTMLInputElement>('input')
-onMounted(() => input.value?.focus())
+onMounted(() => {
+  if (props.autofocus) input.value?.focus()
+})
+
+defineExpose({ focus: () => input.value?.focus() })
 
 function onKeydown(e: KeyboardEvent) {
   if (e.key === 'Enter') {

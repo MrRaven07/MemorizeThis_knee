@@ -12,32 +12,29 @@ describe('Romanian plates', () => {
 
   it('2000 seeded plates obey every rule', () => {
     const rng = createRng(7)
-    let b2 = 0
-    let b3 = 0
+    const violations: string[] = []
+    const bucharestLengths = new Set<number>()
     for (let i = 0; i < 2000; i++) {
       const p = ro.generate(rng)
-      expect(p.country).toBe('ro')
-      expect(p.text).toBe(p.segments.join(' '))
-      const [county, digits, letters] = p.segments as [string, string, string]
-      expect(RO_COUNTIES).toContain(county)
-      if (county === 'B') {
-        expect(digits).toMatch(/^\d{2,3}$/)
-        if (digits.length === 3) {
-          expect(Number(digits)).toBeGreaterThanOrEqual(100)
-          b3++
-        } else b2++
-      } else {
-        expect(digits).toMatch(/^\d{2}$/)
-      }
-      expect(digits).not.toBe('00')
-      expect(letters).toMatch(/^[A-PR-Z]{3}$/)
-      expect(letters[0]).not.toBe('I')
-      expect(letters[0]).not.toBe('O')
-      expect(RO_RESERVED).not.toContain(letters)
-      expect(ro.isValid(p.text)).toBe(true)
+      const [county = '', digits = '', letters = ''] = p.segments
+      const problems = [
+        p.country !== 'ro' && 'country',
+        p.text !== p.segments.join(' ') && 'text',
+        !RO_COUNTIES.includes(county as (typeof RO_COUNTIES)[number]) && 'county',
+        county === 'B' && !/^\d{2,3}$/.test(digits) && 'B digits',
+        county === 'B' && digits.length === 3 && Number(digits) < 100 && 'B 3-digit < 100',
+        county !== 'B' && !/^\d{2}$/.test(digits) && 'digits',
+        digits === '00' && '00',
+        !/^[A-PR-Z]{3}$/.test(letters) && 'letters',
+        (letters[0] === 'I' || letters[0] === 'O') && 'first letter I/O',
+        RO_RESERVED.includes(letters as (typeof RO_RESERVED)[number]) && 'reserved',
+        !ro.isValid(p.text) && 'isValid',
+      ].filter(Boolean)
+      if (problems.length > 0) violations.push(`${p.text}: ${problems.join(', ')}`)
+      if (county === 'B') bucharestLengths.add(digits.length)
     }
-    expect(b2).toBeGreaterThan(0)
-    expect(b3).toBeGreaterThan(0)
+    expect(violations).toEqual([])
+    expect([...bucharestLengths].sort()).toEqual([2, 3])
   })
 
   it.each([

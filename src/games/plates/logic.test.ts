@@ -47,13 +47,17 @@ describe('plates logic', () => {
   })
 
   it('difficulty never decreases', () => {
+    const problems: string[] = []
     for (let i = 1; i < PLATE_LEVELS.length; i++) {
       const a = PLATE_LEVELS[i - 1]!
       const b = PLATE_LEVELS[i]!
-      expect(b.plates).toBeGreaterThanOrEqual(a.plates)
-      if (a.plates === b.plates) expect(b.viewSeconds).toBeLessThan(a.viewSeconds)
-      expect(b.maxScale - b.minScale).toBeGreaterThanOrEqual(a.maxScale - a.minScale)
+      if (b.plates < a.plates) problems.push(`L${i + 1}: fewer plates`)
+      if (a.plates === b.plates && b.viewSeconds >= a.viewSeconds)
+        problems.push(`L${i + 1}: not less time`)
+      if (b.maxScale - b.minScale < a.maxScale - a.minScale)
+        problems.push(`L${i + 1}: narrower sizes`)
     }
+    expect(problems).toEqual([])
   })
 
   it('levelInfo clamps', () => {

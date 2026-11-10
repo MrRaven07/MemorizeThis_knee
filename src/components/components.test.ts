@@ -52,6 +52,17 @@ describe('RecallInput', () => {
     expect(w.emitted('submit')).toHaveLength(1)
   })
 
+  it('autofocus=false does not take focus; focus() is exposed', async () => {
+    const w = mount(RecallInput, {
+      props: { modelValue: '', label: 'Plate 2', autofocus: false },
+      attachTo: document.body,
+    })
+    expect(document.activeElement).not.toBe(w.find('input').element)
+    ;(w.vm as unknown as { focus(): void }).focus()
+    expect(document.activeElement).toBe(w.find('input').element)
+    w.unmount()
+  })
+
   it('uses the numeric keyboard by default and disables autocorrect', () => {
     const input = mount(RecallInput, { props: { modelValue: '', label: 'Answer' } }).find('input')
     expect(input.attributes('inputmode')).toBe('numeric')
