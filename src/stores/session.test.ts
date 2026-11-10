@@ -104,6 +104,17 @@ describe('session store', () => {
     expect(s.current!.activeMs).toBe(MIN + 1000)
   })
 
+  it('ignores a malformed saved session and session list', () => {
+    appStorage.set(SESSION_CURRENT_KEY, '1')
+    appStorage.set(SESSIONS_KEY, '{"a":1}')
+    const s = useSessionStore()
+    expect(s.current).toBeNull()
+    expect(s.sessions).toEqual([])
+    appStorage.set(SESSION_CURRENT_KEY, JSON.stringify({ id: 'x', startedAt: 0 }))
+    setActivePinia(createPinia())
+    expect(useSessionStore().current).toBeNull()
+  })
+
   it('finalizes an expired saved session on load', () => {
     appStorage.set(
       SESSION_CURRENT_KEY,

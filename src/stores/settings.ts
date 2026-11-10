@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { appStorage, loadJson, saveJson } from '@/core/storage/persist'
+import { appStorage, isPlainObject, loadJson, saveJson } from '@/core/storage/persist'
 import { sanitizeSettings } from '@/games/settings'
 import type { GameModule, GameSettings } from '@/games/types'
 
@@ -14,7 +14,7 @@ interface SavedSettings {
 }
 
 export const useSettingsStore = defineStore('settings', () => {
-  const saved = loadJson<Partial<SavedSettings>>(appStorage, SETTINGS_KEY, {})
+  const saved = loadJson<Partial<SavedSettings>>(appStorage, SETTINGS_KEY, {}, isPlainObject)
   const mazeKeys = ref<MazeKeys>(saved.mazeKeys === '1234' ? '1234' : 'wasd')
   const games = ref<Record<string, GameSettings>>(
     typeof saved.games === 'object' && saved.games !== null ? saved.games : {},

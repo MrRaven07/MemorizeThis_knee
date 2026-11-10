@@ -47,4 +47,10 @@ describe('loadJson / saveJson', () => {
     loadJson(a, 'mt:rounds', [])
     expect(a.get('mt:rounds.corrupt')).toBe('{first')
   })
+
+  it('valid JSON with the wrong shape is treated as corrupt when a guard is given', () => {
+    const a = createMemoryAdapter({ 'mt:rounds': 'null' })
+    expect(loadJson(a, 'mt:rounds', [], Array.isArray)).toEqual([])
+    expect(a.get('mt:rounds.corrupt')).toBe('null')
+  })
 })

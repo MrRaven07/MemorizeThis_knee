@@ -70,8 +70,8 @@ describe('LongNumberGame', () => {
   it('Esc during memorize skips and is marked as handled (so the shell does not quit)', async () => {
     const { w } = setup({ ...settings, memorizeSeconds: 60 })
     await w.find('button.start').trigger('click')
-    const esc = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true })
-    window.dispatchEvent(esc)
+    const esc = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })
+    document.body.dispatchEvent(esc)
     await flushPromises()
     expect(esc.defaultPrevented).toBe(true)
     expect(w.find('input').exists()).toBe(true)

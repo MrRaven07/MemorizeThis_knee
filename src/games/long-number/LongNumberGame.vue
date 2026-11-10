@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import RecallInput from '@/components/RecallInput.vue'
 import ResultDiff from '@/components/ResultDiff.vue'
 import TimerBar from '@/components/TimerBar.vue'
 import { createRng, type Rng } from '@/core/random/rng'
 import type { AlignResult } from '@/core/scoring/align'
 import { useCountdown } from '@/core/timing/useCountdown'
+import { useGameKeys } from '@/core/keyboard/useGameKeys'
 import type { RoundResult } from '@/games/types'
 import { formatGroups, generateGroups, scoreLongNumber, type LongNumberSettings } from './logic'
 
@@ -70,8 +71,7 @@ function skip() {
   if (phase.value === 'memorize' || phase.value === 'delay') countdown.finishNow()
 }
 
-function onKeydown(e: KeyboardEvent) {
-  if (e.defaultPrevented) return
+useGameKeys((e) => {
   if (e.key === 'Escape' && (phase.value === 'memorize' || phase.value === 'delay')) {
     e.preventDefault() // tell GameShell not to quit
     skip()
@@ -79,10 +79,7 @@ function onKeydown(e: KeyboardEvent) {
     e.preventDefault()
     start()
   }
-}
-
-onMounted(() => window.addEventListener('keydown', onKeydown))
-onUnmounted(() => window.removeEventListener('keydown', onKeydown))
+})
 </script>
 
 <template>

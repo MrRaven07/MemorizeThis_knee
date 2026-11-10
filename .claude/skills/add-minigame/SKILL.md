@@ -39,11 +39,11 @@ Contract (`src/games/types.ts`):
 - Phases run with `useCountdown()` (`src/core/timing/useCountdown.ts`):
   `if ((await countdown.start(ms)) === 'cancelled') return`. Never use `setInterval` for game timing.
 - Use the shared UI: `TimerBar`, `RecallInput` (`inputmode="numeric"` for digits), `ResultDiff`. `GameShell` is added by `GameView`, so don't wrap yourself in it.
-- Keyboard: a window `keydown` listener. Ignore events with `defaultPrevented`. If you use **Esc** in a phase, call `e.preventDefault()` so the shell doesn't quit. Enter starts or continues.
+- Keyboard: `useGameKeys((e) => …)` from `src/core/keyboard/useGameKeys.ts`. Never use your own `window` listener. It already skips handled events and keys typed into inputs or selects. If you use **Esc** in a phase, call `e.preventDefault()` so the shell doesn't quit. Enter starts or continues.
 - Styling: scoped CSS using only `src/styles/tokens.css` variables. Mobile-first, and check it at 400 px.
 - **Never touch storage.** No `localStorage`, no `appStorage`.
 
-Component test (`<Name>Game.test.ts`): fake timers with `toFake: ['setTimeout','clearTimeout','requestAnimationFrame','cancelAnimationFrame','performance','Date']`, a seeded `rng`, a full round, skip/Esc precedence, and settings changed mid-round.
+Component test (`<Name>Game.test.ts`): dispatch keys on `document.body` with `bubbles: true`; fake timers with `toFake: ['setTimeout','clearTimeout','requestAnimationFrame','cancelAnimationFrame','performance','Date']`, a seeded `rng`, a full round, skip/Esc precedence, and settings changed mid-round.
 
 ## 4. Register it
 

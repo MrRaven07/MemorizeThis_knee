@@ -49,6 +49,16 @@ describe('stats store', () => {
     expect(stats.roundsFor('other')).toHaveLength(0)
   })
 
+  it('wrong-shaped saved data falls back instead of breaking', () => {
+    appStorage.set(ROUNDS_KEY, '{}')
+    appStorage.set(PROGRESS_KEY, '[1,2]')
+    setActivePinia(createPinia())
+    const stats = useStatsStore()
+    expect(stats.rounds).toEqual([])
+    expect(stats.roundsFor('long-number')).toEqual([])
+    expect(stats.getStaircase('number-flash', cfg)).toEqual(initStaircase(cfg))
+  })
+
   it('rounds survive a reload', () => {
     useStatsStore().recordRound('long-number', result)
     setActivePinia(createPinia())
