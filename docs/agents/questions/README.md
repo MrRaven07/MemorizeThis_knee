@@ -42,3 +42,4 @@ What changes in the build depending on the answer.
 | 004 | Settings changed mid-round | answered |
 | 005 | Number Flash reveal vs display time | answered |
 | 006 | Number Flash flow between rounds | answered |
+| 007 | Plates difficulty steps and recall | answered |
