@@ -123,7 +123,9 @@ describe('GameShell', () => {
 
 describe('TrendSparkline', () => {
   it('draws a labelled line through the points', () => {
-    const w = mount(TrendSparkline, { props: { points: [3, 5, 4, 8], label: 'Highest level per day' } })
+    const w = mount(TrendSparkline, {
+      props: { points: [3, 5, 4, 8], label: 'Highest level per day' },
+    })
     expect(w.find('svg').attributes('role')).toBe('img')
     expect(w.find('svg').attributes('aria-label')).toBe('Highest level per day: 3 → 8')
     const pts = w.find('polyline').attributes('points')!.split(' ')

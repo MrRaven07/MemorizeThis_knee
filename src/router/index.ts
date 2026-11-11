@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-rou
 import { getGame } from '@/games/registry'
 import HomeView from '@/views/HomeView.vue'
 import { useDecksStore } from '@/stores/decks'
+import { useSessionStore } from '@/stores/session'
 
 export const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: HomeView },
@@ -33,6 +34,17 @@ export const routes: RouteRecordRaw[] = [
     }),
     beforeEnter: (to) =>
       useDecksStore().getDeck(String(to.params.deckId)) ? true : { name: 'major' },
+  },
+  { path: '/stats', name: 'stats', component: () => import('@/views/StatsView.vue') },
+  {
+    path: '/session/:id',
+    name: 'session',
+    component: () => import('@/views/SessionSummaryView.vue'),
+    props: true,
+    beforeEnter: (to) =>
+      useSessionStore().sessions.some((s) => s.id === String(to.params.id))
+        ? true
+        : { name: 'stats' },
   },
   { path: '/:pathMatch(.*)*', redirect: '/' },
 ]

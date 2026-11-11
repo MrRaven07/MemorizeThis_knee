@@ -1,13 +1,21 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import SessionClock from '@/components/SessionClock.vue'
 import { games } from '@/games/registry'
 import { computed } from 'vue'
 import { useDecksStore } from '@/stores/decks'
+import { useSessionStore } from '@/stores/session'
 import { useStatsStore } from '@/stores/stats'
 
 const stats = useStatsStore()
 const decks = useDecksStore()
+const session = useSessionStore()
+const router = useRouter()
+
+function endSession() {
+  const rec = session.endSession()
+  if (rec) router.push({ name: 'session', params: { id: rec.id } })
+}
 
 const majorHeadline = computed(() => {
   const n = decks.decks.length
@@ -21,7 +29,12 @@ const majorHeadline = computed(() => {
   <section class="home">
     <header class="top">
       <h1 class="brand mono">memorize<span class="accent">_</span>this</h1>
-      <SessionClock />
+      <div class="session">
+        <SessionClock />
+        <button v-if="session.current" type="button" class="end-session" @click="endSession">
+          End session
+        </button>
+      </div>
     </header>
 
     <p v-if="games.length === 0" class="muted">No games yet.</p>
@@ -47,6 +60,7 @@ const majorHeadline = computed(() => {
     </nav>
 
     <footer class="links">
+      <RouterLink :to="{ name: 'stats' }">Stats</RouterLink>
       <RouterLink :to="{ name: 'settings' }">Settings</RouterLink>
     </footer>
   </section>
@@ -71,6 +85,15 @@ const majorHeadline = computed(() => {
 }
 .accent {
   color: var(--accent);
+}
+.session {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.end-session {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
 }
 .grid {
   display: grid;
