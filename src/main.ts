@@ -25,5 +25,5 @@ if (runMigrations(appStorage) === 'future-version') {
   app.use(createPinia())
   app.use(router)
   app.mount('#app')
-  if (Capacitor.isNativePlatform()) void installBackButton(router)
+  if (Capacitor.isNativePlatform()) installBackButton(router).catch(() => {})
 }

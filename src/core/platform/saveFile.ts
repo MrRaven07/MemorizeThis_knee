@@ -7,7 +7,8 @@ import { Share } from '@capacitor/share'
  * - Web: a normal download (Blob link).
  * - Android (Capacitor): Blob downloads don't work in the WebView, so the file
  *   is written to the app cache and the system share sheet opens (save to
- *   Drive/Files, send by mail, …).
+ *   Drive/Files, send by mail, …). Closing the sheet is fine; a failed write
+ *   rejects so the caller can tell the player.
  */
 export async function saveTextFile(name: string, text: string, mime: string): Promise<void> {
   if (Capacitor.isNativePlatform()) {
@@ -17,7 +18,11 @@ export async function saveTextFile(name: string, text: string, mime: string): Pr
       directory: Directory.Cache,
       encoding: Encoding.UTF8,
     })
-    await Share.share({ title: name, files: [uri] })
+    try {
+      await Share.share({ title: name, files: [uri] })
+    } catch {
+      // The player closed the share sheet (or another share is open): not an error.
+    }
     return
   }
   const blob = new Blob([text], { type: mime })

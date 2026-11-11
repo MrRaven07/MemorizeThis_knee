@@ -17,5 +17,7 @@ export async function handleBack(router: Router, app: { exitApp(): void }): Prom
 /** Wires the hardware back button (call only on native platforms). */
 export async function installBackButton(router: Router): Promise<void> {
   const { App } = await import('@capacitor/app')
-  await App.addListener('backButton', () => void handleBack(router, App))
+  await App.addListener('backButton', () => {
+    handleBack(router, App).catch(() => {})
+  })
 }

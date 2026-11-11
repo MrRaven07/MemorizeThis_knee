@@ -80,7 +80,11 @@ function rename(e: Event) {
 
 function download(content: string, ext: 'csv' | 'json', type: string) {
   if (!deck.value) return
-  void saveTextFile(`${deck.value.name.replace(/[^\p{L}\p{N}_-]+/gu, '-')}.${ext}`, content, type)
+  saveTextFile(`${deck.value.name.replace(/[^\p{L}\p{N}_-]+/gu, '-')}.${ext}`, content, type).catch(
+    () => {
+      cardError.value = 'Could not save the file. Check the free space and try again.'
+    },
+  )
 }
 
 function remove() {

@@ -12,11 +12,14 @@ const pending = ref<{ json: string; exportedAt: number | null } | null>(null)
 const restoreError = ref<string | null>(null)
 
 function downloadBackup() {
-  void saveTextFile(
+  restoreError.value = null
+  saveTextFile(
     `memorize-this-backup-${new Date().toISOString().slice(0, 10)}.json`,
     exportAll(appStorage),
     'application/json',
-  )
+  ).catch(() => {
+    restoreError.value = 'Could not save the backup file. Check the free space and try again.'
+  })
 }
 
 async function onFileChosen(e: Event) {

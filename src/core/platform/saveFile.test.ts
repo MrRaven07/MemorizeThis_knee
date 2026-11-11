@@ -52,4 +52,16 @@ describe('saveTextFile', () => {
       files: ['file:///cache/backup.json'],
     })
   })
+
+  it('native: cancelling the share sheet is not an error', async () => {
+    isNative.value = true
+    share.mockRejectedValueOnce(new Error('Share canceled'))
+    await expect(saveTextFile('a.json', '{}', 'application/json')).resolves.toBeUndefined()
+  })
+
+  it('native: a failed write is reported to the caller', async () => {
+    isNative.value = true
+    writeFile.mockRejectedValueOnce(new Error('No space left'))
+    await expect(saveTextFile('a.json', '{}', 'application/json')).rejects.toThrow('No space left')
+  })
 })
