@@ -27,10 +27,20 @@ function isSessionRecord(v: unknown): v is SessionRecord {
  * screen with the tab visible counts. The open session is saved continuously,
  * so closing the tab loses nothing.
  */
+/** Finished sessions; damaged entries are dropped (raw text kept under `.corrupt`). */
+function loadSessions(): SessionRecord[] {
+  const raw = loadJson<unknown[]>(appStorage, SESSIONS_KEY, [], Array.isArray)
+  const valid = raw.filter(isSessionRecord).map((r) => ({ ...r, cards: r.cards ?? 0 }))
+  if (valid.length !== raw.length) {
+    const text = appStorage.get(SESSIONS_KEY)
+    const corruptKey = `${SESSIONS_KEY}.corrupt`
+    if (text !== null && appStorage.get(corruptKey) === null) appStorage.set(corruptKey, text)
+  }
+  return valid
+}
+
 export const useSessionStore = defineStore('session', () => {
-  const sessions = ref<SessionRecord[]>(
-    loadJson<SessionRecord[]>(appStorage, SESSIONS_KEY, [], Array.isArray),
-  )
+  const sessions = ref<SessionRecord[]>(loadSessions())
   const current = ref<SessionRecord | null>(null)
   const active = ref(false)
   const tick = ref(0)
