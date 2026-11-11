@@ -4,7 +4,8 @@ import { CARD_COUNT, cardName, cardRank, cardSuit, isRed } from './cards'
 
 /**
  * All 52 cards as buttons (4 suit rows × 13 ranks) with a roving tabindex.
- * Used cards are disabled, so a card can never be picked twice.
+ * Used cards are aria-disabled (not `disabled`, which would drop keyboard
+ * focus) and ignore clicks, so a card can never be picked twice.
  */
 const props = defineProps<{ used: number[] }>()
 const emit = defineEmits<{ pick: [id: number] }>()
@@ -38,11 +39,11 @@ function onKeydown(e: KeyboardEvent, i: number) {
       :ref="(el) => (buttons[id] = el as HTMLButtonElement)"
       type="button"
       class="pick"
-      :class="isRed(id) ? 'red' : 'black'"
-      :disabled="props.used.includes(id)"
+      :class="[isRed(id) ? 'red' : 'black', { used: props.used.includes(id) }]"
+      :aria-disabled="props.used.includes(id) ? 'true' : undefined"
       :tabindex="id === active ? 0 : -1"
       :aria-label="cardName(id)"
-      @click="emit('pick', id)"
+      @click="!props.used.includes(id) && emit('pick', id)"
       @focus="active = id"
       @keydown="onKeydown($event, id)"
     >
@@ -79,7 +80,8 @@ function onKeydown(e: KeyboardEvent, i: number) {
 .pick.black {
   color: var(--suit-black);
 }
-.pick:disabled {
+.pick.used {
+  /* still focusable (aria-disabled), so the roving keyboard focus never gets lost */
   opacity: 0.2;
   cursor: default;
 }

@@ -53,7 +53,7 @@ export function parseCode(token: string): number | null {
   const t = token
     .trim()
     .toUpperCase()
-    .replace(/\uFE0F/gu, '') // emoji variation selector (♥️ on phones)
+    .replace(/[\uFE0E\uFE0F]/gu, '') // variation selectors (♥️ on phones)
   const m = /^(10|[2-9AJQKT])(.)$/u.exec(t)
   if (!m) return null
   const rank = RANK_INPUT[m[1]!]
