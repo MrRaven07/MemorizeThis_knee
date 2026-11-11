@@ -10,6 +10,7 @@ import RecallInput from './RecallInput.vue'
 import ResultDiff from './ResultDiff.vue'
 import SettingsForm from './SettingsForm.vue'
 import TimerBar from './TimerBar.vue'
+import Sparkline from './Sparkline.vue'
 
 vi.mock('@/core/storage/persist', async (importOriginal) => {
   const orig = await importOriginal<typeof import('@/core/storage/persist')>()
@@ -117,5 +118,27 @@ describe('GameShell', () => {
     expect(w.emitted('quit')).toBeUndefined()
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', cancelable: true }))
     expect(w.emitted('quit')).toHaveLength(1)
+  })
+})
+
+describe('Sparkline', () => {
+  it('draws a labelled line through the points', () => {
+    const w = mount(Sparkline, { props: { points: [3, 5, 4, 8], label: 'Highest level per day' } })
+    expect(w.find('svg').attributes('role')).toBe('img')
+    expect(w.find('svg').attributes('aria-label')).toBe('Highest level per day: 3 → 8')
+    const pts = w.find('polyline').attributes('points')!.split(' ')
+    expect(pts).toHaveLength(4)
+    expect(pts[0]).toBe('0,30')
+    expect(pts[3]).toBe('100,0')
+  })
+
+  it('flat data gives a flat line; fewer than 2 points renders nothing', () => {
+    const flat = mount(Sparkline, { props: { points: [5, 5], label: 'x' } })
+    expect(flat.find('polyline').attributes('points')).toBe('0,15 100,15')
+    expect(
+      mount(Sparkline, { props: { points: [5], label: 'x' } })
+        .find('svg')
+        .exists(),
+    ).toBe(false)
   })
 })
