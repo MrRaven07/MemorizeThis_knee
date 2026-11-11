@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
+import { saveTextFile } from '@/core/platform/saveFile'
 import ImportPanel from '@/features/major/ImportPanel.vue'
 import StudySetup from '@/features/major/StudySetup.vue'
 import { toCsv, toJson } from '@/features/major/export'
@@ -79,13 +80,7 @@ function rename(e: Event) {
 
 function download(content: string, ext: 'csv' | 'json', type: string) {
   if (!deck.value) return
-  const blob = new Blob([content], { type })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `${deck.value.name.replace(/[^\p{L}\p{N}_-]+/gu, '-')}.${ext}`
-  a.click()
-  URL.revokeObjectURL(url)
+  void saveTextFile(`${deck.value.name.replace(/[^\p{L}\p{N}_-]+/gu, '-')}.${ext}`, content, type)
 }
 
 function remove() {

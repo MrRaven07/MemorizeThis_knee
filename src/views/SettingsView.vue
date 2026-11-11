@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { saveTextFile } from '@/core/platform/saveFile'
 import { exportAll, importAll, validateBackup } from '@/core/storage/backup'
 import { appStorage } from '@/core/storage/persist'
 import { useSettingsStore, type MazeKeys } from '@/stores/settings'
@@ -11,13 +12,11 @@ const pending = ref<{ json: string; exportedAt: number | null } | null>(null)
 const restoreError = ref<string | null>(null)
 
 function downloadBackup() {
-  const blob = new Blob([exportAll(appStorage)], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `memorize-this-backup-${new Date().toISOString().slice(0, 10)}.json`
-  a.click()
-  URL.revokeObjectURL(url)
+  void saveTextFile(
+    `memorize-this-backup-${new Date().toISOString().slice(0, 10)}.json`,
+    exportAll(appStorage),
+    'application/json',
+  )
 }
 
 async function onFileChosen(e: Event) {
