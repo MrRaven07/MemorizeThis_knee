@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { newId } from '@/core/id'
 import { ref } from 'vue'
 import {
   clampStaircase,
@@ -27,7 +28,7 @@ export const useStatsStore = defineStore('stats', () => {
     session.noteRound()
     const record: RoundRecord = {
       ...r,
-      id: globalThis.crypto.randomUUID(),
+      id: newId(),
       gameId,
       at: Date.now(),
       sessionId: session.current?.id ?? null,

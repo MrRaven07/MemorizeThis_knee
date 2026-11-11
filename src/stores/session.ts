@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { newId } from '@/core/id'
 import { computed, ref } from 'vue'
 import { createTracker, isExpired, type SessionRecord, type Tracker } from '@/core/session/tracker'
 import { appStorage, isPlainObject, loadJson, saveJson } from '@/core/storage/persist'
@@ -80,7 +81,7 @@ export const useSessionStore = defineStore('session', () => {
     if (!current.value) {
       const now = Date.now()
       openSession({
-        id: globalThis.crypto.randomUUID(),
+        id: newId(),
         startedAt: now,
         endedAt: null,
         activeMs: 0,

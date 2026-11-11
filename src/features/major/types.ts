@@ -1,7 +1,7 @@
 /** Major System (or any input → output) flashcards. Spec §6.6, question 010. */
 
 export interface Card {
-  /** stable id (crypto.randomUUID) — progress is keyed by it, never by text */
+  /** stable id (newId) — progress is keyed by it, never by text */
   id: string
   input: string
   output: string

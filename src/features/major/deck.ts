@@ -1,9 +1,9 @@
+import { newId } from '@/core/id'
 import type { Card, CardProgress, Deck, Direction, ParseError, ParseResult } from './types'
 
 /** Pure deck operations. Each returns a new deck; the input is never mutated. */
 
 const clean = (s: string) => s.normalize('NFC').trim()
-const newId = () => globalThis.crypto.randomUUID()
 
 export const DEFAULT_PROGRESS: CardProgress = { box: 1, knew: 0, missed: 0, lastAnsweredAt: null }
 
