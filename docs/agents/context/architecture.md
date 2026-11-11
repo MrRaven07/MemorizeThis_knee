@@ -67,6 +67,8 @@ flowchart TD
 | `mt:decks` | `stores/decks.ts` | flashcard `Deck[]` (cards + per-direction progress keyed by card id) |
 | `<key>.corrupt` | `loadJson` | raw text of a value that failed to parse (kept, never deleted) |
 
+**Schema history:** v1 first schema · v2 adds `cards` (flashcard answers) to every `SessionRecord` (questions/011).
+
 **Migration rule:** to change a shape, add `migrations[n]` in `core/storage/persist.ts` and bump `SCHEMA_VERSION`. Transform user data and never delete it. `main.ts` runs migrations before any store loads. If the saved version is newer than the app, the app shows a notice and touches nothing.
 
 **Backup/restore** (`core/storage/backup.ts`): export is a JSON envelope `{ app, exportedAt, version, data }`. Restore is validated first, needs an in-page confirmation, then replaces all `mt:` keys and reloads.
@@ -74,6 +76,10 @@ flowchart TD
 ## Major System flashcards
 
 Not a GameModule (no timed rounds). Routes `/major` → `/major/:deckId` → `/major/:deckId/study?mode=smart|shuffle&dir=forward|reverse`. Pure logic in `src/features/major/` (parsers with line-numbered errors, import planning, range selection, overdue-score scheduler, stats); the `decks` store persists every change. `StudyView` counts session time under the id `major`; answers do not count as rounds (`decks.answeredThisSession`).
+
+## Stats and sessions
+
+`/stats` (`StatsView`) aggregates with pure helpers in `src/features/stats/aggregate.ts` (local-day streak, time per game, daily trend: highest level per day for adaptive games, average accuracy per day otherwise). **End session** lives only on Home and opens `/session/:id` (`SessionSummaryView`). Flashcard answers count as `cards`, never as rounds.
 
 ## Android later
 
