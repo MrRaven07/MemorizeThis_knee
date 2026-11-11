@@ -191,8 +191,23 @@ export function parsePaste(raw: string): ParseResult {
 
 /** Picks the parser from the file name or the content. */
 export function parseAuto(text: string, filename?: string): ParseResult {
+  // A file saved in another encoding (e.g. Excel "ANSI") decodes with U+FFFD.
+  const bad = text.split(/\r?\n/).findIndex((l) => l.includes('\uFFFD'))
+  if (bad >= 0) {
+    return {
+      pairs: [],
+      errors: [
+        { line: bad + 1, message: 'unreadable characters — save the file as UTF-8 and try again' },
+      ],
+    }
+  }
   const name = filename?.toLowerCase() ?? ''
-  if (name.endsWith('.json') || stripBom(text).trimStart().startsWith('[')) return parseJson(text)
+  if (name.endsWith('.json')) return parseJson(text)
   if (name.endsWith('.csv')) return parseCsv(text)
+  if (!name && stripBom(text).trimStart().startsWith('[')) {
+    // Looks like JSON; if it isn't, it's a paste that happens to start with "[".
+    const json = parseJson(text)
+    if (!(json.errors.length === 1 && json.errors[0]!.message === 'not valid JSON')) return json
+  }
   return parsePaste(text)
 }
