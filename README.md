@@ -32,6 +32,7 @@ npm run lint       # lint and auto-fix
 - [x] **Maze** — memorize a maze with spikes, then type the route (WASD / 1234)
 - [x] **Card Match** — find the pairs in the fewest moves
 - [x] **Major System Flashcards** — your own number→word decks (CSV/JSON import)
+- [x] **Deck Memory** — memorize shuffled playing cards, then rebuild the order (Speed Cards)
 - [x] Stats page and session summary (day streak, time per game, daily trend lines)
 - [ ] Android app (Capacitor)
 - [ ] Logo and visual polish

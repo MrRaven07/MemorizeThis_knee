@@ -20,7 +20,12 @@ MemorizeThis trains the classical **art of memory**. Players already carry their
 | **License Plates** | Encoding mixed letter/digit chunks seen in the wild, at different sizes | More plates at once, varied sizes, less time; tilt later |
 | **Maze** | Spatial memory and route encoding (the route *is* a palace walk) | Grid size and spike count grow; viewing time can shrink |
 | **Card Match** | Spatial location memory; separating memory failure from luck | Grid size grows; preview time can be 0 |
+| **Deck Memory** | Memorizing a shuffled deck: card → image (often PAO), images placed along a palace route | Staircase on deck size 4 → 52; memorization time is recorded |
 | **Major System Flashcards** | Instant digit↔word recall of the player's own code | Box system (priority queue): misses come back sooner |
+
+## PAO and Speed Cards
+
+**Speed Cards** is a classic memory-sport discipline: memorize the order of a shuffled 52-card deck as fast as possible, then rebuild it. Competitors usually give every card a fixed image, often in a **PAO** system (Person-Action-Object). Each card is a person, an action and an object, so three cards merge into one scene ("Einstein juggling a pineapple"). The scenes are placed one per location along a memory palace route. Deck Memory trains exactly this: exposure, then strict sequence recall, with the memorization time recorded as the sport's key metric.
 
 ## Design guidance for new games
 

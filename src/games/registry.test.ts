@@ -9,6 +9,7 @@ describe('registry', () => {
       'plates',
       'maze',
       'card-match',
+      'deck-memory',
     ])
   })
 

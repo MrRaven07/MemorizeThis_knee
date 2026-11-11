@@ -19,3 +19,11 @@ Short, dated entries: what was decided, and why. Add newest at the bottom.
 - **GPL-3.0** license.
 - **Builder questions go to a manager agent and are logged in `docs/agents/questions/`.** The owner's request.
 - **Game keyboard handling: `useGameKeys` on `document`** (2026-11-10, after the final review). Fixes Esc quitting mid-round and Enter in the settings drawer starting a round.
+
+## 2026-11-11
+
+- **Deck Memory, an out-of-spec module.** The owner instructed: once the spec's modules are done, add another module "with playing cards", with no questions to them (route questions to the manager). The manager ruled on the design (questions/012): Speed Cards-style deck memorization, a picker plus typed codes for recall, and a 4→52 card staircase.
+- **`alignSequences<T>`** generalizes alignment scoring to any items (cards). `alignStrings` is a wrapper with unchanged behaviour.
+- **Schema v2:** sessions count flashcard answers (`cards`), via a real migration (questions/011).
+- **Smart scheduler amended** (questions/013): no card within the last 3 draws; at most 3 forced returns in a row, so always-missed cards can't starve the rest.
+
