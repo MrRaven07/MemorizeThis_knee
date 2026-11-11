@@ -46,3 +46,5 @@ What changes in the build depending on the answer.
 | 008 | Maze levels, layout and route input | answered |
 | 009 | Card Match levels, preview, success, memory mistakes | answered |
 | 010 | Major flashcards scheduling, import, picking | answered |
+| 011 | Stats page and session summary | answered |
+| 012 | New playing-cards module: Deck Memory | answered |
