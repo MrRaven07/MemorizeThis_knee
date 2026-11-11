@@ -50,6 +50,31 @@ describe('session store', () => {
     expect(s.current!.perGameMs).toEqual({ 'long-number': 5000 })
   })
 
+  it('noteCard counts flashcard answers (not rounds) and saves', () => {
+    const s = useSessionStore()
+    s.noteCard()
+    s.noteCard()
+    expect(s.current!.cards).toBe(2)
+    expect(s.current!.rounds).toBe(0)
+    expect(JSON.parse(appStorage.get(SESSION_CURRENT_KEY)!).cards).toBe(2)
+  })
+
+  it('a saved session without cards loads with cards 0', () => {
+    appStorage.set(
+      SESSION_CURRENT_KEY,
+      JSON.stringify({
+        id: 'old',
+        startedAt: Date.now(),
+        endedAt: null,
+        activeMs: 0,
+        rounds: 0,
+        perGameMs: {},
+        lastActivityAt: Date.now(),
+      }),
+    )
+    expect(useSessionStore().current!.cards).toBe(0)
+  })
+
   it('noteRound counts rounds and saves the current session', () => {
     const s = useSessionStore()
     s.beginActivity('long-number')

@@ -58,7 +58,7 @@ export const useSessionStore = defineStore('session', () => {
   }
 
   function openSession(rec: SessionRecord) {
-    current.value = rec
+    current.value = { ...rec, cards: typeof rec.cards === 'number' ? rec.cards : 0 }
     tracker = createTracker(clock, { activeMs: rec.activeMs, perGameMs: rec.perGameMs })
   }
 
@@ -75,6 +75,7 @@ export const useSessionStore = defineStore('session', () => {
         endedAt: null,
         activeMs: 0,
         rounds: 0,
+        cards: 0,
         perGameMs: {},
         lastActivityAt: now,
       })
@@ -111,6 +112,13 @@ export const useSessionStore = defineStore('session', () => {
     active.value = false
     activeGame = null
     stopTicker()
+    snapshot()
+    persistCurrent()
+  }
+
+  function noteCard() {
+    if (!current.value) ensureSession()
+    current.value!.cards = (current.value!.cards ?? 0) + 1
     snapshot()
     persistCurrent()
   }
@@ -179,6 +187,7 @@ export const useSessionStore = defineStore('session', () => {
     beginActivity,
     endActivity,
     noteRound,
+    noteCard,
     endSession,
   }
 })

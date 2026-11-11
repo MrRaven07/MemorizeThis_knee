@@ -4,6 +4,7 @@ import { appStorage } from '@/core/storage/persist'
 import { planImport } from '@/features/major/deck'
 import { parsePaste } from '@/features/major/parse'
 import { DECKS_KEY, useDecksStore } from './decks'
+import { useSessionStore } from './session'
 
 vi.mock('@/core/storage/persist', async (importOriginal) => {
   const orig = await importOriginal<typeof import('@/core/storage/persist')>()
@@ -56,6 +57,7 @@ describe('decks store', () => {
     expect(deck.progress.forward[id]!.lastAnsweredAt).toEqual(expect.any(Number))
     expect(deck.progress.reverse[id]).toMatchObject({ box: 2, knew: 1, missed: 0 })
     expect(s.answeredThisSession).toBe(4)
+    expect(useSessionStore().current!.cards).toBe(4)
   })
 
   it('applyImport refuses plans with errors and writes nothing', () => {

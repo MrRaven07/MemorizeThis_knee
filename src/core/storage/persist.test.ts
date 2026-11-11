@@ -1,12 +1,20 @@
 import { describe, expect, it } from 'vitest'
 import { createMemoryAdapter } from './adapter'
-import { loadJson, runMigrations, saveJson, VERSION_KEY } from './persist'
+import {
+  loadJson,
+  migrations,
+  runMigrations,
+  saveJson,
+  SCHEMA_VERSION,
+  VERSION_KEY,
+} from './persist'
 
 describe('runMigrations', () => {
   it('fresh storage migrates to the current version', () => {
     const a = createMemoryAdapter()
     expect(runMigrations(a)).toBe('ok')
-    expect(a.get(VERSION_KEY)).toBe('1')
+    expect(SCHEMA_VERSION).toBe(2)
+    expect(a.get(VERSION_KEY)).toBe('2')
   })
 
   it('runs pending migrations in order', () => {
@@ -52,5 +60,41 @@ describe('loadJson / saveJson', () => {
     const a = createMemoryAdapter({ 'mt:rounds': 'null' })
     expect(loadJson(a, 'mt:rounds', [], Array.isArray)).toEqual([])
     expect(a.get('mt:rounds.corrupt')).toBe('null')
+  })
+})
+
+describe('migration 2: sessions count flashcard answers', () => {
+  const old = {
+    id: 'a',
+    startedAt: 1,
+    endedAt: 2,
+    activeMs: 3,
+    rounds: 4,
+    perGameMs: { x: 3 },
+    lastActivityAt: 2,
+    extra: 'kept',
+  }
+
+  it('adds cards: 0 to finished and current sessions, keeping other fields', () => {
+    const a = createMemoryAdapter({
+      'mt:version': '1',
+      'mt:sessions': JSON.stringify([old]),
+      'mt:session-current': JSON.stringify({ ...old, id: 'b', endedAt: null }),
+    })
+    expect(runMigrations(a)).toBe('ok')
+    expect(a.get(VERSION_KEY)).toBe('2')
+    expect(JSON.parse(a.get('mt:sessions')!)).toEqual([{ ...old, cards: 0 }])
+    expect(JSON.parse(a.get('mt:session-current')!)).toMatchObject({ id: 'b', cards: 0 })
+  })
+
+  it('is idempotent and leaves corrupt or missing values alone', () => {
+    const a = createMemoryAdapter({ 'mt:sessions': JSON.stringify([{ ...old, cards: 7 }]) })
+    migrations[2]!(a)
+    migrations[2]!(a)
+    expect(JSON.parse(a.get('mt:sessions')!)[0].cards).toBe(7)
+    const b = createMemoryAdapter({ 'mt:sessions': '{oops' })
+    migrations[2]!(b)
+    expect(b.get('mt:sessions')).toBe('{oops')
+    expect(b.get('mt:session-current')).toBeNull()
   })
 })

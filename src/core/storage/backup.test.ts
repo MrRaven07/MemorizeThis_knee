@@ -17,7 +17,7 @@ describe('backup', () => {
 
   it('export has the documented envelope', () => {
     const parsed = JSON.parse(exportAll(createMemoryAdapter({ 'mt:version': '1' })))
-    expect(parsed).toMatchObject({ app: 'memorize-this', version: 1, data: { 'mt:version': '1' } })
+    expect(parsed).toMatchObject({ app: 'memorize-this', version: 2, data: { 'mt:version': '1' } })
     expect(typeof parsed.exportedAt).toBe('number')
   })
 

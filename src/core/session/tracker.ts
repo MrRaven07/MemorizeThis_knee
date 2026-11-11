@@ -12,6 +12,8 @@ export interface SessionRecord {
   /** time actually spent playing (game screen visible) */
   activeMs: number
   rounds: number
+  /** flashcard answers (schema v2) */
+  cards: number
   perGameMs: Record<string, number>
   /** epoch ms of the last start/stop/round — used for the idle timeout */
   lastActivityAt: number

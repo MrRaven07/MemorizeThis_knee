@@ -4,6 +4,7 @@ import { appStorage, isPlainObject, loadJson, saveJson } from '@/core/storage/pe
 import * as ops from '@/features/major/deck'
 import { nextBox } from '@/features/major/scheduler'
 import type { Box, Deck, Direction } from '@/features/major/types'
+import { useSessionStore } from './session'
 
 export const DECKS_KEY = 'mt:decks'
 
@@ -121,6 +122,7 @@ export const useDecksStore = defineStore('decks', () => {
       return { ...d, progress: { ...d.progress, [dir]: { ...d.progress[dir], [cardId]: next } } }
     })
     answeredThisSession.value++
+    useSessionStore().noteCard()
   }
 
   return {

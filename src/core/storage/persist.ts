@@ -6,7 +6,7 @@ export const VERSION_KEY = 'mt:version'
  * Bump this AND add a migration whenever the saved data shape changes.
  * Never delete user data in a migration — transform it.
  */
-export const SCHEMA_VERSION = 1
+export const SCHEMA_VERSION = 2
 
 /** Upgrades storage from version n-1 to n (the key is n). */
 export type Migration = (a: StorageAdapter) => void
@@ -14,6 +14,24 @@ export type Migration = (a: StorageAdapter) => void
 export const migrations: Record<number, Migration> = {
   1: () => {
     // v1 is the first schema: nothing to transform.
+  },
+  2: (a) => {
+    // Sessions now count flashcard answers: add `cards: 0` where missing.
+    const withCards = (r: unknown) =>
+      typeof r === 'object' && r !== null && !Array.isArray(r) && !('cards' in r)
+        ? { ...r, cards: 0 }
+        : r
+    const patch = (key: string, fn: (v: unknown) => unknown) => {
+      const raw = a.get(key)
+      if (raw === null) return
+      try {
+        a.set(key, JSON.stringify(fn(JSON.parse(raw))))
+      } catch {
+        // corrupt values are left alone; the stores' guards deal with them
+      }
+    }
+    patch('mt:sessions', (v) => (Array.isArray(v) ? v.map(withCards) : v))
+    patch('mt:session-current', withCards)
   },
 }
 
