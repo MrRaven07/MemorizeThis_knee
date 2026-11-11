@@ -24,6 +24,11 @@
   --sym-5: #d2a8ff;
   --sym-6: #e3b341;
 
+  /* playing cards (Deck Memory) — a light face like a real card */
+  --card-face: #f4f1ea;
+  --suit-red: #c4262e;
+  --suit-black: #1b1f24;
+
   --font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', sans-serif;
   --font-mono: ui-monospace, 'JetBrains Mono', 'Cascadia Code', Menlo, Consolas, monospace;
 
