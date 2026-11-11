@@ -33,11 +33,11 @@ describe('CardPicker', () => {
     return w
   }
 
-  it('52 buttons; used cards are disabled; a click emits pick', async () => {
+  it('52 buttons; used cards are aria-disabled; a click emits pick', async () => {
     const w = setup([parseCode('AS')!])
     const buttons = w.findAll('button.pick')
     expect(buttons).toHaveLength(52)
-    expect(buttons[0]!.attributes('disabled')).toBeDefined()
+    expect(buttons[0]!.attributes('aria-disabled')).toBe('true')
     await buttons[1]!.trigger('click')
     expect(w.emitted('pick')).toEqual([[1]])
     expect(buttons.filter((b) => b.attributes('tabindex') === '0')).toHaveLength(1)
@@ -53,5 +53,18 @@ describe('CardPicker', () => {
     await buttons[1]!.trigger('keydown', { key: 'ArrowDown' })
     await flushPromises()
     expect(document.activeElement).toBe(buttons[14]!.element)
+  })
+
+  it('used cards stay focusable (aria-disabled), so keyboard navigation keeps working', async () => {
+    const w = setup([0])
+    const buttons = w.findAll('button.pick')
+    expect(buttons[0]!.attributes('disabled')).toBeUndefined()
+    expect(buttons[0]!.attributes('aria-disabled')).toBe('true')
+    await buttons[0]!.trigger('click')
+    expect(w.emitted('pick')).toBeUndefined()
+    ;(buttons[0]!.element as HTMLButtonElement).focus()
+    await buttons[0]!.trigger('keydown', { key: 'ArrowRight' })
+    await flushPromises()
+    expect(document.activeElement).toBe(buttons[1]!.element)
   })
 })

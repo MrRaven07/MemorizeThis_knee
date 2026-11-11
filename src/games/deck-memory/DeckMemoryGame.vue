@@ -87,9 +87,16 @@ function pick(id: number) {
 
 function undo() {
   answer.value.pop()
+  problems.value = []
 }
 
-function onCodesEnter() {
+function clear() {
+  answer.value = []
+  problems.value = []
+}
+
+function onCodesEnter(e: KeyboardEvent) {
+  if (e.repeat) return // a held Enter must not submit a half-built answer
   if (codesText.value.trim() === '') {
     check()
     return
@@ -125,6 +132,10 @@ function check() {
 useGameKeys((e) => {
   if (e.ctrlKey || e.metaKey || e.altKey) return
   if (phase.value === 'memorize') {
+    if (e.repeat && (e.key === 'Enter' || e.key === 'Escape')) {
+      e.preventDefault() // a held key must not end memorizing (or quit)
+      return
+    }
     if (e.key === 'ArrowRight') move(1)
     else if (e.key === 'ArrowLeft') move(-1)
     else if (e.key === 'Enter' || e.key === 'Escape') countdown.finishNow()
@@ -132,7 +143,7 @@ useGameKeys((e) => {
     e.preventDefault() // Esc must not quit the game (answer 001)
   } else if (phase.value === 'recall' && e.key === 'Backspace') {
     e.preventDefault()
-    undo()
+    if (!e.repeat) undo()
   } else if (e.key === 'Enter' && phase.value === 'ready') {
     e.preventDefault()
     start()
@@ -184,14 +195,14 @@ useGameKeys((e) => {
     </template>
 
     <template v-else-if="phase === 'recall'">
-      <p class="muted small">
+      <p class="muted small" aria-live="polite">
         Rebuild the order: {{ answer.length }} / {{ sequence.length }} placed
       </p>
-      <div class="answer" aria-label="Your answer so far">
+      <CardPicker :used="answer" @pick="pick" />
+      <div class="answer" role="group" aria-label="Your answer so far">
         <PlayingCard v-for="(id, i) in answer" :key="i" :id="id" size="sm" />
         <span v-if="answer.length === 0" class="muted small">tap cards below, or type codes</span>
       </div>
-      <CardPicker :used="answer" @pick="pick" />
       <label class="codes">
         <span class="muted small">Type codes (e.g. AS 10H QD) and press Enter</span>
         <input
@@ -201,7 +212,7 @@ useGameKeys((e) => {
           autocomplete="off"
           autocapitalize="characters"
           spellcheck="false"
-          @keydown.enter.prevent="onCodesEnter"
+          @keydown.enter.prevent="onCodesEnter($event)"
         />
       </label>
       <p v-if="problems.length > 0" class="code-problems" role="alert">
@@ -213,7 +224,7 @@ useGameKeys((e) => {
         <button type="button" class="undo" :disabled="answer.length === 0" @click="undo">
           Undo
         </button>
-        <button type="button" :disabled="answer.length === 0" @click="answer = []">Clear</button>
+        <button type="button" :disabled="answer.length === 0" @click="clear">Clear</button>
         <button type="button" class="primary check" @click="check">Check</button>
       </div>
     </template>
@@ -300,6 +311,8 @@ useGameKeys((e) => {
 .answer {
   width: 100%;
   min-height: 3.6rem;
+  max-height: 8rem;
+  overflow-y: auto;
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
