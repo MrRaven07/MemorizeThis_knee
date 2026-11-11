@@ -102,7 +102,7 @@ describe('DeckMemoryGame', () => {
     await w.find('button.done').trigger('click')
     await flushPromises()
     await pickAll(w, [expected[0]!])
-    expect(w.findAll('button.pick')[expected[0]!]!.attributes('disabled')).toBeDefined()
+    expect(w.findAll('button.pick')[expected[0]!]!.attributes('aria-disabled')).toBe('true')
     await pickAll(w, [expected[1]!])
     await w.find('button.undo').trigger('click')
     expect(w.findAll('.answer .playing-card')).toHaveLength(1)
@@ -167,5 +167,34 @@ describe('DeckMemoryGame', () => {
     const [result] = w.emitted('round-complete')![0] as [RoundResult]
     expect(result.success).toBe(false)
     expect(w.find('.op-substitute').exists()).toBe(true)
+  })
+
+  it('a held Enter (key repeat) does not skip memorizing or submit early', async () => {
+    const { w, expected } = setup()
+    await flushPromises()
+    key('Enter')
+    await flushPromises()
+    expect(w.find('.memorize').exists()).toBe(true)
+    document.body.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Enter', repeat: true, bubbles: true, cancelable: true }),
+    )
+    await flushPromises()
+    expect(w.find('.memorize').exists()).toBe(true)
+    await w.find('button.done').trigger('click')
+    await flushPromises()
+    const box = w.find('input[name="codes"]')
+    await box.setValue(cardCode(expected[0]!))
+    await box.trigger('keydown', { key: 'Enter' })
+    await box.trigger('keydown', { key: 'Enter', repeat: true })
+    expect(w.emitted('round-complete')).toBeUndefined()
+  })
+
+  it('the picker sits above the answer strip (it never moves while placing cards)', async () => {
+    const { w } = setup()
+    await w.find('button.start').trigger('click')
+    await w.find('button.done').trigger('click')
+    await flushPromises()
+    const html = w.html()
+    expect(html.indexOf('class="picker"')).toBeLessThan(html.indexOf('class="answer"'))
   })
 })
