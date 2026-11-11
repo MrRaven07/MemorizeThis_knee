@@ -44,15 +44,18 @@ const signed = (n: number) => (n >= 0 ? `+${n}` : `${minus}${Math.abs(n)}`)
     <div class="tiles">
       <div class="tile">
         <span class="value mono">{{ formatDuration(summary.activeMs) }}</span
-        ><span class="muted">played</span>
+        >{{ ' ' }}
+        <span class="muted">played</span>
       </div>
       <div class="tile summary-rounds">
         <span class="value mono">{{ summary.rounds }}</span
-        ><span class="muted">rounds</span>
+        >{{ ' ' }}
+        <span class="muted">rounds</span>
       </div>
       <div class="tile">
         <span class="value mono">{{ summary.cards }}</span
-        ><span class="muted">flashcards</span>
+        >{{ ' ' }}
+        <span class="muted">flashcards</span>
       </div>
     </div>
 

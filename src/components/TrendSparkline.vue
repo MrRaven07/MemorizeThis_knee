@@ -17,7 +17,10 @@ const polyline = computed(() => {
     .join(' ')
 })
 
-const aria = computed(() => `${props.label}: ${props.points[0]} → ${props.points.at(-1)}`)
+const aria = computed(
+  () =>
+    `${props.label}: from ${props.points[0]} to ${props.points.at(-1)} over ${props.points.length} days`,
+)
 </script>
 
 <template>

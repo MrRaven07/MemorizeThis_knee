@@ -122,7 +122,9 @@ describe('stats views', () => {
     setActivePinia(createPinia())
     appStorage.set('mt:rounds', JSON.stringify([r(9, 4), r(10, 6)]))
     view = await mountAt('/stats')
-    expect(view.w.find('svg[role="img"]').attributes('aria-label')).toContain('4 → 6')
+    expect(view.w.find('svg[role="img"]').attributes('aria-label')).toContain(
+      'from 4 to 6 over 2 days',
+    )
   })
 
   it('recent sessions link to their summary', async () => {
@@ -176,5 +178,22 @@ describe('stats views', () => {
     expect(w.text()).toContain('1:00')
     expect(w.text()).not.toMatch(/NaN|Infinity/)
     expect(appStorage.get('mt:sessions.corrupt')).toBe(raw)
+  })
+
+  it('tiles read value then label with a space, and the streak wording is natural', async () => {
+    const s = {
+      id: 's1',
+      startedAt: Date.now(),
+      endedAt: Date.now(),
+      activeMs: 60_000,
+      rounds: 1,
+      cards: 0,
+      perGameMs: {},
+      lastActivityAt: Date.now(),
+    }
+    appStorage.set('mt:sessions', JSON.stringify([s]))
+    const { w } = await mountAt('/stats')
+    expect(w.text()).toMatch(/1\s+day streak/)
+    expect(w.text()).not.toMatch(/\d(total time|sessions)/)
   })
 })

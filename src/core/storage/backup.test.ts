@@ -55,4 +55,15 @@ describe('backup', () => {
     expect(r).toEqual({ ok: true, exportedAt: expect.any(Number) })
     expect(validateBackup('nope').ok).toBe(false)
   })
+
+  it('rejects a backup whose saved data is from a newer app version', () => {
+    const b = createMemoryAdapter({ 'mt:keep': 'yes' })
+    const file = JSON.stringify({
+      app: 'memorize-this',
+      version: 1,
+      data: { 'mt:version': '99', 'mt:a': '1' },
+    })
+    expect(importAll(b, file).ok).toBe(false)
+    expect(b.keys()).toEqual(['mt:keep'])
+  })
 })

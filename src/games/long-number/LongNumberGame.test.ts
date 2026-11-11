@@ -104,4 +104,25 @@ describe('LongNumberGame', () => {
     await w.find('button.again').trigger('click')
     expect(w.find('.number').text()).toHaveLength(8)
   })
+
+  it('recall time excludes a hidden tab', async () => {
+    let visibility: DocumentVisibilityState = 'visible'
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      get: () => visibility,
+    })
+    const { w, expected } = setup()
+    await w.find('button.start').trigger('click')
+    vi.advanceTimersByTime(1050)
+    await flushPromises()
+    visibility = 'hidden'
+    document.dispatchEvent(new Event('visibilitychange'))
+    vi.advanceTimersByTime(30_000)
+    visibility = 'visible'
+    document.dispatchEvent(new Event('visibilitychange'))
+    await w.find('input').setValue(expected)
+    await w.find('input').trigger('keydown', { key: 'Enter' })
+    const [result] = w.emitted('round-complete')![0] as [RoundResult]
+    expect(result.durationMs).toBeLessThan(5000)
+  })
 })

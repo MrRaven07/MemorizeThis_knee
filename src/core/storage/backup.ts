@@ -1,5 +1,5 @@
 import type { StorageAdapter } from './adapter'
-import { KEY_PREFIX, runMigrations, SCHEMA_VERSION } from './persist'
+import { KEY_PREFIX, runMigrations, SCHEMA_VERSION, VERSION_KEY } from './persist'
 
 const APP_ID = 'memorize-this'
 
@@ -45,6 +45,13 @@ function validate(json: string): { ok: true; file: BackupFile } | { ok: false; e
   for (const [k, v] of Object.entries(f.data)) {
     if (!k.startsWith(KEY_PREFIX) || typeof v !== 'string') {
       return { ok: false, error: 'This backup is damaged (unexpected entry).' }
+    }
+  }
+  const inner = Number.parseInt(f.data[VERSION_KEY] ?? '0', 10) || 0
+  if (inner > SCHEMA_VERSION) {
+    return {
+      ok: false,
+      error: 'This backup comes from a newer version of MemorizeThis. Update the app first.',
     }
   }
   return { ok: true, file: f as BackupFile }

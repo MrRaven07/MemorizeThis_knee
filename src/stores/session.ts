@@ -186,7 +186,21 @@ export const useSessionStore = defineStore('session', () => {
         beginActivity(game)
       }
     })
-    globalThis.addEventListener?.('pagehide', () => endActivity())
+    // The back-forward cache: pause like a hidden tab, resume when restored.
+    globalThis.addEventListener?.('pagehide', () => {
+      if (active.value) {
+        const game = activeGame
+        pauseActivity()
+        resumeAfterHidden = game
+      }
+    })
+    globalThis.addEventListener?.('pageshow', (e: Event) => {
+      if ((e as PageTransitionEvent).persisted && resumeAfterHidden) {
+        const game = resumeAfterHidden
+        resumeAfterHidden = null
+        beginActivity(game)
+      }
+    })
   }
 
   return {
