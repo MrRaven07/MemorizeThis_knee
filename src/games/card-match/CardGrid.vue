@@ -65,7 +65,7 @@ defineExpose({ focus })
 <template>
   <div
     class="grid"
-    role="grid"
+    role="group"
     :aria-label="`${rows} by ${cols} cards`"
     :style="{ gridTemplateColumns: `repeat(${columns}, 1fr)` }"
   >
@@ -78,6 +78,7 @@ defineExpose({ focus })
       :class="{ up: faceUp[i], matched: matched[i] }"
       :tabindex="i === active ? 0 : -1"
       :aria-label="label(i)"
+      :aria-disabled="matched[i] ? 'true' : undefined"
       :disabled="disabled"
       @click="emit('flip', i)"
       @focus="active = i"

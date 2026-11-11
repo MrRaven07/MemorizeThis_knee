@@ -172,4 +172,12 @@ describe('NumberFlashGame', () => {
     await w.find('input').trigger('keydown', { key: 'Enter' })
     expect(w.text()).toContain('streak 1/3')
   })
+
+  it('at the top length the result says max instead of a streak', async () => {
+    useStatsStore().saveStaircase(NUMBER_FLASH_ID, { level: 30, streakRight: 2, streakWrong: 0 })
+    const { w, nextDigits } = setup()
+    await playRound(w, nextDigits(30))
+    expect(w.text()).toContain('Length 30 (max)')
+    expect(w.text()).not.toContain('streak 0/3')
+  })
 })

@@ -58,12 +58,15 @@ export const RO_COUNTIES = [
 ] as const
 
 export const RO_RESERVED = ['POL', 'DEP', 'SNT', 'SRI', 'GUV'] as const
+/** Valid, but excluded from random assignment (only issued on request) — same source. */
+export const RO_NOT_RANDOM = ['JEG', 'BOU'] as const
 
 const LETTERS = 'ABCDEFGHIJKLMNOPRSTUVWXYZ' // no Q
 const FIRST_LETTERS = LETTERS.replace(/[IO]/g, '')
 
 const counties = new Set<string>(RO_COUNTIES)
 const reserved = new Set<string>(RO_RESERVED)
+const notRandom = new Set<string>(RO_NOT_RANDOM)
 
 function pad2(n: number): string {
   return String(n).padStart(2, '0')
@@ -79,7 +82,7 @@ function generate(rng: Rng): Plate {
       FIRST_LETTERS[rng.int(0, FIRST_LETTERS.length - 1)]! +
       LETTERS[rng.int(0, LETTERS.length - 1)]! +
       LETTERS[rng.int(0, LETTERS.length - 1)]!
-  } while (reserved.has(letters))
+  } while (reserved.has(letters) || notRandom.has(letters))
   const segments = [county, digits, letters]
   return { country: 'ro', segments, text: segments.join(' ') }
 }

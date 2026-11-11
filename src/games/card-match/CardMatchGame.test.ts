@@ -187,4 +187,10 @@ describe('CardMatchGame', () => {
     }
     expect(w.text()).toContain('streak 1/4')
   })
+
+  it('the Esc hint mentions the preview only when there is one', async () => {
+    const { w } = setup({ ...CARD_MATCH_DEFAULTS, previewSecondsPerPair: 0 })
+    await flushPromises()
+    expect(w.text()).not.toContain('skip the preview')
+  })
 })

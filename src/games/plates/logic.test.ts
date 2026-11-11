@@ -123,4 +123,22 @@ describe('plates logic', () => {
     expect(summarizePlates([]).headline).toBe('not played')
     expect(summarizePlates([mk(1, false, 1)]).headline).toBe('no perfect round yet')
   })
+
+  it('strips any dash punctuation', () => {
+    expect(normalizePlateInput('B–505—LSK')).toBe('B505LSK')
+    expect(normalizePlateInput('B‑505 LSK')).toBe('B505LSK')
+  })
+
+  it('generateRound never hangs on a tiny plate space', () => {
+    let n = 0
+    const tiny = {
+      ...ro,
+      generate: () => {
+        const segments = ['X', String((n++ % 2) + 10), 'AAA']
+        return { country: 'xx', segments, text: segments.join(' ') }
+      },
+    }
+    const r = generateRound(createRng(1), 12, tiny)
+    expect(r.plates).toHaveLength(6)
+  })
 })
