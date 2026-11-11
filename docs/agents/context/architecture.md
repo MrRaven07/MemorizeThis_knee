@@ -73,6 +73,16 @@ flowchart TD
 
 **Backup/restore** (`core/storage/backup.ts`): export is a JSON envelope `{ app, exportedAt, version, data }`. Restore is validated first, needs an in-page confirmation, then replaces all `mt:` keys and reloads.
 
+## Shared composables
+
+- `core/timing/useCountdown`: frame-accurate phase timer that pauses on a hidden tab (exposure times).
+- `core/timing/useActiveTime`: measures visible time only (round durations, memorization time).
+- `core/keyboard/useGameKeys`: game shortcuts on `document` (runs before GameShell's `window` Esc). Ignores inputs, handled events, and Enter/Space on focused buttons.
+
+## Games
+
+Long Number, Number Flash, License Plates (pluggable countries), Maze, Card Match and Deck Memory (playing cards, added at the owner's request) are GameModules in `src/games/`. Every adaptive game has a "Correct in a row to level up" setting (3–5) feeding its staircase (questions/007).
+
 ## Major System flashcards
 
 Not a GameModule (no timed rounds). Routes `/major` → `/major/:deckId` → `/major/:deckId/study?mode=smart|shuffle&dir=forward|reverse`. Pure logic in `src/features/major/` (parsers with line-numbered errors, import planning, range selection, overdue-score scheduler, stats); the `decks` store persists every change. `StudyView` counts session time under the id `major`; answers do not count as rounds (`decks.answeredThisSession`).
