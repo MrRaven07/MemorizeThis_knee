@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import CardGrid from './CardGrid.vue'
 import CardSymbol from './CardSymbol.vue'
 import { SYMBOL_NAMES } from './symbols'
@@ -54,8 +54,10 @@ describe('CardGrid', () => {
     const buttons = w.findAll('button.card')
     ;(buttons[0]!.element as HTMLButtonElement).focus()
     await buttons[0]!.trigger('keydown', { key: 'ArrowRight' })
+    await flushPromises()
     expect(document.activeElement).toBe(buttons[1]!.element)
     await buttons[1]!.trigger('keydown', { key: 'ArrowDown' })
+    await flushPromises()
     expect(document.activeElement).toBe(buttons[4]!.element)
     await buttons[4]!.trigger('keydown', { key: 'ArrowDown' })
     expect(document.activeElement).toBe(buttons[4]!.element) // clamped at the edge

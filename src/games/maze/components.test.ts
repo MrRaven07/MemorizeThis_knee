@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import MazeGrid from './MazeGrid.vue'
 import RouteInput from './RouteInput.vue'
 import type { Maze } from './logic'
@@ -74,8 +74,10 @@ describe('RouteInput', () => {
   it('pad buttons add and remove moves, and ok submits', async () => {
     const w = setup('wa')
     await w.find('.pad-right').trigger('click')
+    await flushPromises() // the parent's v-model update must land before the next click
     expect(w.emitted('update:modelValue')!.at(-1)).toEqual(['wad'])
     await w.find('.pad-back').trigger('click')
+    await flushPromises()
     expect(w.emitted('update:modelValue')!.at(-1)).toEqual(['wa'])
     await w.find('.pad-ok').trigger('click')
     expect(w.emitted('submit')).toHaveLength(1)
