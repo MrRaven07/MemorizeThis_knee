@@ -45,6 +45,7 @@ export const NUMBER_FLASH_FIELDS: SettingField[] = [
     max: 2000,
     step: 50,
     unit: 'ms',
+    help: 'if the reveal is slow, the full number still stays visible for at least 1 s',
   },
   {
     key: 'baseDisplaySeconds',

@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { clampStaircase, initStaircase, stepStaircase, type StaircaseConfig } from './staircase'
+import {
+  clampStaircase,
+  initStaircase,
+  stepStaircase,
+  type StaircaseConfig,
+  type StaircaseState,
+} from './staircase'
 
 const cfg: StaircaseConfig = {
   start: 4,
@@ -59,5 +65,19 @@ describe('staircase', () => {
   it('clamp pulls an out-of-range saved level back inside', () => {
     expect(clampStaircase({ level: 99, streakRight: 1, streakWrong: 0 }, cfg).level).toBe(6)
     expect(clampStaircase({ level: 1, streakRight: 1, streakWrong: 0 }, cfg).level).toBe(3)
+  })
+})
+
+describe('clampStaircase with corrupted saved data', () => {
+  it.each([
+    [{ level: 'abc', streakRight: 1, streakWrong: 0 }],
+    [{ level: NaN, streakRight: 0, streakWrong: 0 }],
+    [{ level: null, streakRight: 'x', streakWrong: undefined }],
+    [{}],
+  ])('%j falls back to a valid state', (saved) => {
+    const s = clampStaircase(saved as unknown as StaircaseState, cfg)
+    expect(s.level).toBe(4)
+    expect(Number.isFinite(s.streakRight)).toBe(true)
+    expect(Number.isFinite(s.streakWrong)).toBe(true)
   })
 })

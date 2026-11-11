@@ -102,4 +102,9 @@ describe('number flash logic', () => {
     expect(summarizeNumberFlash([]).headline).toBe('not played')
     expect(summarizeNumberFlash([mk(4, false)]).headline).toBe('no correct answer yet')
   })
+
+  it('reveal speed explains the 1-second rule (Q005)', () => {
+    const f = NUMBER_FLASH_FIELDS.find((x) => x.key === 'revealMsPerDigit')!
+    expect(f.help).toContain('at least 1 s')
+  })
 })

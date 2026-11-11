@@ -94,11 +94,14 @@ export interface PlateRound {
 export function generateRound(rng: Rng, level: number, format: PlateFormat): PlateRound {
   const info = levelInfo(level)
   const plates: Plate[] = []
-  while (plates.length < info.plates) {
+  // Distinct plates, no two neighbours from the same county. If the format's
+  // plate space is tiny, relax the county rule, then distinctness, so this
+  // always terminates.
+  for (let tries = 0; plates.length < info.plates; tries++) {
     const p = format.generate(rng)
     const prev = plates.at(-1)
-    if (plates.some((q) => q.text === p.text)) continue
-    if (prev && prev.segments[0] === p.segments[0]) continue
+    if (tries < 1000 && plates.some((q) => q.text === p.text)) continue
+    if (tries < 100 && prev && prev.segments[0] === p.segments[0]) continue
     plates.push(p)
   }
   const scales = plates.map(() =>
@@ -113,7 +116,7 @@ export function normalizePlateInput(input: string): string {
   return input
     .normalize('NFC')
     .toUpperCase()
-    .replace(/[\s-]+/gu, '')
+    .replace(/[\s\p{Pd}]+/gu, '') // spaces and any dash
 }
 
 export interface PlatesScore {

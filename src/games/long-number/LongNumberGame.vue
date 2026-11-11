@@ -6,6 +6,7 @@ import TimerBar from '@/components/TimerBar.vue'
 import { createRng, type Rng } from '@/core/random/rng'
 import type { AlignResult } from '@/core/scoring/align'
 import { useCountdown } from '@/core/timing/useCountdown'
+import { useActiveTime } from '@/core/timing/useActiveTime'
 import { useGameKeys } from '@/core/keyboard/useGameKeys'
 import type { RoundResult } from '@/games/types'
 import { formatGroups, generateGroups, scoreLongNumber, type LongNumberSettings } from './logic'
@@ -17,6 +18,8 @@ type Phase = 'ready' | 'memorize' | 'delay' | 'recall' | 'result'
 
 const rng = props.rng ?? createRng()
 const countdown = useCountdown()
+/** recall time, excluding a hidden tab */
+const recallTime = useActiveTime()
 
 const phase = ref<Phase>('ready')
 /** Settings snapshot for the current round — changes apply next round. */
@@ -24,7 +27,6 @@ const round = ref<LongNumberSettings>({ ...props.settings })
 const groups = ref<string[]>([])
 const answer = ref('')
 const result = ref<AlignResult | null>(null)
-let recallStartedAt = 0
 
 const shown = computed(() => (phase.value === 'ready' ? props.settings : round.value))
 const totalDigits = computed(() => shown.value.groups * shown.value.digitsPerGroup)
@@ -45,7 +47,7 @@ async function start() {
   }
 
   phase.value = 'recall'
-  recallStartedAt = performance.now()
+  recallTime.start()
   if (round.value.recallSeconds > 0) {
     const outcome = await countdown.start(round.value.recallSeconds * 1000)
     if (outcome === 'done') finish()
@@ -62,7 +64,7 @@ function finish() {
     success: r.exact,
     level: null,
     accuracy: r.accuracy,
-    durationMs: Math.round(performance.now() - recallStartedAt),
+    durationMs: Math.round(recallTime.stop()),
     metrics: { length: r.expectedLength, correct: r.correct },
   })
 }

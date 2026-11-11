@@ -112,7 +112,7 @@ function finish() {
   change.value = { from: before.level, to: after.level, streak: after.streakRight }
   phase.value = 'result'
   resultShownAt = performance.now()
-  const l = cardLevelInfo(before.level)
+  const l = cardLevelInfo(playedLevel.value)
   const p = pairsOf(l)
   emit('round-complete', {
     success,
@@ -159,7 +159,9 @@ useGameKeys((e) => {
         </span>
       </p>
       <button type="button" class="primary start" @click="start">Start</button>
-      <p class="hint muted">Enter to start · Esc to skip the preview</p>
+      <p class="hint muted">
+        Enter to start<template v-if="readyPreviewMs > 0"> · Esc to skip the preview</template>
+      </p>
     </template>
 
     <template v-else-if="(phase === 'preview' || phase === 'play') && board">

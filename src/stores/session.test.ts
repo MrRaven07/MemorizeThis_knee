@@ -168,6 +168,22 @@ describe('session store', () => {
     expect(s.isActive).toBe(false)
   })
 
+  it('a page restored from the back-forward cache resumes counting', () => {
+    const s = useSessionStore()
+    s.beginActivity('long-number')
+    vi.advanceTimersByTime(1000)
+    window.dispatchEvent(new Event('pagehide'))
+    expect(s.isActive).toBe(false)
+    vi.advanceTimersByTime(60_000)
+    const show = new Event('pageshow') as Event & { persisted: boolean }
+    Object.defineProperty(show, 'persisted', { value: true })
+    window.dispatchEvent(show)
+    expect(s.isActive).toBe(true)
+    vi.advanceTimersByTime(1000)
+    s.endActivity()
+    expect(s.current!.activeMs).toBe(2000)
+  })
+
   it('hidden tab time does not count', () => {
     const s = useSessionStore()
     s.beginActivity('long-number')

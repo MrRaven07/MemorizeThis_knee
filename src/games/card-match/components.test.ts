@@ -44,6 +44,7 @@ describe('CardGrid', () => {
 
   it('renders one roving tab stop', () => {
     const w = setup()
+    expect(w.find('.grid').attributes('role')).toBe('group')
     const buttons = w.findAll('button.card')
     expect(buttons).toHaveLength(6)
     expect(buttons.filter((b) => b.attributes('tabindex') === '0')).toHaveLength(1)
@@ -110,5 +111,13 @@ describe('CardGrid', () => {
     } finally {
       globalThis.matchMedia = original
     }
+  })
+
+  it('matched cards are marked aria-disabled', () => {
+    const w = mount(CardGrid, {
+      props: { cards: [0, 0], faceUp: [true, true], matched: [true, true], rows: 1, cols: 2 },
+    })
+    mounted.push(w)
+    expect(w.find('button.card').attributes('aria-disabled')).toBe('true')
   })
 })

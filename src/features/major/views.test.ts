@@ -154,4 +154,13 @@ describe('Major System views', () => {
     await w.find('button.confirm-delete-card').trigger('click')
     expect(s.getDeck(deck.id)!.cards).toHaveLength(0)
   })
+
+  it('JSON errors read "item N" without a "line N" prefix', async () => {
+    const deck = useDecksStore().createDeck('x')
+    const { w } = await mountAt(`/major/${deck.id}`)
+    await w.find('textarea[name="paste"]').setValue('[{"input":0,"output":"sos"}]')
+    const text = w.find('.import-errors').text()
+    expect(text).toContain('item 1:')
+    expect(text).not.toContain('line 1')
+  })
 })

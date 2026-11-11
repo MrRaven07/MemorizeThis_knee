@@ -91,10 +91,10 @@ function submit() {
 
   emit('round-complete', {
     success: r.exact,
-    level: before.level,
+    level: target.value.length,
     accuracy: r.accuracy,
     durationMs: Math.round(performance.now() - recallStartedAt),
-    metrics: { length: before.level, correct: r.correct },
+    metrics: { length: target.value.length, correct: r.correct },
   })
   level.value = after.level
   emit('level', after.level)
@@ -149,6 +149,9 @@ useGameKeys((e) => {
       <p class="change mono">
         <template v-if="change.to !== change.from"
           >Length {{ change.from }} → {{ change.to }}</template
+        >
+        <template v-else-if="result.exact && change.from >= 30"
+          >Length {{ change.from }} (max)</template
         >
         <template v-else-if="result.exact">
           Length {{ change.from }} (streak {{ change.streak }}/{{ change.upAfter }})

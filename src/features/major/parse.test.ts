@@ -85,6 +85,23 @@ describe('parsePaste', () => {
   })
 })
 
+describe('parseAuto edge cases', () => {
+  it('a paste starting with [ is not forced into JSON', () => {
+    const r = parseAuto('[a] - b')
+    expect(r.errors).toEqual([])
+    expect(r.pairs[0]).toMatchObject({ input: '[a]', output: 'b' })
+  })
+  it('a .csv file name wins over the [ sniff', () => {
+    expect(parseAuto('[x],y', 'deck.csv').pairs[0]).toMatchObject({ input: '[x]', output: 'y' })
+  })
+  it('a wrong text encoding (U+FFFD) is reported', () => {
+    const r = parseAuto('00 - sos\n01 - \uFFFDarpe', 'deck.txt')
+    expect(r.pairs).toEqual([])
+    expect(r.errors[0]).toMatchObject({ line: 2 })
+    expect(r.errors[0]!.message).toContain('UTF-8')
+  })
+})
+
 describe('parseAuto', () => {
   it('picks the format', () => {
     expect(parseAuto('[{"input":"1","output":"a"}]').pairs).toHaveLength(1)

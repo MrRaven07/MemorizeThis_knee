@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import RecallInput from '@/components/RecallInput.vue'
 import ResultDiff from '@/components/ResultDiff.vue'
 import TimerBar from '@/components/TimerBar.vue'
@@ -74,7 +74,7 @@ async function start() {
 function onInputSubmit(i: number) {
   if (!current.value) return
   if (i < current.value.plates.length - 1) {
-    nextTick(() => inputs.value[i + 1]?.focus())
+    inputs.value[i + 1]?.focus() // synchronously, so phone keyboards stay open
   } else {
     submit()
   }
@@ -160,6 +160,8 @@ useGameKeys((e) => {
           inputmode="text"
           :label="`Plate ${i + 1}`"
           :autofocus="i === 0"
+          autocapitalize="characters"
+          :enterkeyhint="i < current.plates.length - 1 ? 'next' : 'done'"
           @submit="onInputSubmit(i)"
         />
       </div>

@@ -10,8 +10,16 @@ const props = withDefaults(
     placeholder?: string
     /** focus on mount (turn off for all but the first of several inputs) */
     autofocus?: boolean
+    autocapitalize?: 'off' | 'characters'
+    enterkeyhint?: 'done' | 'next' | 'go'
   }>(),
-  { inputmode: 'numeric', placeholder: '', autofocus: true },
+  {
+    inputmode: 'numeric',
+    placeholder: '',
+    autofocus: true,
+    autocapitalize: 'off',
+    enterkeyhint: 'done',
+  },
 )
 
 const emit = defineEmits<{
@@ -45,7 +53,8 @@ function onKeydown(e: KeyboardEvent) {
       :placeholder="placeholder"
       :value="modelValue"
       autocomplete="off"
-      autocapitalize="off"
+      :autocapitalize="autocapitalize"
+      :enterkeyhint="enterkeyhint"
       autocorrect="off"
       spellcheck="false"
       @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"

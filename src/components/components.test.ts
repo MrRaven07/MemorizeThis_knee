@@ -127,7 +127,9 @@ describe('TrendSparkline', () => {
       props: { points: [3, 5, 4, 8], label: 'Highest level per day' },
     })
     expect(w.find('svg').attributes('role')).toBe('img')
-    expect(w.find('svg').attributes('aria-label')).toBe('Highest level per day: 3 → 8')
+    expect(w.find('svg').attributes('aria-label')).toBe(
+      'Highest level per day: from 3 to 8 over 4 days',
+    )
     const pts = w.find('polyline').attributes('points')!.split(' ')
     expect(pts).toHaveLength(4)
     expect(pts[0]).toBe('0,30')

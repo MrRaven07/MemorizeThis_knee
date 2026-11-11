@@ -56,23 +56,28 @@ const sections = computed(() =>
       <div class="tiles">
         <div class="tile">
           <span class="value mono">{{ formatDuration(total.activeMs) }}</span
-          ><span class="muted">total time</span>
+          >{{ ' ' }}
+          <span class="muted">total time</span>
         </div>
         <div class="tile">
           <span class="value mono">{{ total.sessions }}</span
-          ><span class="muted">sessions</span>
+          >{{ ' ' }}
+          <span class="muted">sessions</span>
         </div>
         <div class="tile">
           <span class="value mono">{{ total.rounds }}</span
-          ><span class="muted">rounds</span>
+          >{{ ' ' }}
+          <span class="muted">rounds</span>
         </div>
         <div class="tile">
           <span class="value mono">{{ total.cards }}</span
-          ><span class="muted">flashcards</span>
+          >{{ ' ' }}
+          <span class="muted">flashcards</span>
         </div>
         <div class="tile">
           <span class="value mono">{{ streak }}</span
-          ><span class="muted">{{ streak === 1 ? 'day streak' : 'days streak' }}</span>
+          >{{ ' ' }}
+          <span class="muted">day streak</span>
         </div>
       </div>
 

@@ -84,7 +84,9 @@ function cancel() {
         unchanged
       </p>
       <ul v-if="plan.errors.length > 0" class="import-errors" role="alert">
-        <li v-for="(e, i) in plan.errors" :key="i">line {{ e.line }}: {{ e.message }}</li>
+        <li v-for="(e, i) in plan.errors" :key="i">
+          {{ e.message.startsWith('item ') ? e.message : `line ${e.line}: ${e.message}` }}
+        </li>
       </ul>
       <fieldset v-if="plan.changed.length > 0" class="conflicts">
         <legend>Some inputs already exist with a different answer:</legend>

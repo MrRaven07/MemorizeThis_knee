@@ -61,4 +61,11 @@ describe('Romanian plates', () => {
     expect(getPlateFormat('ro')).toBe(ro)
     expect(getPlateFormat('zz')).toBe(ro)
   })
+
+  it('JEG and BOU are never dealt at random but are valid plates', () => {
+    const rng = createRng(11)
+    const dealt = Array.from({ length: 50_000 }, () => ro.generate(rng).segments[2])
+    expect(dealt.filter((l) => l === 'JEG' || l === 'BOU')).toEqual([])
+    expect(ro.isValid('B 12 JEG')).toBe(true)
+  })
 })

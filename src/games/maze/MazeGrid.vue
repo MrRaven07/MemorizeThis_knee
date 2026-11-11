@@ -4,8 +4,15 @@ import type { Maze, Pos } from './logic'
 
 /** Draws a maze. Optional overlays: the walked path, the failing cell, a hint route. */
 const props = withDefaults(
-  defineProps<{ maze: Maze; path?: Pos[]; failAt?: Pos | null; highlight?: Pos[] }>(),
-  { path: () => [], failAt: null, highlight: () => [] },
+  defineProps<{
+    maze: Maze
+    path?: Pos[]
+    failAt?: Pos | null
+    /** where a too-short route stopped (question 008) */
+    lastAt?: Pos | null
+    highlight?: Pos[]
+  }>(),
+  { path: () => [], failAt: null, lastAt: null, highlight: () => [] },
 )
 
 const key = (p: Pos) => `${p.x},${p.y}`
@@ -28,6 +35,7 @@ const cells = computed(() =>
           onPath.value.has(k) && 'on-path',
           hinted.value.has(k) && 'hint',
           props.failAt && props.failAt.x === x && props.failAt.y === y && 'fail',
+          props.lastAt && props.lastAt.x === x && props.lastAt.y === y && 'last',
         ],
       }
     }),
@@ -86,6 +94,9 @@ const cells = computed(() =>
 .cell.on-path {
   background: var(--accent-dim);
   box-shadow: inset 0 0 0 2px var(--accent);
+}
+.cell.last {
+  box-shadow: inset 0 0 0 3px var(--warning);
 }
 .cell.fail {
   background: var(--danger-dim);
