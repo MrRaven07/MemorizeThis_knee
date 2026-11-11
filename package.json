@@ -13,7 +13,9 @@
     "lint": "run-s \"lint:*\"",
     "lint:oxlint": "oxlint . --fix",
     "lint:eslint": "eslint . --fix --cache",
-    "format": "prettier --write --experimental-cli src/"
+    "format": "prettier --write --experimental-cli src/",
+    "android:sync": "npm run build && cap sync android",
+    "android:build": "npm run android:sync && cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
     "@capacitor/android": "8.5.3",

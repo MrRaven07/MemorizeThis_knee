@@ -22,6 +22,28 @@ npm run build      # production build into dist/
 npm run lint       # lint and auto-fix
 ```
 
+## Android app
+
+The same app runs on Android through [Capacitor](https://capacitorjs.com/).
+
+You need **JDK 21** and the **Android SDK** (platform 36, build-tools 36). The easiest way to get them is Android Studio. Without it:
+
+```bash
+export JAVA_HOME=/path/to/jdk-21
+export ANDROID_HOME=$HOME/Android/Sdk          # with cmdline-tools/latest inside
+$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+echo "sdk.dir=$ANDROID_HOME" > android/local.properties
+```
+
+Build and install:
+
+```bash
+npm run android:build                          # → android/app/build/outputs/apk/debug/app-debug.apk
+adb install -r android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+On Linux you can test with [Waydroid](https://waydro.id/): `waydroid session start`, then `waydroid app install android/app/build/outputs/apk/debug/app-debug.apk`.
+
 ## Roadmap
 
 - [x] Skeleton (vibe-coded mockup, 01/10/2026)
@@ -34,7 +56,7 @@ npm run lint       # lint and auto-fix
 - [x] **Major System Flashcards** — your own number→word decks (CSV/JSON import)
 - [x] **Deck Memory** — memorize shuffled playing cards, then rebuild the order (Speed Cards)
 - [x] Stats page and session summary (day streak, time per game, daily trend lines)
-- [ ] Android app (Capacitor)
+- [x] Android app (Capacitor) — debug APK
 - [ ] Logo and visual polish
 
 ## Flashcard file format
