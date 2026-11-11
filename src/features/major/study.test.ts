@@ -137,4 +137,16 @@ describe('StudyView', () => {
     await flushPromises()
     expect(prompt(w)).toBe('01')
   })
+
+  it('browser shortcuts like Ctrl+D are not recorded as answers', async () => {
+    const d = makeDeck(3)
+    const { w } = await study(d.id, 'mode=smart&dir=forward')
+    await w.find('button.flip').trigger('click')
+    document.body.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'd', ctrlKey: true, bubbles: true, cancelable: true }),
+    )
+    await flushPromises()
+    expect(prompt(w)).toBe('00')
+    expect(useDecksStore().getDeck(d.id)!.progress.forward[d.cards[0]!.id]).toBeUndefined()
+  })
 })

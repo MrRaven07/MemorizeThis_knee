@@ -7,7 +7,7 @@ export interface DeckStats {
   knownWell: number
   /** knew / (knew + missed) over all cards; null with no answers */
   successRate: number | null
-  /** up to 10 cards with ≥ 3 answers, lowest success first (ties: more misses first) */
+  /** up to 10 cards with ≥ 3 answers, lowest success first (ties: fewer answers first — question 010) */
   weakest: { card: Card; rate: number; answers: number }[]
 }
 
@@ -24,7 +24,7 @@ export function deckStats(deck: Deck, dir: Direction): DeckStats {
     const answers = p.knew + p.missed
     if (answers >= 3) ranked.push({ card, rate: p.knew / answers, answers, missed: p.missed })
   }
-  ranked.sort((a, b) => a.rate - b.rate || b.missed - a.missed)
+  ranked.sort((a, b) => a.rate - b.rate || a.answers - b.answers)
   return {
     total: deck.cards.length,
     knownWell,

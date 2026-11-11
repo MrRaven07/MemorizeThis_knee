@@ -22,13 +22,34 @@ const editing = ref<string | null>(null)
 const editInput = ref('')
 const editOutput = ref('')
 const confirmDelete = ref(false)
+const confirmCard = ref<string | null>(null)
+const cardError = ref('')
+
+/** True if another card already uses this input (inputs must stay unique). */
+function inputTaken(input: string, exceptId?: string): boolean {
+  const clean = input.normalize('NFC').trim()
+  return deck.value?.cards.some((c) => c.input === clean && c.id !== exceptId) ?? false
+}
 
 function addCard() {
-  if (!deck.value || !newInput.value.trim() || !newOutput.value.trim()) return
-  if (deck.value.cards.some((c) => c.input === newInput.value.normalize('NFC').trim())) return
+  cardError.value = ''
+  if (!deck.value || !newInput.value.trim() || !newOutput.value.trim()) {
+    cardError.value = 'Fill in both the input and the output.'
+    return
+  }
+  if (inputTaken(newInput.value)) {
+    cardError.value = `There is already a card for “${newInput.value.trim()}”.`
+    return
+  }
   decks.addCard(deck.value.id, newInput.value, newOutput.value)
   newInput.value = ''
   newOutput.value = ''
+}
+
+function removeCard(id: string) {
+  if (!deck.value) return
+  decks.removeCard(deck.value.id, id)
+  confirmCard.value = null
 }
 
 function startEdit(id: string, input: string, output: string) {
@@ -38,7 +59,16 @@ function startEdit(id: string, input: string, output: string) {
 }
 
 function saveEdit() {
-  if (!deck.value || !editing.value || !editInput.value.trim() || !editOutput.value.trim()) return
+  cardError.value = ''
+  if (!deck.value || !editing.value) return
+  if (!editInput.value.trim() || !editOutput.value.trim()) {
+    cardError.value = 'Fill in both the input and the output.'
+    return
+  }
+  if (inputTaken(editInput.value, editing.value)) {
+    cardError.value = `There is already a card for “${editInput.value.trim()}”.`
+    return
+  }
   decks.updateCard(deck.value.id, editing.value, editInput.value, editOutput.value)
   editing.value = null
 }
@@ -102,16 +132,25 @@ const pct = (r: number | null) => (r === null ? '—' : `${Math.round(r * 100)}%
           <tbody>
             <tr v-for="c in deck.cards" :key="c.id" class="card-row">
               <template v-if="editing === c.id">
-                <td><input v-model="editInput" class="mono" aria-label="Input" /></td>
+                <td>
+                  <input
+                    v-model="editInput"
+                    class="mono"
+                    aria-label="Input"
+                    @keydown.enter.prevent="saveEdit"
+                    @keydown.esc.prevent="editing = null"
+                  />
+                </td>
                 <td>
                   <input
                     v-model="editOutput"
                     aria-label="Output"
                     @keydown.enter.prevent="saveEdit"
+                    @keydown.esc.prevent="editing = null"
                   />
                 </td>
                 <td class="actions">
-                  <button type="button" @click="saveEdit">Save</button>
+                  <button type="button" class="save-edit" @click="saveEdit">Save</button>
                   <button type="button" @click="editing = null">Cancel</button>
                 </td>
               </template>
@@ -119,14 +158,29 @@ const pct = (r: number | null) => (r === null ? '—' : `${Math.round(r * 100)}%
                 <td class="mono">{{ c.input }}</td>
                 <td>{{ c.output }}</td>
                 <td class="actions">
-                  <button type="button" @click="startEdit(c.id, c.input, c.output)">Edit</button>
-                  <button
-                    type="button"
-                    :aria-label="`Delete ${c.input}`"
-                    @click="decks.removeCard(deck.id, c.id)"
-                  >
-                    ✕
-                  </button>
+                  <template v-if="confirmCard === c.id">
+                    <button
+                      type="button"
+                      class="danger confirm-delete-card"
+                      @click="removeCard(c.id)"
+                    >
+                      Delete
+                    </button>
+                    <button type="button" @click="confirmCard = null">Keep</button>
+                  </template>
+                  <template v-else>
+                    <button type="button" class="edit" @click="startEdit(c.id, c.input, c.output)">
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      class="delete-card"
+                      :aria-label="`Delete ${c.input}`"
+                      @click="confirmCard = c.id"
+                    >
+                      ✕
+                    </button>
+                  </template>
                 </td>
               </template>
             </tr>
@@ -145,12 +199,13 @@ const pct = (r: number | null) => (r === null ? '—' : `${Math.round(r * 100)}%
                 />
               </td>
               <td class="actions">
-                <button type="button" @click="addCard">Add</button>
+                <button type="button" class="add-card" @click="addCard">Add</button>
               </td>
             </tr>
           </tfoot>
         </table>
       </div>
+      <p v-if="cardError" class="card-error" role="alert">{{ cardError }}</p>
     </div>
 
     <div class="card">
@@ -293,6 +348,10 @@ td input {
   align-items: center;
 }
 .small {
+  font-size: var(--text-sm);
+}
+.card-error {
+  color: var(--warning);
   font-size: var(--text-sm);
 }
 .weakest {

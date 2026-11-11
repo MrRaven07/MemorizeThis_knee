@@ -74,4 +74,27 @@ describe('decks store', () => {
     appStorage.set(DECKS_KEY, '{"a":1}')
     expect(useDecksStore().decks).toEqual([])
   })
+
+  it('drops damaged decks and repairs a missing progress, keeping the raw text', () => {
+    const good = {
+      id: 'a',
+      name: 'A',
+      createdAt: 1,
+      cards: [{ id: 'c', input: '00', output: 'sos' }],
+      progress: { forward: {}, reverse: {} },
+    }
+    const noProgress = { id: 'b', name: 'B', createdAt: 1, cards: [] }
+    const raw = JSON.stringify([
+      good,
+      null,
+      noProgress,
+      { id: 3 },
+      { id: 'd', name: 'D', createdAt: 1, cards: [null] },
+    ])
+    appStorage.set(DECKS_KEY, raw)
+    const s = useDecksStore()
+    expect(s.decks.map((d) => d.id)).toEqual(['a', 'b'])
+    expect(s.getDeck('b')!.progress).toEqual({ forward: {}, reverse: {} })
+    expect(appStorage.get(`${DECKS_KEY}.corrupt`)).toBe(raw)
+  })
 })

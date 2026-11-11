@@ -3,7 +3,8 @@ import type { Card } from './types'
 type Pair = Pick<Card, 'input' | 'output'>
 
 function csvField(s: string): string {
-  return /[",\r\n]/.test(s) || s !== s.trim() ? `"${s.replace(/"/g, '""')}"` : s
+  // ';' is quoted too, so our own files never look like ';'-separated CSV.
+  return /[",;\r\n]/.test(s) || s !== s.trim() ? `"${s.replace(/"/g, '""')}"` : s
 }
 
 /** CSV with a header and a UTF-8 BOM (so Excel shows diacritics correctly). */

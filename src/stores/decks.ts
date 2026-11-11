@@ -1,18 +1,56 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { appStorage, loadJson, saveJson } from '@/core/storage/persist'
+import { appStorage, isPlainObject, loadJson, saveJson } from '@/core/storage/persist'
 import * as ops from '@/features/major/deck'
 import { nextBox } from '@/features/major/scheduler'
 import type { Box, Deck, Direction } from '@/features/major/types'
 
 export const DECKS_KEY = 'mt:decks'
 
+const isText = (v: unknown): v is string => typeof v === 'string'
+
+/** Keeps valid decks (repairing a missing progress); null for anything damaged. */
+function sanitizeDeck(v: unknown): Deck | null {
+  if (!isPlainObject(v) || !isText(v.id) || !isText(v.name) || !Array.isArray(v.cards)) return null
+  const cardsOk = v.cards.every(
+    (c: unknown) => isPlainObject(c) && isText(c.id) && isText(c.input) && isText(c.output),
+  )
+  if (!cardsOk) return null
+  const p = isPlainObject(v.progress) ? v.progress : {}
+  return {
+    id: v.id,
+    name: v.name,
+    createdAt: typeof v.createdAt === 'number' ? v.createdAt : 0,
+    cards: v.cards as Deck['cards'],
+    progress: {
+      forward: (isPlainObject(p.forward) ? p.forward : {}) as Deck['progress']['forward'],
+      reverse: (isPlainObject(p.reverse) ? p.reverse : {}) as Deck['progress']['reverse'],
+    },
+  }
+}
+
+/** Loads decks; if any deck is damaged, keeps the raw text under `.corrupt` and drops only that deck. */
+function loadDecks(): Deck[] {
+  const raw = loadJson<unknown[]>(appStorage, DECKS_KEY, [], Array.isArray)
+  const decks = raw.map(sanitizeDeck)
+  const valid = decks.filter((d): d is Deck => d !== null)
+  const damaged =
+    decks.length !== valid.length ||
+    raw.some((d, i) => isPlainObject(d) && !isPlainObject(d.progress) && decks[i])
+  if (damaged) {
+    const corruptKey = `${DECKS_KEY}.corrupt`
+    const text = appStorage.get(DECKS_KEY)
+    if (text !== null && appStorage.get(corruptKey) === null) appStorage.set(corruptKey, text)
+  }
+  return valid
+}
+
 /**
  * The player's flashcard decks. Saved after EVERY change — decks are the
  * player's own work (spec §8). Included in Backup automatically (mt: key).
  */
 export const useDecksStore = defineStore('decks', () => {
-  const decks = ref<Deck[]>(loadJson<Deck[]>(appStorage, DECKS_KEY, [], Array.isArray))
+  const decks = ref<Deck[]>(loadDecks())
   /** cards picked for the next study session (pick mode); not persisted */
   const studySelection = ref<string[] | null>(null)
   /** answers given this app session (used by the session summary) */

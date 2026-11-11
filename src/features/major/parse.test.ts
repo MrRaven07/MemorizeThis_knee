@@ -93,6 +93,18 @@ describe('parseAuto', () => {
   })
 })
 
+describe('export round trip with ; in the first row', () => {
+  it('re-imports its own export', () => {
+    const cards = [
+      { input: '00', output: 'sos; sus' },
+      { input: '01', output: 'sat' },
+    ]
+    const r = parseCsv(toCsv(cards))
+    expect(r.errors).toEqual([])
+    expect(r.pairs.map((p) => ({ input: p.input, output: p.output }))).toEqual(cards)
+  })
+})
+
 describe('export round trip', () => {
   const cards = [
     { input: '01', output: 'sat, mare' },

@@ -109,6 +109,7 @@ draw()
 
 useGameKeys((e) => {
   if (done.value || !currentId.value) return
+  if (e.ctrlKey || e.metaKey || e.altKey) return // browser shortcuts (Ctrl+D…), not answers
   if (!flipped.value && (e.key === ' ' || e.key === 'Enter')) {
     e.preventDefault()
     flip()

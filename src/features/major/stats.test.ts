@@ -33,7 +33,7 @@ describe('deckStats', () => {
       [ids[1]!]: prog(4, 4, 1),
       [ids[2]!]: prog(1, 1, 4), // 20%
       [ids[3]!]: prog(1, 1, 1), // only 2 answers → not ranked
-      [ids[4]!]: prog(1, 2, 8), // 20%, more misses → first
+      [ids[4]!]: prog(1, 2, 8), // 20% over 10 answers → after the 5-answer card (ties: fewer answers first)
     }
     for (let i = 5; i < 14; i++) forward[ids[i]!] = prog(2, 2, 2) // 50%
     const s = deckStats({ ...d, progress: { forward, reverse: {} } }, 'forward')
@@ -41,8 +41,8 @@ describe('deckStats', () => {
     expect(s.knownWell).toBe(2)
     expect(s.successRate).toBeCloseTo((9 + 4 + 1 + 1 + 2 + 18) / (10 + 5 + 5 + 2 + 10 + 36))
     expect(s.weakest).toHaveLength(10)
-    expect(s.weakest[0]!.card.id).toBe(ids[4])
-    expect(s.weakest[1]!.card.id).toBe(ids[2])
+    expect(s.weakest[0]!.card.id).toBe(ids[2])
+    expect(s.weakest[1]!.card.id).toBe(ids[4])
     expect(s.weakest.some((w) => w.card.id === ids[3])).toBe(false)
     expect(
       deckStats({ ...d, progress: { forward, reverse: {} } }, 'reverse').successRate,

@@ -95,11 +95,13 @@ export function parseCsv(raw: string): ParseResult {
   const errors: ParseError[] = []
   if (records.length === 0) return { pairs, errors }
 
-  const isHeader = (r: { text: string }) => /^\s*input\s*[,;]\s*output\s*$/i.test(r.text)
+  // Only the FIRST row can be a header (question 010); it also fixes the delimiter.
+  const header = /^\s*"?input"?\s*([,;])\s*"?output"?\s*$/i.exec(records[0]!.text)
+  const isHeader = (r: { line: number }) => header !== null && r.line === records[0]!.line
   const firstData = records.find((r) => !isHeader(r)) ?? records[0]!
   const fits = (d: string) => splitCsvLine(firstData.text, d)?.length === 2
-  const commaFits = fits(',')
-  const semiFits = fits(';')
+  const commaFits = header ? header[1] === ',' : fits(',')
+  const semiFits = header ? header[1] === ';' : fits(';')
   if (commaFits === semiFits) {
     return {
       pairs,

@@ -88,4 +88,44 @@ describe('scheduler', () => {
     expect(shuffleOrder(createRng(1), ids)).toEqual(a)
     expect(shuffleOrder(createRng(2), ids)).not.toEqual(a)
   })
+
+  it('no card reappears within K + 1 consecutive draws (K = 3)', () => {
+    const ids = Array.from({ length: 10 }, (_, i) => `c${i}`)
+    const boxes: Record<string, number> = Object.fromEntries(ids.map((id) => [id, 5]))
+    const shown = simulate(ids, boxes, 80, (_id, step) => step % 7 !== 3)
+    const violations = shown.filter((id, i) => shown.slice(Math.max(0, i - 3), i).includes(id))
+    expect(violations).toEqual([])
+  })
+
+  it('a missed card returns after at least 3 others even with a pile-up', () => {
+    const ids = Array.from({ length: 10 }, (_, i) => `c${i}`)
+    const boxes: Record<string, number> = Object.fromEntries(ids.map((id) => [id, 1]))
+    const alwaysMissed = new Set(['c0', 'c1', 'c2', 'c3', 'c4'])
+    const shown = simulate(ids, boxes, 200, (id) => !alwaysMissed.has(id))
+    const gaps = shown.flatMap((id, i) => {
+      const prev = shown.slice(0, i).lastIndexOf(id)
+      return alwaysMissed.has(id) && prev >= 0 ? [i - prev - 1] : []
+    })
+    expect(Math.min(...gaps)).toBeGreaterThanOrEqual(3)
+  })
+
+  it('no card starves even when several cards are always missed', () => {
+    const ids = Array.from({ length: 10 }, (_, i) => `c${i}`)
+    const boxes: Record<string, number> = Object.fromEntries(ids.map((id) => [id, 1]))
+    const alwaysMissed = new Set(['c0', 'c1', 'c2', 'c3'])
+    const shown = simulate(ids, boxes, 400, (id) => !alwaysMissed.has(id))
+    for (const id of ids) expect(shown.filter((x) => x === id).length).toBeGreaterThan(10)
+    // after a warm-up, the 6 known cards together get at least 1 of every 4 draws
+    const steady = shown.slice(40)
+    expect(steady.filter((x) => !alwaysMissed.has(x)).length).toBeGreaterThanOrEqual(
+      steady.length / 4,
+    )
+  })
+
+  it('everything missed: every card is still seen', () => {
+    const ids = Array.from({ length: 8 }, (_, i) => `c${i}`)
+    const boxes: Record<string, number> = Object.fromEntries(ids.map((id) => [id, 1]))
+    const shown = simulate(ids, boxes, 200, () => false)
+    expect(new Set(shown).size).toBe(8)
+  })
 })
