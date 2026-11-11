@@ -204,4 +204,29 @@ describe('MazeGame', () => {
     expect(w.find('button.next').exists()).toBe(false)
     expect(w.findAll('.cell')).toHaveLength(25)
   })
+
+  it('a route that stops short marks its last cell (Q008)', async () => {
+    const { w, maze } = setup()
+    const best = bfsPath(maze)!
+    await revealAndType(w, encode(best.slice(0, 1), 'wasd'))
+    for (let i = 0; i < 4; i++) {
+      vi.advanceTimersByTime(150)
+      await flushPromises()
+    }
+    expect(w.text()).toContain("Didn't reach the end")
+    expect(w.findAll('.cell.last')).toHaveLength(1)
+    expect(w.find('.cell.fail').exists()).toBe(false)
+  })
+
+  it('the key set is fixed for the round; the route has a length cap', async () => {
+    const { w } = setup()
+    await w.find('button.start').trigger('click')
+    vi.advanceTimersByTime(6050)
+    await flushPromises()
+    useSettingsStore().setMazeKeys('1234')
+    await flushPromises()
+    const input = w.find('input.route')
+    expect(input.attributes('inputmode')).toBe('text')
+    expect(input.attributes('maxlength')).toBe('50')
+  })
 })

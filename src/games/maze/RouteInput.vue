@@ -6,7 +6,10 @@ import { DIR_ARROW, KEYMAPS, parseRoute, type Dir, type MazeKeys } from './logic
  * Type a route with WASD or 1234. Other characters are dropped as you type.
  * The pad works by touch and never steals focus from the input.
  */
-const props = defineProps<{ modelValue: string; keys: MazeKeys }>()
+const props = withDefaults(
+  defineProps<{ modelValue: string; keys: MazeKeys; maxMoves?: number }>(),
+  { maxMoves: 400 },
+)
 const emit = defineEmits<{ 'update:modelValue': [value: string]; submit: [] }>()
 
 const input = useTemplateRef<HTMLInputElement>('input')
@@ -41,6 +44,7 @@ function onKeydown(e: KeyboardEvent) {
 }
 
 function add(d: Dir) {
+  if (props.modelValue.length >= props.maxMoves) return
   emit('update:modelValue', props.modelValue + keyFor.value[d])
 }
 function back() {
@@ -62,6 +66,7 @@ const pad: { dir: Dir; cls: string }[] = [
       <input
         ref="input"
         class="route mono"
+        :maxlength="maxMoves"
         type="text"
         :inputmode="keys === '1234' ? 'numeric' : 'text'"
         :value="modelValue"

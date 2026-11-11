@@ -69,7 +69,8 @@ let recallStartedAt = 0
 let resultShownAt = 0
 
 const info = computed(() => mazeLevelInfo(level.value))
-const keys = computed(() => settingsStore.mazeKeys)
+/** Key set snapshotted when the round starts (changes apply next round). */
+const keys = ref(settingsStore.mazeKeys)
 const legend = computed(() =>
   Object.entries(KEYMAPS[keys.value])
     .map(([k, d]) => `${k} ${DIR_ARROW[d]}`)
@@ -86,6 +87,7 @@ function reducedMotion(): boolean {
 async function start() {
   replay.cancel()
   round.value = { ...props.settings }
+  keys.value = settingsStore.mazeKeys
   level.value = stats.getStaircase(MAZE_ID, mazeStaircase(round.value)).level
   const lv = mazeLevelInfo(level.value)
   maze.value = generateMaze(rng, lv.size, lv.spikes)
@@ -137,7 +139,12 @@ function submit() {
     level: before.level,
     accuracy: win ? 1 : Math.min(1, (s.path.length - 1) / best),
     durationMs: Math.round(performance.now() - recallStartedAt),
-    metrics: { size: lv.size, spikes: lv.spikes, moves: s.movesUsed, shortest: s.shortest ? 1 : 0 },
+    metrics: {
+      size: lv.size,
+      spikes: maze.value.cells.flat().filter((c) => c === 'spike').length,
+      moves: s.movesUsed,
+      shortest: s.shortest ? 1 : 0,
+    },
   })
   level.value = after.level
   emit('level', after.level)
@@ -194,7 +201,12 @@ useGameKeys((e) => {
 
     <template v-else-if="phase === 'recall'">
       <p class="muted legend mono">{{ legend }}</p>
-      <RouteInput v-model="route" :keys="keys" @submit="submit" />
+      <RouteInput
+        v-model="route"
+        :keys="keys"
+        :max-moves="maze ? maze.size * maze.size * 2 : 200"
+        @submit="submit"
+      />
     </template>
 
     <template v-else-if="maze && sim && change">
@@ -202,6 +214,7 @@ useGameKeys((e) => {
         :maze="maze"
         :path="replayPath"
         :fail-at="replayDone ? sim.failAt : null"
+        :last-at="replayDone && sim.outcome === 'short' ? (sim.path.at(-1) ?? null) : null"
         :highlight="hint"
       />
       <p class="verdict" :class="sim.outcome === 'win' ? 'ok' : 'bad'">
