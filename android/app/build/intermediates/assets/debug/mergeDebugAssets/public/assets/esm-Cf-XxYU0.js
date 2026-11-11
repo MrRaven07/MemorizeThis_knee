@@ -1,2 +1,0 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./web-D4z699ih.js","./index-DVgE4CAR.js","./_plugin-vue_export-helper-DXaRRSgG.js","./persist-CKIry738.js","./index-oXEOyz4C.css"])))=>i.map(i=>d[i]);
-import{bt as e,nt as t}from"./index-DVgE4CAR.js";var n=e(`App`,{web:()=>t(()=>import(`./web-D4z699ih.js`).then(e=>new e.AppWeb),__vite__mapDeps([0,1,2,3,4]),import.meta.url)});export{n as App};
