@@ -140,4 +140,41 @@ describe('stats views', () => {
     const { w } = await mountAt('/stats')
     expect(w.find('a[href$="/session/s1"]').exists()).toBe(true)
   })
+
+  it('summary shows flashcards for Major System, not rounds', async () => {
+    const s = {
+      id: 'm',
+      startedAt: day(9),
+      endedAt: day(9),
+      activeMs: 300_000,
+      rounds: 0,
+      cards: 12,
+      perGameMs: { major: 300_000 },
+      lastActivityAt: day(9),
+    }
+    appStorage.set('mt:sessions', JSON.stringify([s]))
+    const { w } = await mountAt('/session/m')
+    const row = w.findAll('.game').find((r) => r.text().includes('Major System'))!
+    expect(row.text()).toContain('12 cards')
+    expect(row.text()).not.toContain('0 rounds')
+  })
+
+  it('a damaged saved session does not blank the stats page', async () => {
+    const good = {
+      id: 'g',
+      startedAt: day(9),
+      endedAt: day(9),
+      activeMs: 60_000,
+      rounds: 1,
+      cards: 0,
+      perGameMs: {},
+      lastActivityAt: day(9),
+    }
+    const raw = JSON.stringify([good, null, { id: 'x' }])
+    appStorage.set('mt:sessions', raw)
+    const { w } = await mountAt('/stats')
+    expect(w.text()).toContain('1:00')
+    expect(w.text()).not.toMatch(/NaN|Infinity/)
+    expect(appStorage.get('mt:sessions.corrupt')).toBe(raw)
+  })
 })

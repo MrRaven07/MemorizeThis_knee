@@ -65,7 +65,9 @@ const signed = (n: number) => (n >= 0 ? `+${n}` : `${minus}${Math.abs(n)}`)
       <li v-for="g in summary.perGame" :key="g.id" class="game">
         <span class="name">{{ nameOf(g.id) }}</span>
         <span class="muted mono">
-          {{ g.rounds.length }} rounds · {{ formatDuration(g.ms) }}
+          <template v-if="g.id === 'major'">{{ summary.cards }} cards</template>
+          <template v-else>{{ g.rounds.length }} rounds</template>
+          · {{ formatDuration(g.ms) }}
           <template v-if="headlineOf(g.id, g.rounds)"> · {{ headlineOf(g.id, g.rounds) }}</template>
           <template v-if="stats.staircases[g.id]">
             · level now {{ stats.staircases[g.id]!.level }}</template
