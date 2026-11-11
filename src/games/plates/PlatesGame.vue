@@ -16,6 +16,7 @@ import {
   levelInfo,
   PLATES_ID,
   PLATES_STAIRCASE,
+  platesStaircase,
   scorePlates,
   viewMs,
   type PlateRound,
@@ -56,7 +57,7 @@ onMounted(() => emit('level', level.value))
 
 async function start() {
   round.value = { ...props.settings }
-  level.value = stats.getStaircase(PLATES_ID, PLATES_STAIRCASE).level
+  level.value = stats.getStaircase(PLATES_ID, platesStaircase(round.value)).level
   current.value = generateRound(rng, level.value, format.value)
   answers.value = current.value.plates.map(() => '')
   inputs.value = []
@@ -82,8 +83,8 @@ function onInputSubmit(i: number) {
 function submit() {
   if (phase.value !== 'recall' || !current.value) return
   const s = scorePlates(current.value.plates, answers.value)
-  const before = stats.getStaircase(PLATES_ID, PLATES_STAIRCASE)
-  const after = stepStaircase(before, PLATES_STAIRCASE, s.success)
+  const before = stats.getStaircase(PLATES_ID, platesStaircase(round.value))
+  const after = stepStaircase(before, platesStaircase(round.value), s.success)
   stats.saveStaircase(PLATES_ID, after)
 
   score.value = s
@@ -180,7 +181,7 @@ useGameKeys((e) => {
           >Level {{ change.from }} → {{ change.to }}</template
         >
         <template v-else-if="score.success">
-          Level {{ change.from }} (streak {{ change.streak }}/{{ PLATES_STAIRCASE.upAfter }})
+          Level {{ change.from }} (streak {{ change.streak }}/{{ round.upAfter }})
         </template>
         <template v-else>Level {{ change.from }}</template>
       </p>

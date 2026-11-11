@@ -12,6 +12,7 @@ import CardGrid from './CardGrid.vue'
 import {
   CARD_MATCH_ID,
   CARD_STAIRCASE,
+  cardStaircase,
   cardLevelInfo,
   clearPending,
   createBoard,
@@ -68,7 +69,7 @@ onMounted(() => emit('level', level.value))
 async function start() {
   flipBack.cancel()
   round.value = { ...props.settings }
-  level.value = stats.getStaircase(CARD_MATCH_ID, CARD_STAIRCASE).level
+  level.value = stats.getStaircase(CARD_MATCH_ID, cardStaircase(round.value)).level
   playedLevel.value = level.value
   const ms = previewMs(level.value, round.value.previewSecondsPerPair)
   board.value = createBoard(dealCards(rng, pairsOf(cardLevelInfo(level.value))), ms > 0)
@@ -104,8 +105,8 @@ function finish() {
   const b = board.value
   const durationMs = Math.round(playTime.stop())
   const success = b.memoryMistakes === 0
-  const before = stats.getStaircase(CARD_MATCH_ID, CARD_STAIRCASE)
-  const after = stepStaircase(before, CARD_STAIRCASE, success)
+  const before = stats.getStaircase(CARD_MATCH_ID, cardStaircase(round.value))
+  const after = stepStaircase(before, cardStaircase(round.value), success)
   stats.saveStaircase(CARD_MATCH_ID, after)
 
   change.value = { from: before.level, to: after.level, streak: after.streakRight }
@@ -192,7 +193,7 @@ useGameKeys((e) => {
           >Level {{ change.from }} → {{ change.to }}</template
         >
         <template v-else-if="board.memoryMistakes === 0">
-          Level {{ change.from }} (streak {{ change.streak }}/{{ CARD_STAIRCASE.upAfter }})
+          Level {{ change.from }} (streak {{ change.streak }}/{{ round.upAfter }})
         </template>
         <template v-else>Level {{ change.from }}</template>
       </p>

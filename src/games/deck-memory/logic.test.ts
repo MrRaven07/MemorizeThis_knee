@@ -72,7 +72,7 @@ describe('deck memory logic', () => {
       downStep: 1,
     })
     expect(deckLevelCards(99)).toBe(52)
-    expect(DECK_MEMORY_DEFAULTS).toEqual({ secondsPerCard: 5, view: 'one' })
+    expect(DECK_MEMORY_DEFAULTS).toEqual({ secondsPerCard: 5, view: 'one', upAfter: 3 })
     expect(
       sanitizeSettings(DECK_MEMORY_DEFAULTS, DECK_MEMORY_DEFAULTS, DECK_MEMORY_FIELDS),
     ).toEqual(DECK_MEMORY_DEFAULTS)

@@ -11,11 +11,13 @@ import { plateFormats, type Plate, type PlateFormat } from './formats'
 export const PLATES_ID = 'plates'
 
 export interface PlatesSettings extends GameSettings {
+  /** correct rounds in a row to level up (question 007) */
+  upAfter: number
   country: string
   timeMultiplier: number
 }
 
-export const PLATES_DEFAULTS: PlatesSettings = { country: 'ro', timeMultiplier: 1 }
+export const PLATES_DEFAULTS: PlatesSettings = { country: 'ro', timeMultiplier: 1, upAfter: 3 }
 
 export const PLATES_FIELDS: SettingField[] = [
   {
@@ -34,6 +36,7 @@ export const PLATES_FIELDS: SettingField[] = [
     unit: '×',
     help: 'below 1 is harder, above 1 is easier',
   },
+  { key: 'upAfter', label: 'Correct in a row to level up', type: 'number', min: 3, max: 5 },
 ]
 
 export interface PlateLevel {
@@ -67,6 +70,11 @@ export const PLATES_STAIRCASE: StaircaseConfig = {
   upStep: 1,
   downAfter: 1,
   downStep: 1,
+}
+
+/** The staircase for one round, using that round's settings snapshot. */
+export function platesStaircase(s: PlatesSettings): StaircaseConfig {
+  return { ...PLATES_STAIRCASE, upAfter: s.upAfter }
 }
 
 export function levelInfo(level: number): PlateLevel {

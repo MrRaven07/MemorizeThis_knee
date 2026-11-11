@@ -16,6 +16,7 @@ import { parseCodes, type CodeProblem } from './cards'
 import {
   DECK_MEMORY_ID,
   DECK_STAIRCASE,
+  deckStaircase,
   dealSequence,
   deckLevelCards,
   scoreDeck,
@@ -58,7 +59,7 @@ onMounted(() => emit('level', level.value))
 
 async function start() {
   round.value = { ...props.settings }
-  level.value = stats.getStaircase(DECK_MEMORY_ID, DECK_STAIRCASE).level
+  level.value = stats.getStaircase(DECK_MEMORY_ID, deckStaircase(round.value)).level
   sequence.value = dealSequence(rng, deckLevelCards(level.value))
   pos.value = 0
   answer.value = []
@@ -102,8 +103,8 @@ function onCodesEnter() {
 function check() {
   if (phase.value !== 'recall') return
   const s = scoreDeck(sequence.value, answer.value)
-  const before = stats.getStaircase(DECK_MEMORY_ID, DECK_STAIRCASE)
-  const after = stepStaircase(before, DECK_STAIRCASE, s.exact)
+  const before = stats.getStaircase(DECK_MEMORY_ID, deckStaircase(round.value))
+  const after = stepStaircase(before, deckStaircase(round.value), s.exact)
   stats.saveStaircase(DECK_MEMORY_ID, after)
 
   score.value = s
@@ -245,7 +246,7 @@ useGameKeys((e) => {
           >Level {{ change.from }} → {{ change.to }}</template
         >
         <template v-else-if="score.exact">
-          Level {{ change.from }} (streak {{ change.streak }}/{{ DECK_STAIRCASE.upAfter }})
+          Level {{ change.from }} (streak {{ change.streak }}/{{ round.upAfter }})
         </template>
         <template v-else>Level {{ change.from }}</template>
       </p>

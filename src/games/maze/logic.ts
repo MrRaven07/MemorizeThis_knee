@@ -188,10 +188,12 @@ export function simulateRoute(maze: Maze, route: Dir[]): Simulation {
 }
 
 export interface MazeSettings extends GameSettings {
+  /** correct rounds in a row to level up (question 007) */
+  upAfter: number
   timeMultiplier: number
 }
 
-export const MAZE_DEFAULTS: MazeSettings = { timeMultiplier: 1 }
+export const MAZE_DEFAULTS: MazeSettings = { timeMultiplier: 1, upAfter: 3 }
 
 export const MAZE_FIELDS: SettingField[] = [
   {
@@ -204,6 +206,7 @@ export const MAZE_FIELDS: SettingField[] = [
     unit: '×',
     help: 'below 1 is harder, above 1 is easier · keys are set in Settings',
   },
+  { key: 'upAfter', label: 'Correct in a row to level up', type: 'number', min: 3, max: 5 },
 ]
 
 export interface MazeLevel {
@@ -234,6 +237,11 @@ export const MAZE_STAIRCASE: StaircaseConfig = {
   upStep: 1,
   downAfter: 1,
   downStep: 1,
+}
+
+/** The staircase for one round, using that round's settings snapshot. */
+export function mazeStaircase(s: MazeSettings): StaircaseConfig {
+  return { ...MAZE_STAIRCASE, upAfter: s.upAfter }
 }
 
 export function mazeLevelInfo(level: number): MazeLevel {

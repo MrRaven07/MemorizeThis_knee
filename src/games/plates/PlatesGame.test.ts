@@ -121,4 +121,19 @@ describe('PlatesGame', () => {
     expect(esc.defaultPrevented).toBe(true)
     expect(w.findAll('input')).toHaveLength(1)
   })
+
+  it('the level-up setting shows in the streak (Q007)', async () => {
+    const expected = generateRound(createRng(1), 1, ro)
+    const w = mount(PlatesGame, {
+      props: { settings: { ...PLATES_DEFAULTS, upAfter: 4 }, rng: createRng(1) },
+      attachTo: document.body,
+    })
+    mounted.push(w)
+    await w.find('button.start').trigger('click')
+    vi.advanceTimersByTime(6050)
+    await flushPromises()
+    await w.find('input').setValue(expected.plates[0]!.text)
+    await w.find('input').trigger('keydown', { key: 'Enter' })
+    expect(w.text()).toContain('streak 1/4')
+  })
 })

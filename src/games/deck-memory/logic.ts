@@ -13,11 +13,17 @@ import { CARD_COUNT } from './cards'
 export const DECK_MEMORY_ID = 'deck-memory'
 
 export interface DeckMemorySettings extends GameSettings {
+  /** correct rounds in a row to level up (question 007) */
+  upAfter: number
   secondsPerCard: number
   view: 'one' | 'row'
 }
 
-export const DECK_MEMORY_DEFAULTS: DeckMemorySettings = { secondsPerCard: 5, view: 'one' }
+export const DECK_MEMORY_DEFAULTS: DeckMemorySettings = {
+  secondsPerCard: 5,
+  view: 'one',
+  upAfter: 3,
+}
 
 export const DECK_MEMORY_FIELDS: SettingField[] = [
   {
@@ -38,6 +44,7 @@ export const DECK_MEMORY_FIELDS: SettingField[] = [
       { value: 'row', label: 'All at once, in a row' },
     ],
   },
+  { key: 'upAfter', label: 'Correct in a row to level up', type: 'number', min: 3, max: 5 },
 ]
 
 /** Cards per round for levels 1–10. */
@@ -51,6 +58,11 @@ export const DECK_STAIRCASE: StaircaseConfig = {
   upStep: 1,
   downAfter: 1,
   downStep: 1,
+}
+
+/** The staircase for one round, using that round's settings snapshot. */
+export function deckStaircase(s: DeckMemorySettings): StaircaseConfig {
+  return { ...DECK_STAIRCASE, upAfter: s.upAfter }
 }
 
 export function deckLevelCards(level: number): number {

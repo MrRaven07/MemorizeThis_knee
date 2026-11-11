@@ -26,7 +26,7 @@ describe('plates logic', () => {
     expect(sanitizeSettings(PLATES_DEFAULTS, PLATES_DEFAULTS, PLATES_FIELDS)).toEqual(
       PLATES_DEFAULTS,
     )
-    expect(PLATES_DEFAULTS).toEqual({ country: 'ro', timeMultiplier: 1 })
+    expect(PLATES_DEFAULTS).toEqual({ country: 'ro', timeMultiplier: 1, upAfter: 3 })
     expect(PLATES_STAIRCASE).toEqual({
       start: 1,
       min: 1,

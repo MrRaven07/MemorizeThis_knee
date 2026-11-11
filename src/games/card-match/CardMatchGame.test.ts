@@ -82,7 +82,7 @@ describe('CardMatchGame', () => {
   })
 
   it('no preview: a lucky mismatch is no mistake', async () => {
-    const { w, pairs } = setup({ previewSecondsPerPair: 0 })
+    const { w, pairs } = setup({ ...CARD_MATCH_DEFAULTS, previewSecondsPerPair: 0 })
     await w.find('button.start').trigger('click')
     expect(w.findAll('button.card')).toHaveLength(6)
     expect(w.findAll('.card.up')).toHaveLength(0)
@@ -105,7 +105,7 @@ describe('CardMatchGame', () => {
   })
 
   it('fast third click during flip-back', async () => {
-    const { w, pairs } = setup({ previewSecondsPerPair: 0 })
+    const { w, pairs } = setup({ ...CARD_MATCH_DEFAULTS, previewSecondsPerPair: 0 })
     await w.find('button.start').trigger('click')
     const [p0, p1, p2] = pairs as [[number, number], [number, number], [number, number]]
     await click(w, p0[0])
@@ -135,7 +135,7 @@ describe('CardMatchGame', () => {
   })
 
   it('keyboard play: arrows move focus, native click flips', async () => {
-    const { w } = setup({ previewSecondsPerPair: 0 })
+    const { w } = setup({ ...CARD_MATCH_DEFAULTS, previewSecondsPerPair: 0 })
     await w.find('button.start').trigger('click')
     const buttons = w.findAll('button.card')
     ;(buttons[0]!.element as HTMLButtonElement).focus()
@@ -160,14 +160,14 @@ describe('CardMatchGame', () => {
   })
 
   it('keyboard focus lands on the cards when play starts', async () => {
-    const { w } = setup({ previewSecondsPerPair: 0 })
+    const { w } = setup({ ...CARD_MATCH_DEFAULTS, previewSecondsPerPair: 0 })
     await w.find('button.start').trigger('click')
     await flushPromises()
     expect(document.activeElement).toBe(w.findAll('button.card')[0]!.element)
   })
 
   it('a stale flip-back timer does not hide the third card', async () => {
-    const { w, pairs } = setup({ previewSecondsPerPair: 0 })
+    const { w, pairs } = setup({ ...CARD_MATCH_DEFAULTS, previewSecondsPerPair: 0 })
     await w.find('button.start').trigger('click')
     const [p0, p1, p2] = pairs as [[number, number], [number, number], [number, number]]
     await click(w, p0[0])
@@ -176,5 +176,15 @@ describe('CardMatchGame', () => {
     vi.advanceTimersByTime(750)
     await flushPromises()
     expect(w.findAll('button.card')[p2[0]]!.classes()).toContain('up')
+  })
+
+  it('the level-up setting shows in the streak (Q007)', async () => {
+    const { w, pairs } = setup({ ...CARD_MATCH_DEFAULTS, previewSecondsPerPair: 0, upAfter: 4 })
+    await w.find('button.start').trigger('click')
+    for (const [a, b] of pairs) {
+      await click(w, a)
+      await click(w, b)
+    }
+    expect(w.text()).toContain('streak 1/4')
   })
 })

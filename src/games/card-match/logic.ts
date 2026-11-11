@@ -11,10 +11,12 @@ export const CARD_MATCH_ID = 'card-match'
 export const SYMBOL_COUNT = 18
 
 export interface CardMatchSettings extends GameSettings {
+  /** correct rounds in a row to level up (question 007) */
+  upAfter: number
   previewSecondsPerPair: number
 }
 
-export const CARD_MATCH_DEFAULTS: CardMatchSettings = { previewSecondsPerPair: 0.5 }
+export const CARD_MATCH_DEFAULTS: CardMatchSettings = { previewSecondsPerPair: 0.5, upAfter: 3 }
 
 export const CARD_MATCH_FIELDS: SettingField[] = [
   {
@@ -27,6 +29,7 @@ export const CARD_MATCH_FIELDS: SettingField[] = [
     unit: 's',
     help: '0 = no preview (classic exploration game)',
   },
+  { key: 'upAfter', label: 'Correct in a row to level up', type: 'number', min: 3, max: 5 },
 ]
 
 export interface CardLevel {
@@ -51,6 +54,11 @@ export const CARD_STAIRCASE: StaircaseConfig = {
   upStep: 1,
   downAfter: 1,
   downStep: 1,
+}
+
+/** The staircase for one round, using that round's settings snapshot. */
+export function cardStaircase(s: CardMatchSettings): StaircaseConfig {
+  return { ...CARD_STAIRCASE, upAfter: s.upAfter }
 }
 
 export function cardLevelInfo(level: number): CardLevel {

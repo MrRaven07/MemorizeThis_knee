@@ -18,6 +18,7 @@ import {
   KEYMAPS,
   MAZE_ID,
   MAZE_STAIRCASE,
+  mazeStaircase,
   mazeLevelInfo,
   mazeViewMs,
   parseRoute,
@@ -85,7 +86,7 @@ function reducedMotion(): boolean {
 async function start() {
   replay.cancel()
   round.value = { ...props.settings }
-  level.value = stats.getStaircase(MAZE_ID, MAZE_STAIRCASE).level
+  level.value = stats.getStaircase(MAZE_ID, mazeStaircase(round.value)).level
   const lv = mazeLevelInfo(level.value)
   maze.value = generateMaze(rng, lv.size, lv.spikes)
   route.value = ''
@@ -121,8 +122,8 @@ function submit() {
   const s = simulateRoute(maze.value, parseRoute(route.value, keys.value))
   const best = bfsPath(maze.value)?.length ?? 1
   const win = s.outcome === 'win'
-  const before = stats.getStaircase(MAZE_ID, MAZE_STAIRCASE)
-  const after = stepStaircase(before, MAZE_STAIRCASE, win)
+  const before = stats.getStaircase(MAZE_ID, mazeStaircase(round.value))
+  const after = stepStaircase(before, mazeStaircase(round.value), win)
   stats.saveStaircase(MAZE_ID, after)
 
   sim.value = s
@@ -212,7 +213,7 @@ useGameKeys((e) => {
           >Level {{ change.from }} → {{ change.to }}</template
         >
         <template v-else-if="sim.outcome === 'win'">
-          Level {{ change.from }} (streak {{ change.streak }}/{{ MAZE_STAIRCASE.upAfter }})
+          Level {{ change.from }} (streak {{ change.streak }}/{{ round.upAfter }})
         </template>
         <template v-else>Level {{ change.from }}</template>
       </p>
