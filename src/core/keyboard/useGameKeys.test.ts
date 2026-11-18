@@ -56,4 +56,20 @@ describe('useGameKeys', () => {
     keydown(document.body, 'Enter')
     expect(handler).not.toHaveBeenCalled()
   })
+
+  it('held Enter, Esc and Space are swallowed (no phase skipping, no accidental quit)', () => {
+    const handler = vi.fn<(e: KeyboardEvent) => void>()
+    const w = mountWith(handler)
+    for (const key of ['Enter', 'Escape', ' ']) {
+      const e = new KeyboardEvent('keydown', { key, repeat: true, bubbles: true, cancelable: true })
+      document.body.dispatchEvent(e)
+      expect(e.defaultPrevented).toBe(true)
+    }
+    expect(handler).not.toHaveBeenCalled()
+    const arrow = new KeyboardEvent('keydown', { key: 'ArrowRight', repeat: true, bubbles: true, cancelable: true })
+    document.body.dispatchEvent(arrow)
+    expect(handler).toHaveBeenCalledTimes(1)
+    w.unmount()
+  })
 })
+

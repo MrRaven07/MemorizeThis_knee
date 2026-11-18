@@ -27,9 +27,17 @@ function ownsActivationKey(e: KeyboardEvent): boolean {
   )
 }
 
+/** Keys whose auto-repeat is ignored (arrows may still repeat). */
+const HELD_KEYS = new Set(['Enter', 'Escape', ' '])
+
 export function useGameKeys(handler: (e: KeyboardEvent) => void): void {
   function onKeydown(e: KeyboardEvent) {
     if (e.defaultPrevented || isEditable(e.target) || ownsActivationKey(e)) return
+    if (e.repeat && HELD_KEYS.has(e.key)) {
+      // A held key must not skip phases or (for Esc) reach GameShell and quit.
+      e.preventDefault()
+      return
+    }
     handler(e)
   }
   onMounted(() => document.addEventListener('keydown', onKeydown))
