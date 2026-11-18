@@ -21,6 +21,10 @@ const stats = computed(() => (deck.value ? deckStats(deck.value, statsDir.value)
 const newInput = ref('')
 const newOutput = ref('')
 const editing = ref<string | null>(null)
+useBackClosable(
+  () => editing.value !== null,
+  () => (editing.value = null),
+)
 const editInput = ref('')
 const editOutput = ref('')
 const confirmDelete = ref(false)

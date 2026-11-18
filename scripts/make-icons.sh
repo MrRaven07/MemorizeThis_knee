@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 # Regenerates the app icons and splash screens from assets/icon/foreground.svg.
-# Needs rsvg-convert and ImageMagick (magick). Run from the repo root.
+# Needs bash 4+, rsvg-convert and ImageMagick (magick).
 set -euo pipefail
+cd "$(dirname "$0")/.."
+for tool in rsvg-convert magick; do
+  command -v "$tool" >/dev/null || { echo "missing: $tool" >&2; exit 1; }
+done
 FG=assets/icon/foreground.svg
 BG='#0D1117'
 RES=android/app/src/main/res

@@ -45,3 +45,8 @@ __screenshots__/
 
 # agent scratch
 .superpowers/
+
+# Android signing keys (never commit)
+*.jks
+*.keystore
+keystore.properties

@@ -50,3 +50,4 @@ What changes in the build depending on the answer.
 | 012 | New playing-cards module: Deck Memory | answered |
 | 013 | Scheduler starvation and repeats (review) | answered |
 | 014 | N-Back module | answered |
+| 015 | Memory Grid and Quick Math modules | answered |

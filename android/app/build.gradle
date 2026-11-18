@@ -5,8 +5,10 @@ apply plugin: 'com.android.application'
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
 }
+// Sign only when the file is complete; a half-filled file must not break debug builds.
+def canSignRelease = ['storeFile', 'storePassword', 'keyAlias', 'keyPassword'].every { keystoreProperties[it] }
 
 android {
     namespace = "io.github.mrraven07.memorizethis"
@@ -26,8 +28,8 @@ android {
     }
     signingConfigs {
         release {
-            if (keystorePropertiesFile.exists()) {
-                storeFile file(keystoreProperties['storeFile'])
+            if (canSignRelease) {
+                storeFile rootProject.file(keystoreProperties['storeFile'])
                 storePassword keystoreProperties['storePassword']
                 keyAlias keystoreProperties['keyAlias']
                 keyPassword keystoreProperties['keyPassword']
@@ -36,7 +38,7 @@ android {
     }
     buildTypes {
         release {
-            if (keystorePropertiesFile.exists()) {
+            if (canSignRelease) {
                 signingConfig signingConfigs.release
             }
             minifyEnabled false

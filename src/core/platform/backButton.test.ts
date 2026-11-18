@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import { h } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { effectScope, nextTick, ref } from 'vue'
+import { effectScope, h, nextTick, ref } from 'vue'
 import { handleBack } from './backButton'
 import { useBackClosable } from './overlays'
 

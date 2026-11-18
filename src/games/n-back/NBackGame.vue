@@ -9,6 +9,7 @@ import type { RoundResult } from '@/games/types'
 import { useStatsStore } from '@/stores/stats'
 import {
   DIGITS,
+  DROP_ACCURACY,
   POSITIONS,
   STIMULUS_MS,
   generateStream,
@@ -271,7 +272,7 @@ useGameKeys((e) => {
           progressLabel(
             { ...result, upAfter: round.upAfter, max: nBackStaircase(round).max },
             result.accuracy >= PASS_ACCURACY,
-            { noun: 'N', reset: result.accuracy >= 0.5 },
+            { noun: 'N', reset: result.accuracy >= DROP_ACCURACY },
           )
         }}
       </p>

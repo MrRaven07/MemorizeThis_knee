@@ -6,6 +6,7 @@ import App from '@/App.vue'
 import { appStorage } from '@/core/storage/persist'
 import { routes } from '@/router'
 import { useDecksStore } from '@/stores/decks'
+import { closeTopOverlay } from '@/core/platform/overlays'
 
 vi.mock('@/core/storage/persist', async (importOriginal) => {
   const orig = await importOriginal<typeof import('@/core/storage/persist')>()
@@ -162,5 +163,17 @@ describe('Major System views', () => {
     const text = w.find('.import-errors').text()
     expect(text).toContain('item 1:')
     expect(text).not.toContain('line 1')
+  })
+
+  it('the back button cancels an open card edit first', async () => {
+    const s = useDecksStore()
+    const deck = s.createDeck('x')
+    s.addCard(deck.id, '00', 'sos')
+    const { w } = await mountAt(`/major/${deck.id}`)
+    await w.find('tr.card-row button.edit').trigger('click')
+    expect(w.find('input[aria-label="Input"]').exists()).toBe(true)
+    expect(closeTopOverlay()).toBe(true)
+    await flushPromises()
+    expect(w.find('input[aria-label="Input"]').exists()).toBe(false)
   })
 })
