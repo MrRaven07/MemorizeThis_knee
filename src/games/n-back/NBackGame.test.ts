@@ -188,4 +188,46 @@ describe('NBackGame', () => {
     await goTo(1)
     expect(key('Escape').defaultPrevented).toBe(false)
   })
+
+  it('switching mode on the ready screen shows the N of that mode', async () => {
+    useStatsStore().saveStaircase(levelKey('position'), {
+      level: 5,
+      streakRight: 0,
+      streakWrong: 0,
+    })
+    const { w } = setup()
+    await flushPromises()
+    expect(w.text()).toContain('N = 5')
+    await w.setProps({ settings: { ...N_BACK_DEFAULTS, mode: 'dual' } })
+    await flushPromises()
+    expect(w.text()).toContain('N = 2')
+    expect(w.emitted('level')!.at(-1)).toEqual([2])
+  })
+
+  it('feedback colours the button; the first N trials show a hint', async () => {
+    const { w, pos } = setup()
+    await begin(w)
+    await goTo(0)
+    expect(w.text()).toContain('Remember the first 2')
+    const t = pos.findIndex((_, i) => isTarget(pos, 2, i))
+    await goTo(t)
+    expect(w.text()).not.toContain('Remember the first')
+    key(' ')
+    await flushPromises()
+    expect(w.find('button.match').classes()).toContain('fb-ok')
+    expect(w.find('.sr-feedback').text()).toBe('correct')
+  })
+
+  it('a middle-zone result says the streak was reset', async () => {
+    const { w, pos } = setup()
+    await begin(w)
+    let pressed = 0
+    await playAll(w, (t) => {
+      if (isTarget(pos, 2, t) && pressed < 4) {
+        key(' ')
+        pressed++
+      }
+    })
+    expect(w.text()).toContain('streak reset')
+  })
 })

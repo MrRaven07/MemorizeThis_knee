@@ -6,6 +6,8 @@ import {
   N_BACK_DEFAULTS,
   N_BACK_FIELDS,
   N_BACK_ID,
+  POSITIONS,
+  DIGITS,
   TARGETS_PER_STREAM,
   generateStream,
   levelKey,
@@ -39,17 +41,18 @@ describe('n-back logic', () => {
 
   it('streams have exactly 6 targets and no accidental matches (many seeds, all N)', () => {
     const problems: string[] = []
-    for (let n = 1; n <= 9; n++) {
-      for (let seed = 0; seed < 200; seed++) {
-        const size = trialsFor(n)
-        const s = generateStream(createRng(seed * 13 + n), n, size, 9)
-        let targets = 0
-        for (let i = n; i < size; i++) if (s[i] === s[i - n]) targets++
-        if (s.length !== size) problems.push(`n${n} s${seed} length`)
-        if (targets !== TARGETS_PER_STREAM) problems.push(`n${n} s${seed} targets ${targets}`)
-        if (s.some((v) => v < 0 || v > 8)) problems.push(`n${n} s${seed} range`)
+    for (const alphabet of [POSITIONS, DIGITS])
+      for (let n = 1; n <= 9; n++) {
+        for (let seed = 0; seed < 200; seed++) {
+          const size = trialsFor(n)
+          const s = generateStream(createRng(seed * 13 + n), n, size, alphabet)
+          let targets = 0
+          for (let i = n; i < size; i++) if (s[i] === s[i - n]) targets++
+          if (s.length !== size) problems.push(`n${n} s${seed} length`)
+          if (targets !== TARGETS_PER_STREAM) problems.push(`n${n} s${seed} targets ${targets}`)
+          if (s.some((v) => v < 0 || v > alphabet - 1)) problems.push(`n${n} s${seed} range`)
+        }
       }
-    }
     expect(problems).toEqual([])
   })
 

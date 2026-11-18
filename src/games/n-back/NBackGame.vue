@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import TimerBar from '@/components/TimerBar.vue'
 import { useGameKeys } from '@/core/keyboard/useGameKeys'
 import { createRng, type Rng } from '@/core/random/rng'
@@ -75,6 +75,16 @@ const shownDigit = computed(() => (visible.value ? streams.value.digit[trial.val
 
 onMounted(() => emit('level', n.value))
 
+// Each mode has its own N: show the chosen mode's level before the round starts.
+watch(
+  () => props.settings.mode,
+  (mode) => {
+    if (phase.value === 'run') return
+    n.value = stats.getStaircase(levelKey(mode), nBackStaircase(props.settings)).level
+    emit('level', n.value)
+  },
+)
+
 async function start() {
   round.value = { ...props.settings }
   const cfg = nBackStaircase(round.value)
@@ -140,6 +150,18 @@ function finish() {
   emit('level', after.level)
 }
 
+function feedbackClass(stream: StreamName) {
+  const f = feedback.value
+  if (!round.value.feedback || !f || f.stream !== stream || f.trial !== trial.value) return {}
+  return { 'fb-ok': f.ok, 'fb-bad': !f.ok }
+}
+
+const srFeedback = computed(() => {
+  const f = feedback.value
+  if (!round.value.feedback || !f || f.trial !== trial.value) return ''
+  return f.ok ? 'correct' : 'wrong'
+})
+
 function feedbackFor(stream: StreamName): string {
   const f = feedback.value
   if (!round.value.feedback || !f || f.stream !== stream || f.trial !== trial.value) return ''
@@ -194,11 +216,16 @@ useGameKeys((e) => {
       <p v-if="round.mode !== 'position'" class="digit mono" aria-live="off">
         {{ shownDigit ?? ' ' }}
       </p>
+      <p class="hint muted remember">
+        <template v-if="trial < n">Remember the first {{ n }}</template>
+      </p>
+      <span class="visually-hidden sr-feedback" aria-live="polite">{{ srFeedback }}</span>
       <div class="buttons">
         <button
           v-if="round.mode === 'dual'"
           type="button"
           class="match match-position primary"
+          :class="feedbackClass('position')"
           :disabled="!canPress"
           @pointerdown.prevent
           @click="press('position')"
@@ -209,6 +236,7 @@ useGameKeys((e) => {
           v-if="round.mode === 'dual'"
           type="button"
           class="match match-digit primary"
+          :class="feedbackClass('digit')"
           :disabled="!canPress"
           @pointerdown.prevent
           @click="press('digit')"
@@ -219,6 +247,7 @@ useGameKeys((e) => {
           v-else
           type="button"
           class="match primary"
+          :class="feedbackClass(active[0]!)"
           :disabled="!canPress"
           @pointerdown.prevent
           @click="press(active[0]!)"
@@ -241,6 +270,7 @@ useGameKeys((e) => {
         <template v-else-if="result.accuracy >= PASS_ACCURACY">
           N {{ result.from }} (streak {{ result.streak }}/{{ round.upAfter }})
         </template>
+        <template v-else-if="result.accuracy >= 0.5">N {{ result.from }} (streak reset)</template>
         <template v-else>N {{ result.from }}</template>
       </p>
       <button type="button" class="primary next" @click="start">Next</button>
@@ -303,6 +333,19 @@ useGameKeys((e) => {
   padding: var(--space-4) var(--space-5);
   font-size: var(--text-lg);
   touch-action: manipulation;
+}
+.match.fb-ok {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+.match.fb-bad {
+  background: var(--danger-dim);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.remember {
+  min-height: 1.5em;
 }
 .match:disabled {
   opacity: 0.4;

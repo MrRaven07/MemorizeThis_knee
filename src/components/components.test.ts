@@ -119,6 +119,15 @@ describe('GameShell', () => {
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', cancelable: true }))
     expect(w.emitted('quit')).toHaveLength(1)
   })
+
+  it('the header buttons do not take focus on click (Space stays with the game)', () => {
+    const w = mountShell()
+    for (const sel of ['button.quit', 'button.settings']) {
+      const e = new Event('pointerdown', { cancelable: true, bubbles: true })
+      w.find(sel).element.dispatchEvent(e)
+      expect(e.defaultPrevented).toBe(true)
+    }
+  })
 })
 
 describe('TrendSparkline', () => {

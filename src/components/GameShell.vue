@@ -48,7 +48,7 @@ onUnmounted(() => {
 <template>
   <section class="shell">
     <header class="bar">
-      <button type="button" class="quit" @click="emit('quit')">← Quit</button>
+      <button type="button" class="quit" @pointerdown.prevent @click="emit('quit')">← Quit</button>
       <h1 class="title">{{ title }}</h1>
       <span v-if="level !== undefined && level !== null" class="level mono">lvl {{ level }}</span>
       <SessionClock />
@@ -56,6 +56,7 @@ onUnmounted(() => {
         type="button"
         class="settings"
         aria-label="Game settings"
+        @pointerdown.prevent
         @click="emit('open-settings')"
       >
         ⚙
