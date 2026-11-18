@@ -45,8 +45,8 @@ const suit = computed(() => cardSuit(props.id).symbol)
   color: var(--suit-black);
 }
 .sm {
-  width: 2.4rem;
-  font-size: 0.6rem;
+  width: 2.6rem;
+  font-size: 0.65rem;
 }
 .md {
   width: 4.5rem;
@@ -79,7 +79,7 @@ const suit = computed(() => cardSuit(props.id).symbol)
   font-size: 2.6em;
 }
 .sm .center {
-  font-size: 1.15em;
+  font-size: 1.35em; /* rank + a readable suit symbol */
 }
 .sm .corner {
   display: none;

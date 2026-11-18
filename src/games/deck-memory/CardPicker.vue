@@ -86,6 +86,6 @@ function onKeydown(e: KeyboardEvent, i: number) {
   cursor: default;
 }
 .suit {
-  font-size: 1.05em;
+  font-size: 1.3em; /* ♠/♣ and ♥/♦ must be easy to tell apart */
 }
 </style>

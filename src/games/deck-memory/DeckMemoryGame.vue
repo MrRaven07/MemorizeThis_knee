@@ -171,7 +171,11 @@ useGameKeys((e) => {
     </template>
 
     <template v-else-if="phase === 'memorize'">
-      <TimerBar :progress="countdown.progress.value" />
+      <!-- the timer and Done stay on screen even when 52 cards scroll -->
+      <div class="memo-bar">
+        <TimerBar :progress="countdown.progress.value" />
+        <button type="button" class="primary done" @click="countdown.finishNow()">Done</button>
+      </div>
       <div v-if="round.view === 'one'" class="memorize one">
         <p class="position mono muted">{{ pos + 1 }} / {{ sequence.length }}</p>
         <PlayingCard :id="sequence[pos]!" size="lg" />
@@ -190,9 +194,13 @@ useGameKeys((e) => {
         </div>
       </div>
       <div v-else class="memorize row-view">
-        <PlayingCard v-for="(id, i) in sequence" :key="i" :id="id" size="md" />
+        <PlayingCard
+          v-for="(id, i) in sequence"
+          :key="i"
+          :id="id"
+          :size="sequence.length > 20 ? 'sm' : 'md'"
+        />
       </div>
-      <button type="button" class="primary done" @click="countdown.finishNow()">Done</button>
     </template>
 
     <template v-else-if="phase === 'recall'">
@@ -292,10 +300,22 @@ useGameKeys((e) => {
   align-items: center;
   gap: var(--space-3);
 }
+.memo-bar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding-block: var(--space-2);
+  background: var(--bg);
+}
 .row-view {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start; /* reading order: left to right, top to bottom */
   gap: var(--space-2);
   width: 100%;
 }

@@ -4,6 +4,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createRng } from '@/core/random/rng'
 import { appStorage } from '@/core/storage/persist'
 import type { RoundResult } from '@/games/types'
+import { useStatsStore } from '@/stores/stats'
 import DeckMemoryGame from './DeckMemoryGame.vue'
 import { cardCode } from './cards'
 import { DECK_MEMORY_DEFAULTS, dealSequence, type DeckMemorySettings } from './logic'
@@ -196,5 +197,18 @@ describe('DeckMemoryGame', () => {
     await flushPromises()
     const html = w.html()
     expect(html.indexOf('class="picker"')).toBeLessThan(html.indexOf('class="answer"'))
+  })
+
+  it('row view with many cards uses small cards and keeps Done reachable', async () => {
+    useStatsStore().saveStaircase('deck-memory', { level: 8, streakRight: 0, streakWrong: 0 }) // 26 cards
+    const w = mount(DeckMemoryGame, {
+      props: { settings: { ...DECK_MEMORY_DEFAULTS, view: 'row' }, rng: createRng(1) },
+      attachTo: document.body,
+    })
+    mounted.push(w)
+    await w.find('button.start').trigger('click')
+    expect(w.findAll('.memorize .playing-card.sm')).toHaveLength(26)
+    expect(w.find('.memo-bar').exists()).toBe(true)
+    expect(w.find('.memo-bar button.done').exists()).toBe(true)
   })
 })
