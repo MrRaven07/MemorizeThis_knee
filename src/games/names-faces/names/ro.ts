@@ -213,7 +213,7 @@ export const ro: NameSet = {
     'Toma',
     'Valeriu',
     'Vasilică',
-    'Viorică',
+    'Sorinel',
     'Zaharia',
     'Iacob',
   ],
