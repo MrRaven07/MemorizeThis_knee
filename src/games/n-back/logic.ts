@@ -1,5 +1,5 @@
 import {
-  stepStaircase,
+  stepThreeZone,
   type StaircaseConfig,
   type StaircaseState,
 } from '@/core/difficulty/staircase'
@@ -133,9 +133,8 @@ export function nextNBackState(
   cfg: StaircaseConfig,
   accuracy: number,
 ): StaircaseState {
-  if (accuracy >= PASS_ACCURACY) return stepStaircase(state, cfg, true)
-  if (accuracy < DROP_ACCURACY) return stepStaircase(state, cfg, false)
-  return { level: state.level, streakRight: 0, streakWrong: 0 }
+  const outcome = accuracy >= PASS_ACCURACY ? 'pass' : accuracy < DROP_ACCURACY ? 'drop' : 'stay'
+  return stepThreeZone(state, cfg, outcome)
 }
 
 export function summarizeNBack(rounds: RoundRecord[]): GameSummary {

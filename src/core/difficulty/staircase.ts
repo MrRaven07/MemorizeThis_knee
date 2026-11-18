@@ -63,3 +63,18 @@ export function clampStaircase(state: StaircaseState, cfg: StaircaseConfig): Sta
     streakWrong: Math.max(0, finiteOr(state?.streakWrong, 0)),
   }
 }
+
+/**
+ * Three-zone step for score-based games (N-Back, Quick Math): a pass counts
+ * toward going up, a drop lowers the level, and a "stay" keeps it but resets
+ * the streak (questions 014/015).
+ */
+export function stepThreeZone(
+  state: StaircaseState,
+  cfg: StaircaseConfig,
+  outcome: 'pass' | 'stay' | 'drop',
+): StaircaseState {
+  if (outcome === 'pass') return stepStaircase(state, cfg, true)
+  if (outcome === 'drop') return stepStaircase(state, cfg, false)
+  return { level: state.level, streakRight: 0, streakWrong: 0 }
+}

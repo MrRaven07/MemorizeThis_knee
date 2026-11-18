@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   clampStaircase,
   initStaircase,
+  stepThreeZone,
   stepStaircase,
   type StaircaseConfig,
   type StaircaseState,
@@ -79,5 +80,14 @@ describe('clampStaircase with corrupted saved data', () => {
     expect(s.level).toBe(4)
     expect(Number.isFinite(s.streakRight)).toBe(true)
     expect(Number.isFinite(s.streakWrong)).toBe(true)
+  })
+})
+
+describe('stepThreeZone', () => {
+  it('pass counts toward going up, drop lowers, stay resets the streak', () => {
+    const s = { level: 4, streakRight: 2, streakWrong: 0 }
+    expect(stepThreeZone(s, cfg, 'pass').level).toBe(5)
+    expect(stepThreeZone(s, cfg, 'drop').level).toBe(3)
+    expect(stepThreeZone(s, cfg, 'stay')).toEqual({ level: 4, streakRight: 0, streakWrong: 0 })
   })
 })
