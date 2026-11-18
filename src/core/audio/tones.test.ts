@@ -14,8 +14,8 @@ function fakeContext(state: 'running' | 'suspended' = 'running') {
     currentTime: 10,
     state,
     destination: {},
-    resume: vi.fn(() => Promise.resolve()),
-    close: vi.fn(() => Promise.resolve()),
+    resume: vi.fn<() => Promise<void>>(() => Promise.resolve()),
+    close: vi.fn<() => Promise<void>>(() => Promise.resolve()),
     createOscillator() {
       const o = {
         type: 'sine',
@@ -24,9 +24,9 @@ function fakeContext(state: 'running' | 'suspended' = 'running') {
             rec.frequency = v
           },
         },
-        connect: vi.fn(),
-        start: vi.fn(),
-        stop: vi.fn(),
+        connect: vi.fn<(n: unknown) => void>(),
+        start: vi.fn<(t: number) => void>(),
+        stop: vi.fn<(t: number) => void>(),
       }
       const rec = { type: '', frequency: 0, start: o.start, stop: o.stop }
       Object.defineProperty(rec, 'type', { get: () => o.type })
@@ -41,7 +41,7 @@ function fakeContext(state: 'running' | 'suspended' = 'running') {
           setValueAtTime: (v: number, t: number) => rec.calls.push(['set', v, t]),
           linearRampToValueAtTime: (v: number, t: number) => rec.calls.push(['ramp', v, t]),
         },
-        connect: vi.fn(),
+        connect: vi.fn<(n: unknown) => void>(),
       }
     },
   }
@@ -56,7 +56,7 @@ describe('tones', () => {
   })
 
   it('creates no AudioContext before unlock (first user gesture)', () => {
-    const factory = vi.fn(() => fakeContext().ctx)
+    const factory = vi.fn<() => AudioContextLike>(() => fakeContext().ctx)
     const p = createTonePlayer({ createContext: factory })
     p.play(0, 500, 60)
     expect(factory).not.toHaveBeenCalled()
