@@ -1,10 +1,10 @@
-# Plan 15 — Sequence (Simon-style) Implementation Plan
+# Plan 16 — Sequence (Simon-style) Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: superpowers:executing-plans (or subagent-driven-development). Steps use checkbox syntax.
 
-**Goal:** Sequence — colours and tones that grow one item per step, built for very long runs (hundreds of steps). **Ruling:** `docs/agents/questions/017-simon-sequence.md` (binding). Follows the `add-minigame` skill. Game id `sequence`, UI name **Sequence** (no trademarked toy name). Branch `feat/simon-sequence` from `main`, in its own worktree (another agent uses the main checkout).
+**Goal:** Sequence — colours and tones that grow one item per step, built for very long runs (hundreds of steps). **Ruling:** `docs/agents/questions/018-simon-sequence.md` (binding). Follows the `add-minigame` skill. Game id `sequence`, UI name **Sequence** (no trademarked toy name). Branch `feat/simon-sequence` from `main`, in its own worktree (another agent uses the main checkout).
 
-## Constraints (from 017)
+## Constraints (from 018)
 - A run = one growing sequence until the first mistake (or "End run"); one run = one `RoundResult` (`level: null`, `accuracy: null`, `success` = ties/beats previous best for the same pad count; metrics `{ reached, startLength, pads, steps }`).
 - Sequence generated lazily from the seeded RNG, append-only, safety cap 999. O(1) work per item; UI shows only current item, `i / n` and the step. Test a simulated run to 500.
 - Settings: `pads` 4|6|9 (default 4), `feedback` both|colors|tones (default both), `startLength` 1–50 (default 1), `baseMs` 400–1200 step 50 (default 700), `inputTimeout` 0 or 2–10 s (default 0 = off), `volume` 0–100 (default 60). Intro button "Start from best − 3" when a best exists for the pad count.

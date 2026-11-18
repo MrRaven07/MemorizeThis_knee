@@ -51,5 +51,5 @@ What changes in the build depending on the answer.
 | 013 | Scheduler starvation and repeats (review) | answered |
 | 014 | N-Back module | answered |
 | 015 | Memory Grid and Quick Math modules | answered |
-| 016 | Kim's Game module | answered |
-| 017 | Sequence (Simon-style) module | answered |
+| 017 | Kim's Game module | answered |
+| 018 | Sequence (Simon-style) module | answered |

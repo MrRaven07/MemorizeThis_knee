@@ -1,8 +1,8 @@
-# 016 — Kim's Game
+# 017 — Kim's Game
 
 - **Status:** answered
 - **Asked by:** builder · **Date:** 2026-11-18
-- **Plan / task:** plan 14
+- **Plan / task:** plan 15
 
 ## Context
 The owner asked for it (2026-11-18): "A tray of 10–20 objects appears, then disappears. The player lists them all, or says which one went missing. This is a classic scout and sniper exercise."

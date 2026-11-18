@@ -1,8 +1,8 @@
-# 017 — Simon-style Sequence
+# 018 — Simon-style Sequence
 
 - **Status:** answered
 - **Asked by:** builder · **Date:** 2026-11-18
-- **Plan / task:** plan 15
+- **Plan / task:** plan 16
 
 ## Context
 The owner asked for it (2026-11-18): "Simon-style Sequence. Colors or tones that grow longer each round. The scope is to make it for many many rounds."

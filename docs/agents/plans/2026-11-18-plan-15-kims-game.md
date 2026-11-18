@@ -1,10 +1,10 @@
-# Plan 14 — Kim's Game Implementation Plan
+# Plan 15 — Kim's Game Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: superpowers:executing-plans (or subagent-driven-development). Steps use checkbox syntax.
 
-**Goal:** Kim's Game — a tray of 10–20 objects is shown, hidden, then the player picks all of them (`list`) or the missing ones (`missing`). **Ruling:** `docs/agents/questions/016-kims-game.md` (binding). Follows the `add-minigame` skill. Branch `feat/kims-game` from `main`, in its own worktree (another agent uses the main checkout).
+**Goal:** Kim's Game — a tray of 10–20 objects is shown, hidden, then the player picks all of them (`list`) or the missing ones (`missing`). **Ruling:** `docs/agents/questions/017-kims-game.md` (binding). Follows the `add-minigame` skill. Branch `feat/kims-game` from `main`, in its own worktree (another agent uses the main checkout).
 
-## Constraints (from 016)
+## Constraints (from 017)
 - Catalogue ≥ 80 `{ id, emoji, name }`, unique ids and emoji, Unicode ≤ 13, no ZWJ/flags.
 - Tray 5×4, objects at random cells, no repeats, never the same tray twice in a row. All randomness via `createRng`.
 - Modes `list` | `missing` (default `list`), separate staircase per mode: key `kims-game:<mode>`. Levels L1–L11 = 10…20 objects; missing `k` = 1 (L1–4), 2 (L5–8), 3 (L9–11).
