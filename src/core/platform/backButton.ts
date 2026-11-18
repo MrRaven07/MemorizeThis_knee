@@ -1,11 +1,13 @@
 import type { Router } from 'vue-router'
+import { closeTopOverlay } from './overlays'
 
 /**
- * The Android back button: exits from Home, otherwise goes back — or Home
+ * The Android back button: closes an open panel first; exits from Home, otherwise goes back — or Home
  * when the page was opened directly (no history). Leaving a game this way
  * is the same as pressing Quit: the round is not recorded.
  */
 export async function handleBack(router: Router, app: { exitApp(): void }): Promise<void> {
+  if (closeTopOverlay()) return // an open panel closes first
   if (router.currentRoute.value.name === 'home') {
     app.exitApp()
     return

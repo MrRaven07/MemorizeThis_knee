@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useBackClosable } from '@/core/platform/overlays'
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { saveTextFile } from '@/core/platform/saveFile'
@@ -9,6 +10,10 @@ import { useSettingsStore, type MazeKeys } from '@/stores/settings'
 const settings = useSettingsStore()
 
 const pending = ref<{ json: string; exportedAt: number | null } | null>(null)
+useBackClosable(
+  () => pending.value !== null,
+  () => (pending.value = null),
+)
 const restoreError = ref<string | null>(null)
 
 function downloadBackup() {

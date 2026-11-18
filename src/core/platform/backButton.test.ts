@@ -1,7 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 import { h } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { effectScope, nextTick, ref } from 'vue'
 import { handleBack } from './backButton'
+import { useBackClosable } from './overlays'
 
 const Page = { render: () => h('p') }
 
@@ -40,5 +42,25 @@ describe('Android back button', () => {
     await router.push('/stats')
     await handleBack(router, { exitApp: vi.fn<() => void>() })
     expect(router.currentRoute.value.name).toBe('home')
+  })
+
+  it('closes an open panel instead of navigating', async () => {
+    const router = makeRouter()
+    await router.push('/')
+    await router.push('/stats')
+    const open = ref(true)
+    const scope = effectScope()
+    scope.run(() =>
+      useBackClosable(
+        () => open.value,
+        () => (open.value = false),
+      ),
+    )
+    await nextTick()
+    const exitApp = vi.fn<() => void>()
+    await handleBack(router, { exitApp })
+    expect(open.value).toBe(false)
+    expect(router.currentRoute.value.name).toBe('stats')
+    scope.stop()
   })
 })

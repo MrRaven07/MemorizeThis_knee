@@ -66,10 +66,14 @@ describe('useGameKeys', () => {
       expect(e.defaultPrevented).toBe(true)
     }
     expect(handler).not.toHaveBeenCalled()
-    const arrow = new KeyboardEvent('keydown', { key: 'ArrowRight', repeat: true, bubbles: true, cancelable: true })
+    const arrow = new KeyboardEvent('keydown', {
+      key: 'ArrowRight',
+      repeat: true,
+      bubbles: true,
+      cancelable: true,
+    })
     document.body.dispatchEvent(arrow)
     expect(handler).toHaveBeenCalledTimes(1)
     w.unmount()
   })
 })
-

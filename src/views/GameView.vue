@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useBackClosable } from '@/core/platform/overlays'
 import { computed, defineAsyncComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import GameShell from '@/components/GameShell.vue'
@@ -25,6 +26,10 @@ const GameComponent = defineAsyncComponent(module.component)
 
 const settings = computed(() => settingsStore.gameSettings(module))
 const showSettings = ref(false)
+useBackClosable(
+  () => showSettings.value,
+  () => (showSettings.value = false),
+)
 const level = ref<number | null>(null)
 
 function onRoundComplete(result: RoundResult) {

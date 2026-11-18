@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useBackClosable } from '@/core/platform/overlays'
 import { computed, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { saveTextFile } from '@/core/platform/saveFile'
@@ -23,7 +24,15 @@ const editing = ref<string | null>(null)
 const editInput = ref('')
 const editOutput = ref('')
 const confirmDelete = ref(false)
+useBackClosable(
+  () => confirmDelete.value,
+  () => (confirmDelete.value = false),
+)
 const confirmCard = ref<string | null>(null)
+useBackClosable(
+  () => confirmCard.value !== null,
+  () => (confirmCard.value = null),
+)
 const cardError = ref('')
 
 /** True if another card already uses this input (inputs must stay unique). */
