@@ -66,15 +66,17 @@ describe('memory grid logic', () => {
   it('patterns have the right count, distinct cells in range, and never repeat back-to-back', () => {
     const rng = createRng(4)
     let prev: number[] | undefined
+    let repeats = 0
     for (let i = 0; i < 200; i++) {
       const p = generatePattern(rng, 3, 3, prev)
       expect(p).toHaveLength(3)
       expect(new Set(p).size).toBe(3)
       expect(p.every((c) => c >= 0 && c < 9)).toBe(true)
       expect(p).toEqual([...p].sort((a, b) => a - b))
-      if (prev) expect(p).not.toEqual(prev)
+      if (prev && prev.join() === p.join()) repeats++
       prev = p
     }
+    expect(repeats).toBe(0)
   })
 
   it('scoring: exact, misses, wrong taps; tapping everything scores low', () => {
