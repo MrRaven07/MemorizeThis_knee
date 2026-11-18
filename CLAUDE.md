@@ -3,7 +3,7 @@
 A **memory gym**: minigames that train memory palace / art of memory techniques (method of loci, chunking, the Major System). The memory palace lives only in the player's head. The app supplies material to memorize and checks recall precisely and fairly. The owner built it for themselves, but anyone can clone it and play. The owner is **learning Vue**, so write clear, idiomatic Vue 3 rather than clever code.
 
 - Approved design: `docs/agents/specs/2026-11-10-vue-rewrite-design.md`
-- Plans: `docs/agents/plans/`. Questions and answers: `docs/agents/questions/`.
+- Future modules: `docs/agents/backlog.md`. Plans: `docs/agents/plans/`. Questions and answers: `docs/agents/questions/`.
 - Context: `docs/agents/context/architecture.md` (how pieces connect, saved data keys), `docs/agents/context/memory-theory.md` (the theory each game trains). Decisions: `docs/agents/decisions/log.md`.
 - Adding a game: follow the `add-minigame` skill (`.claude/skills/add-minigame/SKILL.md`); worked example `src/games/long-number/`.
 - Adding a license plate country: follow the `add-plate-country` skill (`.claude/skills/add-plate-country/SKILL.md`); worked example `src/games/plates/formats/ro.ts`.
