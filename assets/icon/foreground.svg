@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108">
+  <!-- MemorizeThis icon: a palace doorway with a route of loci (original design, GPL-3.0) -->
+  <path d="M33 80 V52 a21 21 0 0 1 42 0 V80" fill="none" stroke="#7EE787" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="45,73 54,63 63,54" fill="none" stroke="#8B949E" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="1 5"/>
+  <circle cx="45" cy="73" r="4.5" fill="#E6EDF3"/>
+  <circle cx="54" cy="63" r="4.5" fill="#E6EDF3"/>
+  <circle cx="63" cy="54" r="5.5" fill="#7EE787"/>
+</svg>

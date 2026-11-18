@@ -75,7 +75,8 @@ Without `keystore.properties` the release build is produced unsigned (`app-relea
 - [x] **N-Back** — press when the item matches the one N steps back (positions, digits, or both)
 - [x] Stats page and session summary (day streak, time per game, daily trend lines)
 - [x] Android app (Capacitor) — debug APK
-- [ ] Logo and visual polish
+- [x] Logo / app icon (`assets/icon/foreground.svg`, regenerate with `scripts/make-icons.sh`)
+- [ ] Visual polish pass
 
 ## Flashcard file format
 
