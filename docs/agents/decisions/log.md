@@ -30,4 +30,4 @@ Short, dated entries: what was decided, and why. Add newest at the bottom.
 ## 2026-11-18
 
 - **N-Back module** (owner's choice from the module ideas list). Rules in questions/014: accuracy = hits / (hits + misses + false alarms) so not pressing scores 0; three zones (≥80% counts up, <50% drops N, otherwise stay); a separate level per mode (`n-back:<mode>`); exactly 6 targets per stream; drift-free timing from one countdown.
-
+- **Memory Grid** (owner's idea): 12-level pattern curve, view 1 s + 0.15 s per lit cell, exact copy passes, accuracy hits/(hits+misses+wrong) (questions/015).

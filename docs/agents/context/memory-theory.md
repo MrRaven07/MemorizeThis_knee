@@ -22,6 +22,7 @@ MemorizeThis trains the classical **art of memory**. Players already carry their
 | **Card Match** | Spatial location memory; separating memory failure from luck | Grid size grows; preview time can be 0 |
 | **Deck Memory** | Memorizing a shuffled deck: card → image (often PAO), images placed along a palace route | Staircase on deck size 4 → 52; memorization time is recorded |
 | **N-Back** | Working memory: holding and constantly updating the last N items | N rises after passed rounds (≥80%), drops under 50%; separate levels for position, digit and dual |
+| **Memory Grid** | Visual-spatial memory: holding a whole pattern at a glance (chunking cells into shapes) | Grid size and lit cells grow (3×3/3 → 7×7/16); viewing time scales with lit cells |
 | **Major System Flashcards** | Instant digit↔word recall of the player's own code | Box system (priority queue): misses come back sooner |
 
 ## PAO and Speed Cards

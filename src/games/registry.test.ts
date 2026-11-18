@@ -11,6 +11,7 @@ describe('registry', () => {
       'card-match',
       'deck-memory',
       'n-back',
+      'memory-grid',
     ])
   })
 
