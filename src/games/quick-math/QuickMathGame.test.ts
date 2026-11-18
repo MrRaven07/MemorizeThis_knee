@@ -131,4 +131,53 @@ describe('QuickMathGame', () => {
     await flushPromises()
     expect(w.emitted('round-complete')).toBeUndefined()
   })
+
+  it('the input keeps focus but is read-only while the right answer is shown', async () => {
+    const { w, next } = setup()
+    await w.find('button.start').trigger('click')
+    const input = w.find('input')
+    expect(document.activeElement).toBe(input.element)
+    await answer(w, String(next().answer + 1))
+    expect(input.attributes('readonly')).toBeDefined()
+    expect(document.activeElement).toBe(input.element)
+    vi.advanceTimersByTime(450)
+    await flushPromises()
+    expect(input.attributes('readonly')).toBeUndefined()
+  })
+
+  it('the sprint ending during a reveal counts the wrong answer once and stops', async () => {
+    const { w, next } = setup()
+    await w.find('button.start').trigger('click')
+    for (let i = 0; i < 3; i++) await answer(w, String(next().answer))
+    vi.advanceTimersByTime(29_800)
+    await flushPromises()
+    await answer(w, String(next().answer + 1))
+    vi.advanceTimersByTime(1000)
+    await flushPromises()
+    const done = w.emitted('round-complete')!
+    expect(done).toHaveLength(1)
+    expect((done[0] as [RoundResult])[0].metrics).toMatchObject({ correct: 3, wrong: 1 })
+    expect(w.find('.problem').exists()).toBe(false)
+  })
+
+  it('tapping ✓ submits and keeps the input focused', async () => {
+    const { w, next } = setup()
+    await w.find('button.start').trigger('click')
+    const p = next()
+    await w.find('input').setValue(String(p.answer))
+    const down = new Event('pointerdown', { cancelable: true, bubbles: true })
+    w.find('button.ok').element.dispatchEvent(down)
+    expect(down.defaultPrevented).toBe(true)
+    await w.find('button.ok').trigger('click')
+    expect(w.find('.problem').text()).not.toBe(p.text)
+    expect(document.activeElement).toBe(w.find('input').element)
+  })
+
+  it('the shown target follows the round, not settings changed mid-sprint', async () => {
+    const { w } = setup()
+    await w.find('button.start').trigger('click')
+    expect(w.find('.score').text()).toContain('target 10')
+    await w.setProps({ settings: { ...SPRINT, sprintSeconds: 180 } })
+    expect(w.find('.score').text()).toContain('target 10')
+  })
 })

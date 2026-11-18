@@ -61,8 +61,8 @@ export interface MathLevel {
   div: readonly [Range, Range]
   /** dividend and divisor (divisor ≥ 2) */
   mod: readonly [Range, Range]
-  /** correct answers per minute needed to pass */
-  targetPerMinute: number
+  /** typical seconds per problem for each operation (sets the pass target) */
+  secPerProblem: Record<Op, number>
 }
 
 /** Difficulty curve (question 015). Index 0 = level 1. */
@@ -81,7 +81,7 @@ export const MATH_LEVELS: readonly MathLevel[] = [
       [1, 20],
       [2, 5],
     ],
-    targetPerMinute: 20,
+    secPerProblem: { add: 2, sub: 2.5, mul: 3, div: 3.5, mod: 4 },
   },
   {
     add: [1, 20],
@@ -97,7 +97,7 @@ export const MATH_LEVELS: readonly MathLevel[] = [
       [5, 30],
       [2, 9],
     ],
-    targetPerMinute: 18,
+    secPerProblem: { add: 2.5, sub: 3, mul: 3, div: 3.5, mod: 4.5 },
   },
   {
     add: [10, 50],
@@ -113,7 +113,7 @@ export const MATH_LEVELS: readonly MathLevel[] = [
       [10, 50],
       [2, 9],
     ],
-    targetPerMinute: 16,
+    secPerProblem: { add: 3, sub: 3.5, mul: 3.5, div: 4, mod: 5 },
   },
   {
     add: [10, 99],
@@ -129,7 +129,7 @@ export const MATH_LEVELS: readonly MathLevel[] = [
       [20, 100],
       [3, 12],
     ],
-    targetPerMinute: 14,
+    secPerProblem: { add: 3.5, sub: 4, mul: 5, div: 4.5, mod: 5.5 },
   },
   {
     add: [20, 99],
@@ -145,7 +145,7 @@ export const MATH_LEVELS: readonly MathLevel[] = [
       [30, 100],
       [3, 12],
     ],
-    targetPerMinute: 12,
+    secPerProblem: { add: 4, sub: 4.5, mul: 5, div: 6, mod: 6 },
   },
   {
     add: [50, 199],
@@ -161,7 +161,7 @@ export const MATH_LEVELS: readonly MathLevel[] = [
       [50, 200],
       [3, 15],
     ],
-    targetPerMinute: 11,
+    secPerProblem: { add: 4.5, sub: 5, mul: 6, div: 6, mod: 6.5 },
   },
   {
     add: [100, 499],
@@ -177,7 +177,7 @@ export const MATH_LEVELS: readonly MathLevel[] = [
       [100, 300],
       [5, 19],
     ],
-    targetPerMinute: 10,
+    secPerProblem: { add: 5, sub: 5.5, mul: 9, div: 6, mod: 7 },
   },
   {
     add: [100, 999],
@@ -193,7 +193,7 @@ export const MATH_LEVELS: readonly MathLevel[] = [
       [100, 500],
       [7, 25],
     ],
-    targetPerMinute: 8,
+    secPerProblem: { add: 6, sub: 7, mul: 14, div: 8, mod: 8 },
   },
   {
     add: [200, 999],
@@ -209,7 +209,7 @@ export const MATH_LEVELS: readonly MathLevel[] = [
       [200, 999],
       [11, 40],
     ],
-    targetPerMinute: 7,
+    secPerProblem: { add: 6, sub: 7, mul: 18, div: 9, mod: 9 },
   },
   {
     add: [300, 999],
@@ -225,7 +225,7 @@ export const MATH_LEVELS: readonly MathLevel[] = [
       [100, 999],
       [11, 99],
     ],
-    targetPerMinute: 6,
+    secPerProblem: { add: 6, sub: 7, mul: 25, div: 10, mod: 10 },
   },
 ]
 
@@ -246,8 +246,16 @@ export function mathLevelInfo(level: number): MathLevel {
   return MATH_LEVELS[i]!
 }
 
-export function targetCorrect(level: number, sprintSeconds: number): number {
-  return Math.ceil((mathLevelInfo(level).targetPerMinute * sprintSeconds) / 60)
+/**
+ * Correct answers needed to pass: the sprint divided by the average time per
+ * problem over the enabled operations (× is slower than +, so a ×-only
+ * sprint needs fewer answers). Never below 1.
+ */
+export function targetCorrect(level: number, sprintSeconds: number, ops: readonly Op[]): number {
+  const secs = mathLevelInfo(level).secPerProblem
+  const used = ops.length > 0 ? ops : ALL_OPS
+  const avg = used.reduce((a, op) => a + secs[op], 0) / used.length
+  return Math.max(1, Math.round(sprintSeconds / avg))
 }
 
 /** The ops switched on; if none are, all of them (and `allOff` so the UI can say so). */
@@ -320,10 +328,11 @@ export function mathOutcome(
   wrong: number,
   level: number,
   sprintSeconds: number,
+  ops: readonly Op[],
 ): 'pass' | 'stay' | 'drop' {
   const answered = correct + wrong
   const accuracy = answered === 0 ? 0 : correct / answered
-  if (accuracy >= 0.9 && correct >= targetCorrect(level, sprintSeconds)) return 'pass'
+  if (accuracy >= 0.9 && correct >= targetCorrect(level, sprintSeconds, ops)) return 'pass'
   if (accuracy < 0.6) return 'drop'
   return 'stay'
 }

@@ -166,4 +166,16 @@ describe('MemoryGridGame', () => {
     expect(w.emitted('level')!.at(-1)).toEqual([2])
     expect(w.text()).toContain('Level 1 → 2')
   })
+
+  it('Clear keeps keyboard focus on the grid; the result is described for screen readers', async () => {
+    const { w, pattern } = setup()
+    await toRecall(w)
+    await w.findAll('button.cell')[pattern[0]!]!.trigger('click')
+    await w.find('button.clear').trigger('click')
+    await flushPromises()
+    expect((document.activeElement as HTMLElement).classList.contains('cell')).toBe(true)
+    await w.findAll('button.cell')[pattern[0]!]!.trigger('click')
+    await w.find('button.check').trigger('click')
+    expect(w.find('.grid').attributes('aria-label')).toContain('1 found, 3 missed, 0 wrong')
+  })
 })

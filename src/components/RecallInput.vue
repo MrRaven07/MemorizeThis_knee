@@ -12,6 +12,8 @@ const props = withDefaults(
     autofocus?: boolean
     autocapitalize?: 'off' | 'characters'
     enterkeyhint?: 'done' | 'next' | 'go'
+    /** keeps focus (and the phone keyboard) but blocks typing */
+    readonly?: boolean
   }>(),
   {
     inputmode: 'numeric',
@@ -19,6 +21,7 @@ const props = withDefaults(
     autofocus: true,
     autocapitalize: 'off',
     enterkeyhint: 'done',
+    readonly: false,
   },
 )
 
@@ -55,6 +58,7 @@ function onKeydown(e: KeyboardEvent) {
       autocomplete="off"
       :autocapitalize="autocapitalize"
       :enterkeyhint="enterkeyhint"
+      :readonly="readonly || undefined"
       autocorrect="off"
       spellcheck="false"
       @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"

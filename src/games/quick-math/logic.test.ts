@@ -3,6 +3,7 @@ import { createRng } from '@/core/random/rng'
 import { sanitizeSettings } from '@/games/settings'
 import type { RoundRecord } from '@/games/types'
 import {
+  ALL_OPS,
   MATH_LEVELS,
   QUICK_MATH_DEFAULTS,
   QUICK_MATH_FIELDS,
@@ -41,14 +42,23 @@ describe('quick math logic', () => {
     expect(MATH_LEVELS).toHaveLength(10)
   })
 
-  it('targets fall as levels get harder and scale with sprint length', () => {
-    const t = MATH_LEVELS.map((l) => l.targetPerMinute)
-    expect(t[0]).toBe(20)
-    expect(t[9]).toBe(6)
-    expect(t.every((v, i) => i === 0 || v <= t[i - 1]!)).toBe(true)
-    expect(targetCorrect(1, 60)).toBe(20)
-    expect(targetCorrect(1, 30)).toBe(10)
-    expect(targetCorrect(10, 90)).toBe(9)
+  it('targets depend on the enabled operations, fall with level, and scale with sprint length', () => {
+    const all = [...ALL_OPS]
+    expect(targetCorrect(1, 60, all)).toBe(20)
+    expect(targetCorrect(1, 30, all)).toBe(10)
+    expect(targetCorrect(10, 60, all)).toBe(5)
+    // × only at the top is slow; + only is fast — the target follows
+    expect(targetCorrect(10, 60, ['mul'])).toBe(2)
+    expect(targetCorrect(10, 60, ['add'])).toBe(10)
+    expect(targetCorrect(10, 1, ['mul'])).toBe(1) // never zero
+    const problems: string[] = []
+    for (const op of ALL_OPS) {
+      for (let l = 2; l <= 10; l++) {
+        if (targetCorrect(l, 60, [op]) > targetCorrect(l - 1, 60, [op]))
+          problems.push(`${op} L${l}`)
+      }
+    }
+    expect(problems).toEqual([])
   })
 
   it('enabled operations; all off means all on (with a flag)', () => {
@@ -112,11 +122,13 @@ describe('quick math logic', () => {
   })
 
   it('three zones: pass needs ≥90% and the target; <60% drops', () => {
-    expect(mathOutcome(20, 2, 1, 60)).toBe('pass')
-    expect(mathOutcome(19, 0, 1, 60)).toBe('stay')
-    expect(mathOutcome(20, 4, 1, 60)).toBe('stay')
-    expect(mathOutcome(5, 5, 1, 60)).toBe('drop')
-    expect(mathOutcome(0, 0, 1, 60)).toBe('drop')
+    const all = [...ALL_OPS]
+    expect(mathOutcome(20, 2, 1, 60, all)).toBe('pass')
+    expect(mathOutcome(19, 0, 1, 60, all)).toBe('stay')
+    expect(mathOutcome(20, 4, 1, 60, all)).toBe('stay')
+    expect(mathOutcome(5, 5, 1, 60, all)).toBe('drop')
+    expect(mathOutcome(0, 0, 1, 60, all)).toBe('drop')
+    expect(mathOutcome(2, 0, 10, 60, ['mul'])).toBe('pass')
   })
 
   it('summary', () => {

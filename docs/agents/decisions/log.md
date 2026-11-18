@@ -32,3 +32,6 @@ Short, dated entries: what was decided, and why. Add newest at the bottom.
 - **N-Back module** (owner's choice from the module ideas list). Rules in questions/014: accuracy = hits / (hits + misses + false alarms) so not pressing scores 0; three zones (≥80% counts up, <50% drops N, otherwise stay); a separate level per mode (`n-back:<mode>`); exactly 6 targets per stream; drift-free timing from one countdown.
 - **Memory Grid** (owner's idea): 12-level pattern curve, view 1 s + 0.15 s per lit cell, exact copy passes, accuracy hits/(hits+misses+wrong) (questions/015).
 - **Quick Math** (owner's idea): timed sprint, exact non-negative answers, per-level target per minute, three zones (≥90% + target passes, <60% drops); the three-zone step moved to `core/difficulty` (questions/015).
+- **Memory Grid range changed by the owner:** 4×4 up to 13×13 over 20 levels (questions/015, owner decision).
+- **Quick Math targets per operation** (review finding): each level has a typical time per problem for each operation, and the pass target is sprint ÷ the average over the *enabled* operations (rounded, min 1), so ×-only sprints aren't impossible and +-only ones aren't trivial. With all operations on, it stays close to 015's 20 → 6 per minute.
+

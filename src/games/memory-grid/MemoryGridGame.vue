@@ -73,6 +73,12 @@ async function start() {
   buttons.value[0]?.focus()
 }
 
+function clearAnswer() {
+  answer.value = new Set()
+  // the Clear button disables itself: keep keyboard focus on the grid
+  void nextTick(() => buttons.value[active.value]?.focus())
+}
+
 function toggle(i: number) {
   if (phase.value !== 'recall') return
   const next = new Set(answer.value)
@@ -199,12 +205,7 @@ useGameKeys((e) => {
         />
       </div>
       <div class="row">
-        <button
-          type="button"
-          class="clear"
-          :disabled="answer.size === 0"
-          @click="answer = new Set()"
-        >
+        <button type="button" class="clear" :disabled="answer.size === 0" @click="clearAnswer">
           Clear
         </button>
         <button type="button" class="primary check" @click="check">Check</button>
@@ -217,7 +218,7 @@ useGameKeys((e) => {
         :class="{ dense: size >= 10 }"
         :style="{ gridTemplateColumns: `repeat(${size}, 1fr)` }"
         role="img"
-        aria-label="Your answer compared with the pattern"
+        :aria-label="`Your answer: ${score.hits} found, ${score.misses} missed, ${score.wrong} wrong`"
       >
         <div v-for="i in cells" :key="i" class="cell" :class="resultMark(i).cls">
           <span aria-hidden="true">{{ resultMark(i).mark }}</span>

@@ -55,7 +55,11 @@ const outcome = ref<{
 let resultShownAt = 0
 
 const allOff = computed(() => enabledOps(props.settings).allOff)
-const target = computed(() => targetCorrect(level.value, props.settings.sprintSeconds))
+/** Before a sprint: the current settings; during and after: the round's snapshot. */
+const target = computed(() => {
+  const s = phase.value === 'ready' ? props.settings : round.value
+  return targetCorrect(level.value, s.sprintSeconds, enabledOps(s).ops)
+})
 
 onMounted(() => emit('level', level.value))
 
@@ -101,7 +105,13 @@ function finish() {
   reveal.cancel()
   const cfg = mathStaircase(round.value)
   const before = stats.getStaircase(QUICK_MATH_ID, cfg)
-  const zone = mathOutcome(correct.value, wrong.value, before.level, round.value.sprintSeconds)
+  const zone = mathOutcome(
+    correct.value,
+    wrong.value,
+    before.level,
+    round.value.sprintSeconds,
+    enabledOps(round.value).ops,
+  )
   const after = stepThreeZone(before, cfg, zone)
   stats.saveStaircase(QUICK_MATH_ID, after)
   const answered = correct.value + wrong.value
@@ -165,7 +175,13 @@ useGameKeys((e) => {
         <template v-if="revealed !== null">= {{ revealed }}</template>
       </p>
       <div class="answer-row">
-        <RecallInput v-model="input" label="Answer" inputmode="numeric" @submit="submit" />
+        <RecallInput
+          v-model="input"
+          label="Answer"
+          inputmode="numeric"
+          :readonly="revealed !== null"
+          @submit="submit"
+        />
         <button
           type="button"
           class="primary ok"
@@ -184,7 +200,7 @@ useGameKeys((e) => {
       </p>
       <p class="mono small muted">
         {{ Math.round(((correct * 60) / round.sprintSeconds) * 10) / 10 }} per minute · needed
-        {{ targetCorrect(outcome.from, round.sprintSeconds) }} at 90%+
+        {{ targetCorrect(outcome.from, round.sprintSeconds, enabledOps(round).ops) }} at 90%+
       </p>
       <p class="change mono">
         {{
