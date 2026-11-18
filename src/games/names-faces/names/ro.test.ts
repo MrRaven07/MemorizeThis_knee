@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { getNameSet, nameSets } from './index'
 import { ro } from './ro'
+import { foldName } from '../logic'
 
 describe('Romanian names', () => {
   it('has enough distinct names', () => {
@@ -22,5 +23,14 @@ describe('Romanian names', () => {
   it('is registered and is the fallback', () => {
     expect(nameSets.map((n) => n.id)).toEqual(['ro'])
     expect(getNameSet('zz')).toBe(ro)
+  })
+
+  it('no duplicates after accent folding; no first name in both lists', () => {
+    for (const list of [ro.female, ro.male, ro.last]) {
+      const folded = list.map(foldName)
+      expect(new Set(folded).size).toBe(list.length)
+    }
+    const male = new Set(ro.male.map(foldName))
+    expect(ro.female.filter((n) => male.has(foldName(n)))).toEqual([])
   })
 })

@@ -3,6 +3,12 @@ import type { NameSet } from './types'
 /**
  * Romanian names: common first names and surnames, with diacritics
  * (ș ț ă â î — comma-below forms, as in standard Romanian).
+ *
+ * Source: compiled by hand from widely used Romanian given names and
+ * surnames; for reference see Wikipedia, "Romanian name" and "List of the most
+ * common surnames in Europe#Romania". Not a frequency ranking.
+ * Rules (tested): no duplicates after accent folding, NFC text, and no name
+ * in both the female and male lists.
  */
 export const ro: NameSet = {
   id: 'ro',
