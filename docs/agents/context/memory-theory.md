@@ -21,11 +21,16 @@ MemorizeThis trains the classical **art of memory**. Players already carry their
 | **Maze** | Spatial memory and route encoding (the route *is* a palace walk) | Grid size and spike count grow; viewing time can shrink |
 | **Card Match** | Spatial location memory; separating memory failure from luck | Grid size grows; preview time can be 0 |
 | **Deck Memory** | Memorizing a shuffled deck: card → image (often PAO), images placed along a palace route | Staircase on deck size 4 → 52; memorization time is recorded |
+| **N-Back** | Working memory: holding and constantly updating the last N items | N rises after passed rounds (≥80%), drops under 50%; separate levels for position, digit and dual |
 | **Major System Flashcards** | Instant digit↔word recall of the player's own code | Box system (priority queue): misses come back sooner |
 
 ## PAO and Speed Cards
 
 **Speed Cards** is a classic memory-sport discipline: memorize the order of a shuffled 52-card deck as fast as possible, then rebuild it. Competitors usually give every card a fixed image, often in a **PAO** system (Person-Action-Object). Each card is a person, an action and an object, so three cards merge into one scene ("Einstein juggling a pineapple"). The scenes are placed one per location along a memory palace route. Deck Memory trains exactly this: exposure, then strict sequence recall, with the memorization time recorded as the sport's key metric.
+
+## N-back
+
+The **n-back task** (Kirchner, 1958) is a standard working-memory exercise: items arrive one by one, and the player signals when the current item matches the one N steps earlier. Every new item must be held and the oldest dropped, so it trains *updating* working memory, the "scratchpad" that memory-palace encoding happens in. The dual version (position + digit at once, Jaeggi et al., 2008) loads two channels together. Accuracy counts hits against misses and false alarms, so pressing randomly or never pressing can't score well.
 
 ## Design guidance for new games
 

@@ -27,3 +27,7 @@ Short, dated entries: what was decided, and why. Add newest at the bottom.
 - **Schema v2:** sessions count flashcard answers (`cards`), via a real migration (questions/011).
 - **Smart scheduler amended** (questions/013): no card within the last 3 draws; at most 3 forced returns in a row, so always-missed cards can't starve the rest.
 
+## 2026-11-18
+
+- **N-Back module** (owner's choice from the module ideas list). Rules in questions/014: accuracy = hits / (hits + misses + false alarms) so not pressing scores 0; three zones (≥80% counts up, <50% drops N, otherwise stay); a separate level per mode (`n-back:<mode>`); exactly 6 targets per stream; drift-free timing from one countdown.
+

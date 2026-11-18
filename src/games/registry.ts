@@ -2,6 +2,7 @@ import { cardMatch } from './card-match'
 import { deckMemory } from './deck-memory'
 import { longNumber } from './long-number'
 import { maze } from './maze'
+import { nBack } from './n-back'
 import { numberFlash } from './number-flash'
 import { plates } from './plates'
 import type { GameModule } from './types'
@@ -18,6 +19,7 @@ export const games: GameModule<any>[] = [
   maze,
   cardMatch,
   deckMemory,
+  nBack,
 ]
 
 export function getGame(id: string): GameModule | undefined {

@@ -55,6 +55,7 @@ On Linux you can test with [Waydroid](https://waydro.id/): `waydroid session sta
 - [x] **Card Match** — find the pairs in the fewest moves
 - [x] **Major System Flashcards** — your own number→word decks (CSV/JSON import)
 - [x] **Deck Memory** — memorize shuffled playing cards, then rebuild the order (Speed Cards)
+- [x] **N-Back** — press when the item matches the one N steps back (positions, digits, or both)
 - [x] Stats page and session summary (day streak, time per game, daily trend lines)
 - [x] Android app (Capacitor) — debug APK
 - [ ] Logo and visual polish
