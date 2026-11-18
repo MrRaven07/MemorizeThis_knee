@@ -15,7 +15,8 @@
     "lint:eslint": "eslint . --fix --cache",
     "format": "prettier --write --experimental-cli src/",
     "android:sync": "npm run build && cap sync android",
-    "android:build": "npm run android:sync && cd android && ./gradlew assembleDebug"
+    "android:build": "npm run android:sync && cd android && ./gradlew assembleDebug",
+    "android:release": "npm run android:sync && cd android && ./gradlew assembleRelease bundleRelease"
   },
   "dependencies": {
     "@capacitor/android": "8.5.3",

@@ -44,6 +44,23 @@ adb install -r android/app/build/outputs/apk/debug/app-debug.apk
 
 On Linux you can test with [Waydroid](https://waydro.id/): `waydroid session start`, then `waydroid app install android/app/build/outputs/apk/debug/app-debug.apk`.
 
+### Release build
+
+1. Create your signing key once, and keep it (and its passwords) safe and backed up. Every update must be signed with the same key:
+   ```bash
+   keytool -genkeypair -v -keystore ~/keys/memorizethis.jks -alias memorizethis -keyalg RSA -keysize 2048 -validity 10000
+   ```
+2. Copy `android/keystore.properties.example` to `android/keystore.properties` (git-ignored) and fill it in.
+3. Raise `versionCode` (an integer that goes up every release) and `versionName` in `android/app/build.gradle`.
+4. Build:
+   ```bash
+   npm run android:release
+   # android/app/build/outputs/apk/release/app-release.apk     → install or share directly
+   # android/app/build/outputs/bundle/release/app-release.aab  → upload to Google Play
+   ```
+
+Without `keystore.properties` the release build is produced unsigned (`app-release-unsigned.apk`).
+
 ## Roadmap
 
 - [x] Skeleton (vibe-coded mockup, 01/10/2026)
