@@ -163,6 +163,7 @@ useGameKeys((e) => {
       <TimerBar :progress="countdown.progress.value" />
       <div
         class="grid"
+        :class="{ dense: size >= 10 }"
         :style="{ gridTemplateColumns: `repeat(${size}, 1fr)` }"
         role="img"
         aria-label="Pattern to remember"
@@ -177,6 +178,7 @@ useGameKeys((e) => {
       </p>
       <div
         class="grid"
+        :class="{ dense: size >= 10 }"
         :style="{ gridTemplateColumns: `repeat(${size}, 1fr)` }"
         role="group"
         aria-label="Rebuild the pattern"
@@ -212,6 +214,7 @@ useGameKeys((e) => {
     <template v-else-if="score && change">
       <div
         class="grid"
+        :class="{ dense: size >= 10 }"
         :style="{ gridTemplateColumns: `repeat(${size}, 1fr)` }"
         role="img"
         aria-label="Your answer compared with the pattern"
@@ -261,8 +264,16 @@ useGameKeys((e) => {
 .grid {
   display: grid;
   gap: var(--space-1);
-  width: min(100%, 22rem);
+  width: min(100%, 30rem);
   aspect-ratio: 1;
+}
+/* big grids (10×10 to 13×13): thinner gaps so cells stay as large as possible */
+.grid.dense {
+  gap: 2px;
+}
+.grid.dense .cell {
+  border-radius: 3px;
+  font-size: var(--text-sm);
 }
 .cell {
   padding: 0;

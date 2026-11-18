@@ -25,41 +25,54 @@ describe('memory grid logic', () => {
     expect(gridStaircase({ ...MEMORY_GRID_DEFAULTS, upAfter: 4 })).toEqual({
       start: 1,
       min: 1,
-      max: 12,
+      max: 20,
       upAfter: 4,
       upStep: 1,
       downAfter: 1,
       downStep: 1,
     })
-    expect(gridLevelInfo(99)).toBe(GRID_LEVELS[11])
+    expect(gridLevelInfo(99)).toBe(GRID_LEVELS[19])
+    expect(gridLevelInfo(0)).toBe(GRID_LEVELS[0])
   })
 
-  it('levels match the ruling and never get easier', () => {
+  it('levels follow the owner decision: 4×4 up to 13×13, never easier', () => {
     expect(GRID_LEVELS.map((l) => `${l.size}/${l.lit}`)).toEqual([
-      '3/3',
-      '3/4',
+      '4/4',
       '4/5',
-      '4/6',
-      '4/7',
-      '5/8',
-      '5/9',
-      '5/10',
-      '6/11',
-      '6/12',
-      '6/14',
-      '7/16',
+      '5/6',
+      '5/7',
+      '6/8',
+      '6/9',
+      '7/10',
+      '7/11',
+      '8/12',
+      '8/13',
+      '9/14',
+      '9/15',
+      '10/16',
+      '10/17',
+      '11/18',
+      '11/19',
+      '12/20',
+      '12/22',
+      '13/24',
+      '13/26',
     ])
+    expect(GRID_LEVELS[0]!.size).toBe(4)
+    expect(GRID_LEVELS.at(-1)!.size).toBe(13)
     const problems = GRID_LEVELS.flatMap((l, i) => {
       const p = GRID_LEVELS[i - 1]
       return p && (l.size < p.size || l.lit <= p.lit) ? [`L${i + 1}`] : []
     })
     expect(problems).toEqual([])
+    // every size from 4 to 13 appears
+    expect([...new Set(GRID_LEVELS.map((l) => l.size))]).toEqual([4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
   })
 
   it('view time grows with lit cells, scales, and has a floor', () => {
-    expect(gridViewMs(1, 1)).toBe(1450)
-    expect(gridViewMs(12, 1)).toBe(3400)
-    expect(gridViewMs(1, 2)).toBe(2900)
+    expect(gridViewMs(1, 1)).toBe(1600)
+    expect(gridViewMs(20, 1)).toBe(4900)
+    expect(gridViewMs(1, 2)).toBe(3200)
     expect(gridViewMs(1, 0.1)).toBe(500)
   })
 
@@ -121,5 +134,26 @@ describe('memory grid logic', () => {
     ])
     expect(summarizeMemoryGrid([]).headline).toBe('not played')
     expect(summarizeMemoryGrid([mk(1, false, 0.2)]).headline).toBe('no perfect round yet')
+  })
+
+  it('13×13 patterns: 26 distinct cells in range, many seeds', () => {
+    const problems: string[] = []
+    for (let seed = 0; seed < 300; seed++) {
+      const p = generatePattern(createRng(seed), 13, 26)
+      if (p.length !== 26 || new Set(p).size !== 26 || p.some((c) => c < 0 || c >= 169))
+        problems.push(`seed ${seed}`)
+    }
+    expect(problems).toEqual([])
+  })
+
+  it('scoring a big grid: one miss and one wrong tap', () => {
+    const pattern = Array.from({ length: 26 }, (_, i) => i * 6)
+    const answer = [...pattern.slice(1), 1]
+    expect(scoreGrid(pattern, answer)).toMatchObject({
+      hits: 25,
+      misses: 1,
+      wrong: 1,
+      exact: false,
+    })
   })
 })

@@ -51,3 +51,7 @@ Defines both modules' difficulty curves and success rules.
     - Accuracy = correct / attempted, and 0 when nothing was attempted. Reuse N-back's three-zone helper. If it lives in `n-back/`, move it to `core/difficulty/` with its tests unchanged rather than importing one game from another.
 11. **Input: approved.** Enter submits, and Enter on an empty input is ignored. Show the ✓ on-screen button, plus feedback with ✓ or ✗ and the correct answer, not colour alone.
 12. **Summary: approved.** Store `metrics: { correct, attempted, sprintMs }`. Correct answers per minute = correct / (sprintMs / 60000).
+
+## Owner decision
+(2026-11-18) Memory Grid starts at **4×4** and goes up to **13×13**. The builder stretched the curve to 20 levels (two per grid size, lit cells growing every level): 4×4/4 · 4×4/5 · 5×5/6 · 5×5/7 · 6×6/8 · 6×6/9 · 7×7/10 · 7×7/11 · 8×8/12 · 8×8/13 · 9×9/14 · 9×9/15 · 10×10/16 · 10×10/17 · 11×11/18 · 11×11/19 · 12×12/20 · 12×12/22 · 13×13/24 · 13×13/26. View time formula unchanged (1 s + 0.15 s per lit cell → 1.6 s … 4.9 s).
+

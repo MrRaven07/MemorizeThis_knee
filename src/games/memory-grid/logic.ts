@@ -35,20 +35,28 @@ export interface GridLevel {
   lit: number
 }
 
-/** Difficulty curve (question 015). Index 0 = level 1. */
+/** Difficulty curve: 4×4 up to 13×13 (owner decision, question 015). Index 0 = level 1. */
 export const GRID_LEVELS: readonly GridLevel[] = [
-  { size: 3, lit: 3 },
-  { size: 3, lit: 4 },
+  { size: 4, lit: 4 },
   { size: 4, lit: 5 },
-  { size: 4, lit: 6 },
-  { size: 4, lit: 7 },
-  { size: 5, lit: 8 },
-  { size: 5, lit: 9 },
-  { size: 5, lit: 10 },
-  { size: 6, lit: 11 },
-  { size: 6, lit: 12 },
-  { size: 6, lit: 14 },
-  { size: 7, lit: 16 },
+  { size: 5, lit: 6 },
+  { size: 5, lit: 7 },
+  { size: 6, lit: 8 },
+  { size: 6, lit: 9 },
+  { size: 7, lit: 10 },
+  { size: 7, lit: 11 },
+  { size: 8, lit: 12 },
+  { size: 8, lit: 13 },
+  { size: 9, lit: 14 },
+  { size: 9, lit: 15 },
+  { size: 10, lit: 16 },
+  { size: 10, lit: 17 },
+  { size: 11, lit: 18 },
+  { size: 11, lit: 19 },
+  { size: 12, lit: 20 },
+  { size: 12, lit: 22 },
+  { size: 13, lit: 24 },
+  { size: 13, lit: 26 },
 ]
 
 export function gridStaircase(s: MemoryGridSettings): StaircaseConfig {
