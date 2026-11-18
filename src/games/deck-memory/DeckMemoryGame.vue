@@ -8,6 +8,7 @@ import { createRng, type Rng } from '@/core/random/rng'
 import type { SeqResult } from '@/core/scoring/align'
 import { useActiveTime } from '@/core/timing/useActiveTime'
 import { useCountdown } from '@/core/timing/useCountdown'
+import { progressLabel } from '@/games/progress'
 import type { RoundResult } from '@/games/types'
 import { useStatsStore } from '@/stores/stats'
 import CardPicker from './CardPicker.vue'
@@ -253,13 +254,12 @@ useGameKeys((e) => {
         <span class="muted"> · memorized in {{ formatDuration(memoMs) }}</span>
       </p>
       <p class="change mono">
-        <template v-if="change.to !== change.from"
-          >Level {{ change.from }} → {{ change.to }}</template
-        >
-        <template v-else-if="score.exact">
-          Level {{ change.from }} (streak {{ change.streak }}/{{ round.upAfter }})
-        </template>
-        <template v-else>Level {{ change.from }}</template>
+        {{
+          progressLabel(
+            { ...change, upAfter: round.upAfter, max: deckStaircase(round).max },
+            score.exact,
+          )
+        }}
       </p>
       <button type="button" class="primary next" @click="start">Next</button>
       <p class="hint muted">Enter for the next deal</p>

@@ -7,6 +7,7 @@ import { stepStaircase } from '@/core/difficulty/staircase'
 import { useGameKeys } from '@/core/keyboard/useGameKeys'
 import { createRng, type Rng } from '@/core/random/rng'
 import { useCountdown } from '@/core/timing/useCountdown'
+import { progressLabel } from '@/games/progress'
 import type { RoundResult } from '@/games/types'
 import { useStatsStore } from '@/stores/stats'
 import PlateView from './PlateView.vue'
@@ -179,13 +180,12 @@ useGameKeys((e) => {
         {{ score.success ? 'All correct' : 'Not quite' }}
       </p>
       <p class="change mono">
-        <template v-if="change.to !== change.from"
-          >Level {{ change.from }} → {{ change.to }}</template
-        >
-        <template v-else-if="score.success">
-          Level {{ change.from }} (streak {{ change.streak }}/{{ round.upAfter }})
-        </template>
-        <template v-else>Level {{ change.from }}</template>
+        {{
+          progressLabel(
+            { ...change, upAfter: round.upAfter, max: platesStaircase(round).max },
+            score.success,
+          )
+        }}
       </p>
       <button type="button" class="primary next" @click="start">Next</button>
       <p class="hint muted">Enter for the next round</p>

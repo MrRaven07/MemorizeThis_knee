@@ -4,6 +4,7 @@ import TimerBar from '@/components/TimerBar.vue'
 import { useGameKeys } from '@/core/keyboard/useGameKeys'
 import { createRng, type Rng } from '@/core/random/rng'
 import { useCountdown } from '@/core/timing/useCountdown'
+import { progressLabel } from '@/games/progress'
 import type { RoundResult } from '@/games/types'
 import { useStatsStore } from '@/stores/stats'
 import {
@@ -266,12 +267,13 @@ useGameKeys((e) => {
         {{ result.counts.falseAlarms }}
       </p>
       <p class="change mono">
-        <template v-if="result.to !== result.from">N {{ result.from }} → {{ result.to }}</template>
-        <template v-else-if="result.accuracy >= PASS_ACCURACY">
-          N {{ result.from }} (streak {{ result.streak }}/{{ round.upAfter }})
-        </template>
-        <template v-else-if="result.accuracy >= 0.5">N {{ result.from }} (streak reset)</template>
-        <template v-else>N {{ result.from }}</template>
+        {{
+          progressLabel(
+            { ...result, upAfter: round.upAfter, max: nBackStaircase(round).max },
+            result.accuracy >= PASS_ACCURACY,
+            { noun: 'N', reset: result.accuracy >= 0.5 },
+          )
+        }}
       </p>
       <button type="button" class="primary next" @click="start">Next</button>
       <p class="hint muted">Enter for the next round · 80% passes, under 50% lowers N</p>

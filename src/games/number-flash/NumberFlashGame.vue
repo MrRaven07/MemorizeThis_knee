@@ -8,6 +8,7 @@ import { useGameKeys } from '@/core/keyboard/useGameKeys'
 import { createRng, randomDigits, type Rng } from '@/core/random/rng'
 import type { AlignResult } from '@/core/scoring/align'
 import { useCountdown } from '@/core/timing/useCountdown'
+import { progressLabel } from '@/games/progress'
 import type { RoundResult } from '@/games/types'
 import { useStatsStore } from '@/stores/stats'
 import {
@@ -147,16 +148,11 @@ useGameKeys((e) => {
         {{ result.exact ? 'Correct' : 'Not quite' }}
       </p>
       <p class="change mono">
-        <template v-if="change.to !== change.from"
-          >Length {{ change.from }} → {{ change.to }}</template
-        >
-        <template v-else-if="result.exact && change.from >= 30"
-          >Length {{ change.from }} (max)</template
-        >
-        <template v-else-if="result.exact">
-          Length {{ change.from }} (streak {{ change.streak }}/{{ change.upAfter }})
-        </template>
-        <template v-else>Length {{ change.from }}</template>
+        {{
+          progressLabel({ ...change, max: numberFlashStaircase(round).max }, result.exact, {
+            noun: 'Length',
+          })
+        }}
       </p>
       <button type="button" class="primary next" @click="start">Next</button>
       <p class="hint muted">Enter for the next number</p>

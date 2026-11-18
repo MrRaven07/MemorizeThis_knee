@@ -6,6 +6,7 @@ import { useGameKeys } from '@/core/keyboard/useGameKeys'
 import { createRng, type Rng } from '@/core/random/rng'
 import { useActiveTime } from '@/core/timing/useActiveTime'
 import { useCountdown } from '@/core/timing/useCountdown'
+import { progressLabel } from '@/games/progress'
 import type { RoundResult } from '@/games/types'
 import { useStatsStore } from '@/stores/stats'
 import CardGrid from './CardGrid.vue'
@@ -191,13 +192,12 @@ useGameKeys((e) => {
         {{ board.memoryMistakes === 0 ? 'Perfect memory' : 'You forgot where a card was' }}
       </p>
       <p class="change mono">
-        <template v-if="change.to !== change.from"
-          >Level {{ change.from }} → {{ change.to }}</template
-        >
-        <template v-else-if="board.memoryMistakes === 0">
-          Level {{ change.from }} (streak {{ change.streak }}/{{ round.upAfter }})
-        </template>
-        <template v-else>Level {{ change.from }}</template>
+        {{
+          progressLabel(
+            { ...change, upAfter: round.upAfter, max: cardStaircase(round).max },
+            board.memoryMistakes === 0,
+          )
+        }}
       </p>
       <button type="button" class="primary next" @click="start">Next</button>
       <p class="hint muted">Enter for the next round</p>

@@ -5,6 +5,7 @@ import { stepStaircase } from '@/core/difficulty/staircase'
 import { useGameKeys } from '@/core/keyboard/useGameKeys'
 import { createRng, type Rng } from '@/core/random/rng'
 import { useCountdown } from '@/core/timing/useCountdown'
+import { progressLabel } from '@/games/progress'
 import type { RoundResult } from '@/games/types'
 import { useSettingsStore } from '@/stores/settings'
 import { useStatsStore } from '@/stores/stats'
@@ -222,13 +223,12 @@ useGameKeys((e) => {
         <span v-if="sim.shortest" class="star">· Shortest route ★</span>
       </p>
       <p class="change mono">
-        <template v-if="change.to !== change.from"
-          >Level {{ change.from }} → {{ change.to }}</template
-        >
-        <template v-else-if="sim.outcome === 'win'">
-          Level {{ change.from }} (streak {{ change.streak }}/{{ round.upAfter }})
-        </template>
-        <template v-else>Level {{ change.from }}</template>
+        {{
+          progressLabel(
+            { ...change, upAfter: round.upAfter, max: mazeStaircase(round).max },
+            sim.outcome === 'win',
+          )
+        }}
       </p>
       <div class="actions">
         <button type="button" class="hint" @click="showShortest">Show a shortest route</button>
