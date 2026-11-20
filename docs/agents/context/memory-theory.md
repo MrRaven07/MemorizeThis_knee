@@ -24,6 +24,7 @@ MemorizeThis trains the classical **art of memory**. Players already carry their
 | **N-Back** | Working memory: holding and constantly updating the last N items | N rises after passed rounds (≥80%), drops under 50%; separate levels for position, digit and dual |
 | **Memory Grid** | Visual-spatial memory: holding a whole pattern at a glance (chunking cells into shapes) | Grid size and lit cells grow (3×3/3 → 7×7/16); viewing time scales with lit cells |
 | **Quick Math** | *Not a memory technique:* a working-memory drill (holding operands and carries) under time pressure | Number ranges grow over 10 levels while the required answers per minute fall (20 → 6) |
+| **Names & Faces** | Linking a name to a face: pick a striking feature, turn the name into an image, join them | Faces per round 3 → 20; first names, or first + last |
 | **Major System Flashcards** | Instant digit↔word recall of the player's own code | Box system (priority queue): misses come back sooner |
 
 ## PAO and Speed Cards
@@ -33,6 +34,10 @@ MemorizeThis trains the classical **art of memory**. Players already carry their
 ## N-back
 
 The **n-back task** (Kirchner, 1958) is a standard working-memory exercise: items arrive one by one, and the player signals when the current item matches the one N steps earlier. Every new item must be held and the oldest dropped, so it trains *updating* working memory, the "scratchpad" that memory-palace encoding happens in. The dual version (position + digit at once, Jaeggi et al., 2008) loads two channels together. Accuracy counts hits against misses and false alarms, so pressing randomly or never pressing can't score well.
+
+## Names and faces
+
+A memory-sport discipline and an everyday skill. The classic method has three steps: (1) notice a **distinctive feature** of the face (big ears, red hair, glasses); (2) turn the **name into a concrete image** ("Ștefan" → a stuffed *ștrudel*, "Popescu" → a *pope*); (3) **link** the two with a vivid scene placed on that feature. The app draws original faces that differ in at least three salient features, so step 1 is always possible.
 
 ## Design guidance for new games
 

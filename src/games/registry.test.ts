@@ -13,6 +13,7 @@ describe('registry', () => {
       'n-back',
       'memory-grid',
       'quick-math',
+      'names-faces',
     ])
   })
 

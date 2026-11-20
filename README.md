@@ -75,6 +75,7 @@ Without `keystore.properties` the release build is produced unsigned (`app-relea
 - [x] **N-Back** — press when the item matches the one N steps back (positions, digits, or both)
 - [x] **Memory Grid** — a pattern lights up on a grid; tap it back from memory
 - [x] **Quick Math** — timed sprint of + − × ÷ mod problems
+- [x] **Names & Faces** — study faces with their names, then name every face (Romanian names; more countries pluggable)
 - [x] Stats page and session summary (day streak, time per game, daily trend lines)
 - [x] Android app (Capacitor) — debug APK
 - [x] Logo / app icon (`assets/icon/foreground.svg`, regenerate with `scripts/make-icons.sh`)

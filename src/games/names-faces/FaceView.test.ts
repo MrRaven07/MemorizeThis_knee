@@ -15,12 +15,20 @@ describe('FaceView', () => {
 
   it('shows glasses, beard and earrings when the face has them', () => {
     const [base] = generateFaces(createRng(1), 1)
-    const face = { ...base!, presentation: 'm' as const, glasses: true, facialHair: 1, earrings: true }
+    const face = {
+      ...base!,
+      presentation: 'm' as const,
+      glasses: true,
+      facialHair: 1,
+      earrings: true,
+    }
     const w = mount(FaceView, { props: { face } })
     expect(w.find('.glasses').exists()).toBe(true)
     expect(w.find('.beard').exists()).toBe(true)
     expect(w.findAll('.earring')).toHaveLength(2)
-    const plain = mount(FaceView, { props: { face: { ...face, glasses: false, facialHair: 0, earrings: false } } })
+    const plain = mount(FaceView, {
+      props: { face: { ...face, glasses: false, facialHair: 0, earrings: false } },
+    })
     expect(plain.find('.glasses').exists()).toBe(false)
     expect(plain.find('.beard').exists()).toBe(false)
   })

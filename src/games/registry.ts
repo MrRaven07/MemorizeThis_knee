@@ -4,6 +4,7 @@ import { longNumber } from './long-number'
 import { maze } from './maze'
 import { memoryGrid } from './memory-grid'
 import { nBack } from './n-back'
+import { namesFaces } from './names-faces'
 import { numberFlash } from './number-flash'
 import { quickMath } from './quick-math'
 import { plates } from './plates'
@@ -24,6 +25,7 @@ export const games: GameModule<any>[] = [
   nBack,
   memoryGrid,
   quickMath,
+  namesFaces,
 ]
 
 export function getGame(id: string): GameModule | undefined {

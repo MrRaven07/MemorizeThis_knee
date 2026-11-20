@@ -90,10 +90,27 @@ const longHair = computed(() => [6, 7, 11].includes(style.value))
     <ellipse cx="59" cy="50" rx="4.2" ry="3" fill="#fff" />
     <circle cx="41" cy="50" r="2" :fill="eye" />
     <circle cx="59" cy="50" r="2" :fill="eye" />
-    <path d="M36 44 Q41 41 46 44" fill="none" :stroke="brow" stroke-width="1.8" stroke-linecap="round" />
-    <path d="M54 44 Q59 41 64 44" fill="none" :stroke="brow" stroke-width="1.8" stroke-linecap="round" />
+    <path
+      d="M36 44 Q41 41 46 44"
+      fill="none"
+      :stroke="brow"
+      stroke-width="1.8"
+      stroke-linecap="round"
+    />
+    <path
+      d="M54 44 Q59 41 64 44"
+      fill="none"
+      :stroke="brow"
+      stroke-width="1.8"
+      stroke-linecap="round"
+    />
     <!-- nose and mouth -->
-    <path d="M50 52 L47.5 59 Q50 60.5 52.5 59" fill="none" stroke="rgb(0 0 0 / 0.25)" stroke-width="1.3" />
+    <path
+      d="M50 52 L47.5 59 Q50 60.5 52.5 59"
+      fill="none"
+      stroke="rgb(0 0 0 / 0.25)"
+      stroke-width="1.3"
+    />
     <path
       v-if="face.facialHair !== 1"
       d="M44 66 Q50 70 56 66"
@@ -104,8 +121,12 @@ const longHair = computed(() => [6, 7, 11].includes(style.value))
     />
     <!-- freckles -->
     <g v-if="face.freckles" fill="rgb(120 60 30 / 0.45)">
-      <circle cx="38" cy="57" r="0.9" /><circle cx="41" cy="58.5" r="0.9" /><circle cx="36" cy="59" r="0.9" />
-      <circle cx="62" cy="57" r="0.9" /><circle cx="59" cy="58.5" r="0.9" /><circle cx="64" cy="59" r="0.9" />
+      <circle cx="38" cy="57" r="0.9" />
+      <circle cx="41" cy="58.5" r="0.9" />
+      <circle cx="36" cy="59" r="0.9" />
+      <circle cx="62" cy="57" r="0.9" />
+      <circle cx="59" cy="58.5" r="0.9" />
+      <circle cx="64" cy="59" r="0.9" />
     </g>
     <!-- glasses -->
     <g v-if="face.glasses" class="glasses" fill="none" stroke="#222" stroke-width="1.6">
@@ -143,7 +164,10 @@ const longHair = computed(() => [6, 7, 11].includes(style.value))
       />
       <template v-else-if="style === 9">
         <circle cx="50" :cy="top - 6" r="8" :fill="hair" />
-        <path :d="`M${50 - head.rx} 44 Q50 ${top - 6} ${50 + head.rx} 44 Q50 ${top + 5} ${50 - head.rx} 44 Z`" :fill="hair" />
+        <path
+          :d="`M${50 - head.rx} 44 Q50 ${top - 6} ${50 + head.rx} 44 Q50 ${top + 5} ${50 - head.rx} 44 Z`"
+          :fill="hair"
+        />
       </template>
       <path
         v-else
