@@ -24,6 +24,7 @@ MemorizeThis trains the classical **art of memory**. Players already carry their
 | **N-Back** | Working memory: holding and constantly updating the last N items | N rises after passed rounds (≥80%), drops under 50%; separate levels for position, digit and dual |
 | **Memory Grid** | Visual-spatial memory: holding a whole pattern at a glance (chunking cells into shapes) | Grid size and lit cells grow (3×3/3 → 7×7/16); viewing time scales with lit cells |
 | **Quick Math** | *Not a memory technique:* a working-memory drill (holding operands and carries) under time pressure | Number ranges grow over 10 levels while the required answers per minute fall (20 → 6) |
+| **Sequence** | Sequence span: chunking and storing a serial sequence that grows by one item per step, cumulatively, for hundreds of steps | Grows inside the run (+1 item per step until the first mistake); playback speeds up 15 ms per step down to 250 ms; optional start length / start from best − 3 |
 | **Major System Flashcards** | Instant digit↔word recall of the player's own code | Box system (priority queue): misses come back sooner |
 
 ## PAO and Speed Cards
@@ -33,6 +34,10 @@ MemorizeThis trains the classical **art of memory**. Players already carry their
 ## N-back
 
 The **n-back task** (Kirchner, 1958) is a standard working-memory exercise: items arrive one by one, and the player signals when the current item matches the one N steps earlier. Every new item must be held and the oldest dropped, so it trains *updating* working memory, the "scratchpad" that memory-palace encoding happens in. The dual version (position + digit at once, Jaeggi et al., 2008) loads two channels together. Accuracy counts hits against misses and false alarms, so pressing randomly or never pressing can't score well.
+
+## Sequence span (Sequence)
+
+A Simon-style task is a **serial, cumulative span test**: the same sequence comes back each step with one more item, and it must be repeated in order. It's like digit span, but the material builds up, so the player must keep the whole sequence across many repetitions instead of a fresh list each round. Raw working memory gives out after about 7 ± 2 items. Runs beyond that only work with technique: **chunking** pads into groups of 3–4 (a group of pad colours or tones becomes one "word"), or **mapping pads to digits** (each pad has a number) and encoding the digits with the Major System as images along a palace route, adding one image per new chunk. That's why the game supports runs of hundreds of steps, a start length and "start from best − 3": a strong player trains the long end, not the easy first steps. Playback speeds up with length, which trains fast encoding, and the tones-only mode removes the visual channel.
 
 ## Design guidance for new games
 

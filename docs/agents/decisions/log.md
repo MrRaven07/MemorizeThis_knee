@@ -35,3 +35,8 @@ Short, dated entries: what was decided, and why. Add newest at the bottom.
 - **Memory Grid range changed by the owner:** 4×4 up to 13×13 over 20 levels (questions/015, owner decision).
 - **Quick Math targets per operation** (review finding): each level has a typical time per problem for each operation, and the pass target is sprint ÷ the average over the *enabled* operations (rounded, min 1), so ×-only sprints aren't impossible and +-only ones aren't trivial. With all operations on, it stays close to 015's 20 → 6 per minute.
 
+## 2026-11-20
+
+- **Sequence module** (owner's idea, Simon-style; generic name only). Rules in questions/018: one run = one growing sequence = one `RoundResult` (`level`/`accuracy` null, `success` = ties or beats the previous best for the same pad count); the sequence is drawn lazily from the seeded RNG, append-only, capped at 999; item time `max(250, baseMs − 15 × (step − 1))`, gap 30%, after a 600 ms dark lead-in, with the current item worked out from one countdown per playback (no drift at step 300). Builder calls in questions/030: the second Esc ends and records the run (a third Esc quits), "Keep going" replays the step, a 1 s timeout becomes 2 s, "Total items recalled" counts every item repeated over completed steps.
+- **Small core addition: `src/core/audio/tones.ts`** (pre-approved by questions/018). Web Audio tones: `AudioContext` created only in `unlock()` from a user gesture, C-major pentatonic per pad, 10 ms fades, a low square buzz for mistakes, silent when audio is missing or fails. Games that want sound use it; tests mock it.
+- **Pad colour tokens `--pad-1`…`--pad-9`** in `tokens.css`. The 4-pad set is purple/cyan/orange/pink, not the toy's red/green/blue/yellow. Every pad also shows a number and a shape.

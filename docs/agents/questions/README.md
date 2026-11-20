@@ -53,3 +53,4 @@ What changes in the build depending on the answer.
 | 015 | Memory Grid and Quick Math modules | answered |
 | 017 | Kim's Game module | answered |
 | 018 | Sequence (Simon-style) module | answered |
+| 030 | Sequence: builder calls (second Esc, timeout 1 s, items recalled) | answered (builder, pending manager review) |

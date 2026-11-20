@@ -61,7 +61,13 @@ describe('sequence logic', () => {
       SEQUENCE_DEFAULTS,
       SEQUENCE_FIELDS,
     )
-    expect(s).toMatchObject({ pads: '4', startLength: 50, baseMs: 400, volume: 0, inputTimeout: 10 })
+    expect(s).toMatchObject({
+      pads: '4',
+      startLength: 50,
+      baseMs: 400,
+      volume: 0,
+      inputTimeout: 10,
+    })
   })
 
   it('pad count from the select', () => {

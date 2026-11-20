@@ -6,6 +6,7 @@ import { memoryGrid } from './memory-grid'
 import { nBack } from './n-back'
 import { numberFlash } from './number-flash'
 import { quickMath } from './quick-math'
+import { sequence } from './sequence'
 import { plates } from './plates'
 import type { GameModule } from './types'
 
@@ -23,6 +24,7 @@ export const games: GameModule<any>[] = [
   deckMemory,
   nBack,
   memoryGrid,
+  sequence,
   quickMath,
 ]
 

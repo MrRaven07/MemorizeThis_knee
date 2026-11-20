@@ -78,6 +78,7 @@ flowchart TD
 - `core/timing/useCountdown`: frame-accurate phase timer that pauses on a hidden tab (exposure times).
 - `core/timing/useActiveTime`: measures visible time only (round durations, memorization time).
 - `core/keyboard/useGameKeys`: game shortcuts on `document` (runs before GameShell's `window` Esc). Ignores inputs, handled events, and Enter/Space on focused buttons.
+- `core/audio/tones`: Web Audio pad tones (Sequence). The `AudioContext` is created lazily in `unlock()` from a user gesture; silent when audio is unavailable. Tests mock it.
 
 ## Games
 
