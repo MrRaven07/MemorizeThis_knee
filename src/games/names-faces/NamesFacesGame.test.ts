@@ -125,7 +125,7 @@ describe('NamesFacesGame', () => {
     expect(w.find('.study-card').attributes('aria-label')).toMatch(/hair/)
   })
 
-  it('a hidden tab pauses the study time; Esc ends studying (prevented)', async () => {
+  it('Esc ends studying (prevented)', async () => {
     const { w } = setup()
     await w.find('button.start').trigger('click')
     const esc = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })
@@ -133,5 +133,78 @@ describe('NamesFacesGame', () => {
     await flushPromises()
     expect(esc.defaultPrevented).toBe(true)
     expect(w.find('input[name="first"]').exists()).toBe(true)
+  })
+
+  it('a hidden tab pauses the study time', async () => {
+    let visibility: DocumentVisibilityState = 'visible'
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      get: () => visibility,
+    })
+    const { w } = setup()
+    await w.find('button.start').trigger('click')
+    visibility = 'hidden'
+    document.dispatchEvent(new Event('visibilitychange'))
+    vi.advanceTimersByTime(60_000)
+    await flushPromises()
+    expect(w.find('.study-card').exists()).toBe(true)
+    visibility = 'visible'
+    document.dispatchEvent(new Event('visibilitychange'))
+  })
+
+  it('recall: the face is an image for screen readers; empty Enter skips; held Enter is ignored', async () => {
+    const { w, recall } = setup()
+    await study(w)
+    expect(w.find('.recall-card').attributes('role')).toBe('img')
+    const input = w.find('input[name="first"]')
+    await input.trigger('keydown', { key: 'Enter', repeat: true })
+    expect(w.text()).toContain('Face 1 / 3')
+    await input.trigger('keydown', { key: 'Enter' })
+    expect(w.text()).toContain('Face 2 / 3')
+    for (const p of recall.slice(1)) await type(w, 'input[name="first"]', p.first)
+    expect((w.emitted('round-complete')![0] as [RoundResult])[0].metrics.points).toBe(2)
+  })
+
+  it('Check before the last face scores the rest as missing; quitting records nothing', async () => {
+    const { w, recall } = setup()
+    await study(w)
+    await type(w, 'input[name="first"]', recall[0]!.first)
+    await w.find('button.check').trigger('click')
+    expect((w.emitted('round-complete')![0] as [RoundResult])[0].metrics.points).toBe(1)
+    const q = setup()
+    await study(q.w)
+    q.w.unmount()
+    expect(q.w.emitted('round-complete')).toBeUndefined()
+  })
+
+  it('full names: the result names each part; only the wrong part gets a diff', async () => {
+    const { w, recall } = setup({ ...NAMES_FACES_DEFAULTS, nameStyle: 'full' })
+    await study(w)
+    const strip = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase()
+    const [a, ...rest] = recall as [Person, ...Person[]]
+    await type(w, 'input[name="first"]', strip(a.first))
+    await type(w, 'input[name="last"]', 'Wrongescu')
+    for (const p of rest) {
+      await type(w, 'input[name="first"]', p.first)
+      await type(w, 'input[name="last"]', p.last)
+    }
+    const row = w.find('.results .wrong')
+    expect(row.attributes('aria-label')).toContain('first name right, last name wrong')
+    expect(row.text()).toContain('first ✓ · last ✗')
+    expect(row.findAll('.diff')).toHaveLength(1)
+    expect(
+      row.find('.diff .diff-substitute').exists() || row.find('.diff .diff-missing').exists(),
+    ).toBe(true)
+  })
+
+  it('recall buttons keep the keyboard open; inputs turn off autocorrect', async () => {
+    const { w } = setup()
+    await study(w)
+    expect(w.find('input[name="first"]').attributes('autocorrect')).toBe('off')
+    for (const sel of ['button.back', 'button.check']) {
+      const e = new Event('pointerdown', { cancelable: true, bubbles: true })
+      w.find(sel).element.dispatchEvent(e)
+      expect(e.defaultPrevented).toBe(true)
+    }
   })
 })

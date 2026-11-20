@@ -112,11 +112,15 @@ export function assignNames(
     seen.add(foldName(name))
     return name
   }
-  return faces.map((face) => ({
-    face,
-    first: pickUnique(face.presentation === 'f' ? set.female : set.male, used),
-    last: style === 'full' ? pickUnique(set.last, usedLast) : '',
-  }))
+  return faces.map((face) => {
+    const first = pickUnique(face.presentation === 'f' ? set.female : set.male, used)
+    if (style !== 'full') return { face, first, last: '' }
+    // never "Radu Radu": the surname must differ from the first name
+    const avoid = new Set([...usedLast, foldName(first)])
+    const last = pickUnique(set.last, avoid)
+    usedLast.add(foldName(last))
+    return { face, first, last }
+  })
 }
 
 export function scorePerson(

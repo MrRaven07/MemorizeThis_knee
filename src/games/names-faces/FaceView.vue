@@ -30,16 +30,66 @@ const top = computed(() => 52 - head.value.ry)
 const chin = computed(() => 52 + head.value.ry)
 const style = computed(() => props.face.hairStyle)
 const longHair = computed(() => [6, 7, 11].includes(style.value))
+
+/**
+ * Hair shapes are computed from the head size, so every style fits every
+ * face shape. L/R = head edges, T = top of the head.
+ */
+const hairBack = computed(() => {
+  const L = 50 - head.value.rx
+  const R = 50 + head.value.rx
+  const T = top.value
+  if (style.value === 7) {
+    // long wavy: wavy sides and a wavy hem
+    return `M${L - 6} 45 Q50 ${T - 14} ${R + 6} 45 q7 9 0 17 q-7 9 1 18 q7 8 1 13 L${L - 5} 93 q-7 -5 -1 -13 q8 -9 1 -18 q-7 -8 -1 -17 Z`
+  }
+  const hem = style.value === 11 ? 96 : 90
+  return `M${L - 6} 45 Q50 ${T - 14} ${R + 6} 45 L${R + 7} ${hem} L${L - 7} ${hem} Z`
+})
+
+const hairFront = computed(() => {
+  const L = 50 - head.value.rx
+  const R = 50 + head.value.rx
+  const T = top.value
+  /** a cap that covers the scalp down to `side` on the temples, fringe at `fringe` */
+  const cap = (side: number, peak: number, fringe: number, pad = 1) =>
+    `M${L - pad} ${side} Q${L - pad} ${peak} 50 ${peak} Q${R + pad} ${peak} ${R + pad} ${side} Q50 ${fringe} ${L - pad} ${side} Z`
+  switch (style.value) {
+    case 1: // buzz cut: thin, close to the scalp
+      return cap(46, T - 3, T + 6, 0)
+    case 3: // side part: deep sweep across the forehead from the left
+      return `M${L - 2} 50 Q${L - 3} ${T - 6} 52 ${T - 6} Q${R + 2} ${T - 6} ${R + 2} 46 Q${R - 2} ${T + 4} 56 ${T + 3} Q${L + 6} ${T + 8} ${L + 3} 52 Z`
+    case 4: // curly short: bumps all along the top, scaled to the head
+    case 11: {
+      const x0 = L - 4
+      const x1 = R + 4
+      const n = 5
+      const w = (x1 - x0) / n
+      let d = `M${x0} 48 L${x0} ${T + 6}`
+      for (let i = 0; i < n; i++) d += ` q${w / 2} -18 ${w} 0`
+      return `${d} L${x1} 48 Q50 ${T + 10} ${x0} 48 Z`
+    }
+    case 5: // spiky
+      return `M${L} 44 L${L + 3} ${T - 9} L${50 - 9} ${T + 1} L50 ${T - 12} L${50 + 9} ${T + 1} L${R - 3} ${T - 9} L${R} 44 Q50 ${T + 8} ${L} 44 Z`
+    case 8: // bob: cap plus side panels over the ears
+      return `M${L - 5} 67 L${L - 5} 46 Q${L - 5} ${T - 7} 50 ${T - 7} Q${R + 5} ${T - 7} ${R + 5} 46 L${R + 5} 67 L${R - 1} 67 L${R - 1} 48 Q50 ${T + 9} ${L + 1} 48 L${L + 1} 67 Z`
+    default: // short, bun base, ponytail base, long styles' fringe
+      return cap(48, T - 7, T + 8)
+  }
+})
+
+/** stubble: a thin band along the jaw (not a crescent that reads as a grin) */
+const stubble = computed(() => {
+  const L = 50 - head.value.rx
+  const R = 50 + head.value.rx
+  return `M${L + 2} 57 Q${L + 3} ${chin.value + 1} 50 ${chin.value + 1} Q${R - 3} ${chin.value + 1} ${R - 2} 57 Q50 ${chin.value - 3} ${L + 2} 57 Z`
+})
 </script>
 
 <template>
   <svg class="face" viewBox="0 0 100 100" aria-hidden="true">
     <!-- hair behind the head (long styles) -->
-    <path
-      v-if="longHair"
-      :d="`M${50 - head.rx - 6} 45 Q50 ${top - 14} ${50 + head.rx + 6} 45 L${50 + head.rx + 8} ${style === 7 ? 92 : 88} Q50 ${style === 11 ? 98 : 94} ${50 - head.rx - 8} ${style === 7 ? 92 : 88} Z`"
-      :fill="hair"
-    />
+    <path v-if="longHair" :d="hairBack" :fill="hair" />
     <path
       v-if="style === 10"
       :d="`M${50 + head.rx - 4} 40 q14 6 10 34 q-6 -10 -12 -30 z`"
@@ -65,12 +115,7 @@ const longHair = computed(() => [6, 7, 11].includes(style.value))
     />
     <ellipse v-else cx="50" cy="52" :rx="head.rx" :ry="head.ry" :fill="skin" />
     <!-- stubble / beard / moustache -->
-    <path
-      v-if="face.facialHair === 3"
-      :d="`M${50 - head.rx + 3} 58 Q50 ${chin + 4} ${50 + head.rx - 3} 58 Q50 ${chin - 6} ${50 - head.rx + 3} 58 Z`"
-      :fill="hair"
-      opacity="0.35"
-    />
+    <path v-if="face.facialHair === 3" class="stubble" :d="stubble" :fill="hair" opacity="0.3" />
     <path
       v-if="face.facialHair === 1"
       class="beard"
@@ -136,44 +181,8 @@ const longHair = computed(() => [6, 7, 11].includes(style.value))
     </g>
     <!-- hair on top (front) -->
     <template v-if="style !== 0">
-      <path
-        v-if="style === 1"
-        :d="`M${50 - head.rx + 1} 40 Q50 ${top - 3} ${50 + head.rx - 1} 40 Q50 ${top + 4} ${50 - head.rx + 1} 40 Z`"
-        :fill="hair"
-        opacity="0.85"
-      />
-      <path
-        v-else-if="style === 5"
-        :d="`M${50 - head.rx} 42 L${50 - head.rx + 4} ${top - 8} L${50 - 8} ${top + 2} L50 ${top - 10} L${50 + 8} ${top + 2} L${50 + head.rx - 4} ${top - 8} L${50 + head.rx} 42 Q50 ${top + 8} ${50 - head.rx} 42 Z`"
-        :fill="hair"
-      />
-      <path
-        v-else-if="style === 4 || style === 11"
-        :d="`M${50 - head.rx - 3} 46 q-2 -12 6 -18 q2 -10 12 -8 q8 -8 16 0 q10 -2 12 8 q8 6 6 18 Q50 ${top + 8} ${50 - head.rx - 3} 46 Z`"
-        :fill="hair"
-      />
-      <path
-        v-else-if="style === 3"
-        :d="`M${50 - head.rx - 1} 46 Q${50 - head.rx} ${top - 4} 56 ${top - 3} Q${50 + head.rx + 2} ${top} ${50 + head.rx + 1} 46 Q${50 + 4} ${top + 6} 44 ${top + 10} Q${50 - head.rx + 4} ${top + 10} ${50 - head.rx - 1} 46 Z`"
-        :fill="hair"
-      />
-      <path
-        v-else-if="style === 8"
-        :d="`M${50 - head.rx - 4} 66 L${50 - head.rx - 4} 44 Q50 ${top - 8} ${50 + head.rx + 4} 44 L${50 + head.rx + 4} 66 L${50 + head.rx - 2} 66 L${50 + head.rx - 2} 46 Q50 ${top + 8} ${50 - head.rx + 2} 46 L${50 - head.rx + 2} 66 Z`"
-        :fill="hair"
-      />
-      <template v-else-if="style === 9">
-        <circle cx="50" :cy="top - 6" r="8" :fill="hair" />
-        <path
-          :d="`M${50 - head.rx} 44 Q50 ${top - 6} ${50 + head.rx} 44 Q50 ${top + 5} ${50 - head.rx} 44 Z`"
-          :fill="hair"
-        />
-      </template>
-      <path
-        v-else
-        :d="`M${50 - head.rx - 1} 46 Q${50 - head.rx} ${top - 6} 50 ${top - 5} Q${50 + head.rx} ${top - 6} ${50 + head.rx + 1} 46 Q50 ${top + 7} ${50 - head.rx - 1} 46 Z`"
-        :fill="hair"
-      />
+      <circle v-if="style === 9" cx="50" :cy="top - 7" r="8" :fill="hair" />
+      <path :d="hairFront" :fill="hair" :opacity="style === 1 ? 0.85 : 1" />
     </template>
   </svg>
 </template>

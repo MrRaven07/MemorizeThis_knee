@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { getNameSet, nameSets } from './index'
 import { ro } from './ro'
-import { foldName } from '../logic'
+import { foldName, NF_LEVELS } from '../logic'
 
 describe('Romanian names', () => {
   it('has enough distinct names', () => {
@@ -32,5 +32,22 @@ describe('Romanian names', () => {
     }
     const male = new Set(ro.male.map(foldName))
     expect(ro.female.filter((n) => male.has(foldName(n)))).toEqual([])
+  })
+
+  it('enough names for the biggest round, and one spelling per surname', () => {
+    const max = Math.max(...NF_LEVELS)
+    expect(ro.female.length).toBeGreaterThanOrEqual(max)
+    expect(ro.male.length).toBeGreaterThanOrEqual(max)
+    expect(ro.last.length).toBeGreaterThanOrEqual(max)
+    // î/â spellings of one surname (Sîrbu/Sârbu) would mark a correct answer wrong
+    const key = (n: string) => foldName(n).replace(/i/g, 'a')
+    const seen = new Map<string, string>()
+    const clashes = ro.last.filter((n) => {
+      const k = key(n)
+      if (seen.has(k) && seen.get(k) !== n) return true
+      seen.set(k, n)
+      return false
+    })
+    expect(clashes).toEqual([])
   })
 })

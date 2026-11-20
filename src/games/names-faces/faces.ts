@@ -79,25 +79,55 @@ function randomFace(rng: Rng): FaceSpec {
   }
 }
 
-/** How many SALIENT features differ (the ones visible at a glance). */
+/** Shades that are hard to tell apart at a glance count as the same. */
+const HAIR_COLOR_GROUP = [0, 0, 1, 2, 3, 4, 4] // black≈dark brown · brown · blond · red · grey≈white
+const SKIN_GROUP = [0, 0, 1, 1, 2, 2] // very light≈light · medium≈tan · brown≈dark
+const BOB = 8
+
+/**
+ * What a player can actually SEE (question 016 review): hair colour only when
+ * there is hair to show it, earrings only when the hair doesn't cover the
+ * ears, and similar shades merged.
+ */
+export function visibleTraits(f: FaceSpec) {
+  const showsHair = f.hairStyle !== 0 || f.facialHair !== 0
+  return {
+    hairStyle: f.hairStyle,
+    hairColor: showsHair ? HAIR_COLOR_GROUP[f.hairColor]! : null,
+    shape: f.shape,
+    glasses: f.glasses,
+    facialHair: f.facialHair,
+    skin: SKIN_GROUP[f.skin]!,
+    earrings: f.earrings && f.hairStyle !== BOB,
+  }
+}
+
+/** How many VISIBLE salient features differ. */
 export function faceDifferences(a: FaceSpec, b: FaceSpec): number {
+  const x = visibleTraits(a)
+  const y = visibleTraits(b)
+  const colour = x.hairColor !== null && y.hairColor !== null && x.hairColor !== y.hairColor
   return (
-    Number(a.hairStyle !== b.hairStyle) +
-    Number(a.hairColor !== b.hairColor) +
-    Number(a.shape !== b.shape) +
-    Number(a.glasses !== b.glasses) +
-    Number(a.facialHair !== b.facialHair) +
-    Number(a.skin !== b.skin) +
-    Number(a.earrings !== b.earrings)
+    Number(x.hairStyle !== y.hairStyle) +
+    Number(colour) +
+    Number(x.shape !== y.shape) +
+    Number(x.glasses !== y.glasses) +
+    Number(x.facialHair !== y.facialHair) +
+    Number(x.skin !== y.skin) +
+    Number(x.earrings !== y.earrings)
   )
 }
 
-/** `n` faces where any two differ in at least 3 salient features. */
+/**
+ * `n` faces where any two differ in at least 3 visible features. If that's
+ * impossible (absurdly large n) the rule relaxes step by step, so this always
+ * finishes.
+ */
 export function generateFaces(rng: Rng, n: number): FaceSpec[] {
   const faces: FaceSpec[] = []
   for (let tries = 0; faces.length < n; tries++) {
     const f = randomFace(rng)
-    const minDiff = tries < 5000 ? 3 : 2 // practically never relaxed
+    const minDiff = tries < 20_000 ? 3 : tries < 40_000 ? 2 : tries < 60_000 ? 1 : 0
     if (faces.every((g) => faceDifferences(f, g) >= minDiff)) faces.push(f)
   }
   return faces

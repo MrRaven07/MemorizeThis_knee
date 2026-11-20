@@ -73,6 +73,14 @@ const full = computed(() => round.value.nameStyle === 'full')
 const current = computed(() => people.value[order.value[index.value] ?? -1])
 const fullName = (p: Person) => (p.last ? `${p.first} ${p.last}` : p.first)
 
+/** Per-part result for screen readers (the visual ✓ / ✗ marks are aria-hidden). */
+function resultLabel(r: { person: Person; firstOk: boolean; lastOk: boolean }): string {
+  const part = (ok: boolean) => (ok ? 'right' : 'wrong')
+  return full.value
+    ? `${fullName(r.person)}: first name ${part(r.firstOk)}, last name ${part(r.lastOk)}`
+    : `${fullName(r.person)}: ${part(r.firstOk)}`
+}
+
 onMounted(() => emit('level', level.value))
 
 async function start() {
@@ -209,7 +217,7 @@ useGameKeys((e) => {
 
     <template v-else-if="phase === 'recall' && current">
       <p class="muted small">Face {{ index + 1 }} / {{ order.length }}</p>
-      <div class="recall-card" :aria-label="describeFace(current.face)">
+      <div class="recall-card" role="img" :aria-label="describeFace(current.face)">
         <FaceView :face="current.face" />
       </div>
       <div class="inputs">
@@ -221,6 +229,7 @@ useGameKeys((e) => {
             name="first"
             autocomplete="off"
             autocapitalize="words"
+            autocorrect="off"
             spellcheck="false"
             enterkeyhint="next"
             @keydown.enter.prevent="!($event as KeyboardEvent).repeat && onFirstEnter()"
@@ -234,6 +243,7 @@ useGameKeys((e) => {
             name="last"
             autocomplete="off"
             autocapitalize="words"
+            autocorrect="off"
             spellcheck="false"
             enterkeyhint="next"
             @keydown.enter.prevent="!($event as KeyboardEvent).repeat && advance()"
@@ -241,9 +251,21 @@ useGameKeys((e) => {
         </label>
       </div>
       <div class="row">
-        <button type="button" class="back" :disabled="index === 0" @click="back">← Back</button>
-        <button v-if="index < order.length - 1" type="button" @click="advance">Next →</button>
-        <button type="button" class="primary check" @click="check">Check</button>
+        <button
+          type="button"
+          class="back"
+          :disabled="index === 0"
+          @pointerdown.prevent
+          @click="back"
+        >
+          ← Back
+        </button>
+        <button v-if="index < order.length - 1" type="button" @pointerdown.prevent @click="advance">
+          Next →
+        </button>
+        <button type="button" class="primary check" @pointerdown.prevent @click="check">
+          Check
+        </button>
       </div>
       <p class="hint muted">Enter = next · leave empty to skip</p>
     </template>
@@ -254,7 +276,7 @@ useGameKeys((e) => {
           v-for="(r, i) in results"
           :key="i"
           :class="r.points === 1 ? 'right' : 'wrong'"
-          :aria-label="`${fullName(r.person)} — ${r.points === 1 ? 'correct' : 'wrong'}`"
+          :aria-label="resultLabel(r)"
         >
           <span class="mini"><FaceView :face="r.person.face" /></span>
           <span class="who">
@@ -265,13 +287,11 @@ useGameKeys((e) => {
               >
               <template v-else>{{ r.points === 1 ? ' ✓' : ' ✗' }}</template>
             </span>
-            <span v-if="r.points < 1" class="answer">
-              <ResultDiff
-                :ops="
-                  alignStrings(fullName(r.person), full ? `${r.first} ${r.last}`.trim() : r.first)
-                    .ops
-                "
-              />
+            <span v-if="!r.firstOk" class="answer">
+              <ResultDiff :ops="alignStrings(r.person.first, r.first.trim()).ops" />
+            </span>
+            <span v-if="full && !r.lastOk" class="answer">
+              <ResultDiff :ops="alignStrings(r.person.last, r.last.trim()).ops" />
             </span>
           </span>
         </li>
@@ -349,6 +369,10 @@ useGameKeys((e) => {
 }
 .recall-card {
   width: min(60vw, 13rem);
+}
+.name,
+.last {
+  overflow-wrap: anywhere;
 }
 .name {
   font-weight: 700;

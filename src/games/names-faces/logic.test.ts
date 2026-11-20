@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createRng } from '@/core/random/rng'
 import { sanitizeSettings } from '@/games/settings'
 import type { RoundRecord } from '@/games/types'
-import { describeFace, faceDifferences, generateFaces } from './faces'
+import { describeFace, faceDifferences, generateFaces, visibleTraits } from './faces'
 import {
   NAMES_FACES_DEFAULTS,
   NAMES_FACES_FIELDS,
@@ -127,5 +127,30 @@ describe('names & faces logic', () => {
       { label: 'Success (last 20)', value: '67%' },
     ])
     expect(summarizeNamesFaces([]).headline).toBe('not played')
+  })
+
+  it('only visible differences count: bald hair colour, earrings under a bob, near-identical shades', () => {
+    const [base] = generateFaces(createRng(1), 1)
+    const bald = { ...base!, presentation: 'm' as const, hairStyle: 0, facialHair: 0 }
+    expect(faceDifferences(bald, { ...bald, hairColor: (bald.hairColor + 3) % 7 })).toBe(0)
+    const bob = { ...base!, hairStyle: 8, earrings: false }
+    expect(faceDifferences(bob, { ...bob, earrings: true })).toBe(0)
+    expect(faceDifferences({ ...base!, hairColor: 0 }, { ...base!, hairColor: 1 })).toBe(0) // black vs dark brown
+    expect(faceDifferences({ ...base!, skin: 0 }, { ...base!, skin: 1 })).toBe(0) // very light vs light
+    expect(visibleTraits(bald).hairColor).toBeNull()
+  })
+
+  it('the generator always finishes, even when asked for more faces than can be told apart', () => {
+    expect(generateFaces(createRng(4), 400)).toHaveLength(400)
+  })
+
+  it('a surname never equals the first name', () => {
+    const problems: string[] = []
+    for (let seed = 0; seed < 300; seed++) {
+      const rng = createRng(seed)
+      for (const p of assignNames(rng, generateFaces(rng, 20), ro, 'full'))
+        if (foldName(p.first) === foldName(p.last)) problems.push(`${seed}: ${p.first} ${p.last}`)
+    }
+    expect(problems).toEqual([])
   })
 })

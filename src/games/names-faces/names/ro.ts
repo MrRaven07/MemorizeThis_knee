@@ -288,7 +288,7 @@ export const ro: NameSet = {
     'Mitrea',
     'Cojocaru',
     'Bucur',
-    'Pîrvu',
+    'Pârvu',
     'Marinescu',
     'Dumitrescu',
     'Iliescu',
@@ -365,8 +365,8 @@ export const ro: NameSet = {
     'Pena',
     'Postelnicu',
     'Rusnac',
-    'Sîrbu',
     'Tudose',
     'Vlădescu',
+    'Nechita',
   ],
 }

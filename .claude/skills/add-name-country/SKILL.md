@@ -8,10 +8,10 @@ description: Use when adding a new country's names (first and last names) to the
 Name sets are pluggable: one file per country implementing `NameSet` (`src/games/names-faces/names/types.ts`). **Worked example: `src/games/names-faces/names/ro.ts`** (Romania).
 
 ## 1. Collect the names, and cite where they come from
-- About 100 common **female** first names, about 100 common **male** first names, and about 150 common **surnames**.
+- At least 20 names per list (the biggest round has 20 faces, and names never repeat within a round). Aim for about 100 common **female** first names, about 100 common **male** first names, and about 150 common **surnames**.
 - Use the language's correct spelling and diacritics, in UTF-8 and NFC. For Romanian that means comma-below `ș ț`, never cedilla `ş ţ`.
 - Put the source in the file's top comment (an official frequency list, or Wikipedia "<Country> name" / "Most common surnames").
-- **No name may appear in both the female and male lists after accent folding.** Players type without diacritics (`foldName` in `logic.ts`), so `Viorica` and `Viorică` would clash.
+- **No name may appear in both the female and male lists after accent folding.** Players type without diacritics (`foldName` in `logic.ts`), so `Viorica` and `Viorică` would clash. Keep **one spelling per surname** (not both `Sîrbu` and `Sârbu`), or a correct answer would be marked wrong.
 
 ## 2. Branch and test first
 `git switch -c feat/names-<id>`, then copy `names/ro.test.ts` to `names/<id>.test.ts`:
