@@ -77,10 +77,7 @@ describe('levels', () => {
       for (let i = 1; i < levels.length; i++) {
         expect(levels[i]!.objects).toBeGreaterThanOrEqual(levels[i - 1]!.objects)
         expect(levels[i]!.missing).toBeGreaterThanOrEqual(levels[i - 1]!.missing)
-        expect(
-          levels[i]!.objects + levels[i]!.missing,
-          `level ${i + 1}`,
-        ).toBeGreaterThan(levels[i - 1]!.objects + levels[i - 1]!.missing)
+        expect(levels[i]!.objects + levels[i]!.missing).toBeGreaterThan(levels[i - 1]!.objects + levels[i - 1]!.missing)
       }
     }
   })
@@ -140,14 +137,10 @@ describe('missing mode', () => {
     const partial = partialTray(tray, missing)
     expect(partial).toHaveLength(TRAY_CELLS)
     expect(trayObjects(partial)).toHaveLength(12)
-    let emptied = 0
-    tray.forEach((id, i) => {
-      if (id !== null && missing.includes(id)) {
-        expect(partial[i]).toBeNull()
-        emptied++
-      } else expect(partial[i]).toBe(id)
-    })
-    expect(emptied).toBe(2)
+    const expected = tray.map((id) => (id !== null && missing.includes(id) ? null : id))
+    expect(partial).toEqual(expected)
+    const emptied = tray.filter((id, i) => id !== null && partial[i] === null)
+    expect(emptied.sort()).toEqual([...missing].sort())
   })
 
   it('the picker holds the k missing objects plus max(4, 2k) distractors, none from the tray', () => {
