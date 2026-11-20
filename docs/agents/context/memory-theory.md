@@ -23,6 +23,7 @@ MemorizeThis trains the classical **art of memory**. Players already carry their
 | **Deck Memory** | Memorizing a shuffled deck: card → image (often PAO), images placed along a palace route | Staircase on deck size 4 → 52; memorization time is recorded |
 | **N-Back** | Working memory: holding and constantly updating the last N items | N rises after passed rounds (≥80%), drops under 50%; separate levels for position, digit and dual |
 | **Memory Grid** | Visual-spatial memory: holding a whole pattern at a glance (chunking cells into shapes) | Grid size and lit cells grow (3×3/3 → 7×7/16); viewing time scales with lit cells |
+| **Kim's Game** | Rapid visual encoding of many objects and their places; the missing variant trains noticing change | 10 → 20 objects over 11 levels; in the missing mode 1 → 3 objects are taken away; viewing time scales with the object count |
 | **Quick Math** | *Not a memory technique:* a working-memory drill (holding operands and carries) under time pressure | Number ranges grow over 10 levels while the required answers per minute fall (20 → 6) |
 | **Major System Flashcards** | Instant digit↔word recall of the player's own code | Box system (priority queue): misses come back sooner |
 
@@ -33,6 +34,10 @@ MemorizeThis trains the classical **art of memory**. Players already carry their
 ## N-back
 
 The **n-back task** (Kirchner, 1958) is a standard working-memory exercise: items arrive one by one, and the player signals when the current item matches the one N steps earlier. Every new item must be held and the oldest dropped, so it trains *updating* working memory, the "scratchpad" that memory-palace encoding happens in. The dual version (position + digit at once, Jaeggi et al., 2008) loads two channels together. Accuracy counts hits against misses and false alarms, so pressing randomly or never pressing can't score well.
+
+## Kim's Game
+
+**Kim's Game** comes from Rudyard Kipling's novel *Kim* (1901), where the boy hero is trained as a spy by memorizing a tray of jewels and trinkets after a short look. Scouts and sniper courses still use it to train fast, accurate observation. The trick is not to stare but to encode: link each object to its place on the tray (the tray becomes a mini memory palace with 20 loci) or chain the objects into a quick story. The **list** mode checks that every object was encoded; the picker shows the real objects among as many distractors, so guessing or tapping everything scores low. The **what's missing** mode brings the tray back in the same places with a few objects gone, which trains noticing change: the player has to compare the tray in front of them with the one in their head, place by place.
 
 ## Design guidance for new games
 

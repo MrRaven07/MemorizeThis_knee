@@ -77,7 +77,9 @@ describe('levels', () => {
       for (let i = 1; i < levels.length; i++) {
         expect(levels[i]!.objects).toBeGreaterThanOrEqual(levels[i - 1]!.objects)
         expect(levels[i]!.missing).toBeGreaterThanOrEqual(levels[i - 1]!.missing)
-        expect(levels[i]!.objects + levels[i]!.missing).toBeGreaterThan(levels[i - 1]!.objects + levels[i - 1]!.missing)
+        expect(levels[i]!.objects + levels[i]!.missing).toBeGreaterThan(
+          levels[i - 1]!.objects + levels[i - 1]!.missing,
+        )
       }
     }
   })

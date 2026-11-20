@@ -12,6 +12,7 @@ describe('registry', () => {
       'deck-memory',
       'n-back',
       'memory-grid',
+      'kims-game',
       'quick-math',
     ])
   })

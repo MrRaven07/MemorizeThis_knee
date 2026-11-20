@@ -1,5 +1,6 @@
 import { cardMatch } from './card-match'
 import { deckMemory } from './deck-memory'
+import { kimsGame } from './kims-game'
 import { longNumber } from './long-number'
 import { maze } from './maze'
 import { memoryGrid } from './memory-grid'
@@ -23,6 +24,7 @@ export const games: GameModule<any>[] = [
   deckMemory,
   nBack,
   memoryGrid,
+  kimsGame,
   quickMath,
 ]
 

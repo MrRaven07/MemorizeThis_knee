@@ -46,7 +46,8 @@ const rng = props.rng ?? createRng()
 const countdown = useCountdown()
 const stats = useStatsStore()
 
-const levelFor = (s: KimsGameSettings) => stats.getStaircase(levelKey(s.mode), kimStaircase(s)).level
+const levelFor = (s: KimsGameSettings) =>
+  stats.getStaircase(levelKey(s.mode), kimStaircase(s)).level
 
 const phase = ref<Phase>('ready')
 const round = ref<KimsGameSettings>({ ...props.settings })
@@ -175,7 +176,11 @@ function resultMark(id: string | null): { cls: string; mark: string } {
 
 function resultLabel(id: string): string {
   const m = resultMark(id).cls
-  return m === 'hit' ? `${nameOf(id)}, recalled` : m === 'missed' ? `${nameOf(id)}, missed` : nameOf(id)
+  return m === 'hit'
+    ? `${nameOf(id)}, recalled`
+    : m === 'missed'
+      ? `${nameOf(id)}, missed`
+      : nameOf(id)
 }
 
 function onKeydown(e: KeyboardEvent, i: number) {

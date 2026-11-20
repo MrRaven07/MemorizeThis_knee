@@ -4,7 +4,7 @@ Ideas the owner wants built. Each one becomes a plan in `plans/` and a ruling in
 
 | # | Module | Owner's request | Status | Plan | Branch |
 |---|--------|-----------------|--------|------|--------|
-| 1 | **Kim's Game** (`kims-game`) | "A tray of 10–20 objects appears, then disappears. The player lists them all, or says which one went missing. This is a classic scout and sniper exercise." | in progress | [plan 15](plans/2026-11-18-plan-15-kims-game.md) · [questions/017](questions/017-kims-game.md) | `feat/kims-game` |
+| 1 | **Kim's Game** (`kims-game`) | "A tray of 10–20 objects appears, then disappears. The player lists them all, or says which one went missing. This is a classic scout and sniper exercise." | pushed | [plan 15](plans/2026-11-18-plan-15-kims-game.md) · [questions/017](questions/017-kims-game.md) | `feat/kims-game` |
 | 2 | **Simon-style Sequence** (`sequence`) | "Colors or tones that grow longer each round. The scope is to make it for many many rounds." | in progress | [plan 16](plans/2026-11-18-plan-16-simon-sequence.md) · [questions/018](questions/018-simon-sequence.md) | `feat/simon-sequence` |
 
 Status values: `idea` → `planned` → `in progress` → `pushed` (waiting for the owner to merge) → `merged`.

@@ -35,3 +35,6 @@ Short, dated entries: what was decided, and why. Add newest at the bottom.
 - **Memory Grid range changed by the owner:** 4×4 up to 13×13 over 20 levels (questions/015, owner decision).
 - **Quick Math targets per operation** (review finding): each level has a typical time per problem for each operation, and the pass target is sprint ÷ the average over the *enabled* operations (rounded, min 1), so ×-only sprints aren't impossible and +-only ones aren't trivial. With all operations on, it stays close to 015's 20 → 6 per minute.
 
+## 2026-11-20
+
+- **Kim's Game** (owner's request, backlog #1). Rules in questions/017: a 5×4 tray of 10–20 emoji objects from a fixed catalogue (single code point, Unicode ≤ 13), shown for max(1 s, (2 s + 0.8 s × objects) × multiplier); recall by tapping a picker (no typing, so no synonym or spelling problems). Two modes with separate levels (`kims-game:list`, `kims-game:missing`); in `missing` the tray returns in the same cells after a 1 s blank with 1–3 objects gone. Perfect answers pass; accuracy hits/(hits+misses+wrong). Builder calls in questions/019 (headline with no perfect round, `mode` metric, real exposure in `viewMs`).

@@ -53,3 +53,4 @@ What changes in the build depending on the answer.
 | 015 | Memory Grid and Quick Math modules | answered |
 | 017 | Kim's Game module | answered |
 | 018 | Sequence (Simon-style) module | answered |
+| 019 | Kim's Game: small builder calls | answered (builder, pending manager review) |

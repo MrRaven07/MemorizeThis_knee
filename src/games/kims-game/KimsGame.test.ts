@@ -80,9 +80,9 @@ describe('KimsGame', () => {
     expect(choices).toHaveLength(20)
     expect(document.activeElement).toBe(choices[0]!.element)
     for (const id of trayObjects(tray)) await pick(w, id)
-    expect(w.find(`button.choice[data-id="${trayObjects(tray)[0]}"]`).attributes('aria-pressed')).toBe(
-      'true',
-    )
+    expect(
+      w.find(`button.choice[data-id="${trayObjects(tray)[0]}"]`).attributes('aria-pressed'),
+    ).toBe('true')
     await w.find('button.check').trigger('click')
     const [r] = w.emitted('round-complete')![0] as [RoundResult]
     expect(r).toMatchObject({
