@@ -24,6 +24,17 @@
   --sym-5: #d2a8ff;
   --sym-6: #e3b341;
 
+  /* Sequence pads — each pad also has a number and a shape, so colour is only extra help */
+  --pad-1: #d2a8ff;
+  --pad-2: #56d4dd;
+  --pad-3: #ffa657;
+  --pad-4: #f778ba;
+  --pad-5: #7ee787;
+  --pad-6: #79c0ff;
+  --pad-7: #e3b341;
+  --pad-8: #ff7b72;
+  --pad-9: #c9d1d9;
+
   /* playing cards (Deck Memory) — a light face like a real card */
   --card-face: #f4f1ea;
   --suit-red: #c4262e;
